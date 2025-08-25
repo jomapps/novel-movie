@@ -1,0 +1,210 @@
+[
+  {
+    "name": "Optimistic",
+    "slug": "optimistic",
+    "description": "A hopeful, positive emotional atmosphere that emphasizes the bright side of situations and maintains faith in positive outcomes.",
+    "category": "positive",
+    "intensity": "moderate",
+    "emotionalImpact": "Inspires hope, confidence, and positive expectations in audiences. Creates feelings of possibility and encouragement.",
+    "visualElements": {
+      "colorAssociations": "Bright, warm colors - yellows, light blues, soft greens, golden tones",
+      "lightingStyle": "Bright, natural lighting with soft shadows. Golden hour and warm illumination",
+      "compositionStyle": "Open, expansive compositions with upward movement and bright focal points"
+    },
+    "audioElements": {
+      "musicStyle": "Major keys, uplifting melodies, bright instrumentation, moderate to fast tempos",
+      "soundDesign": "Clear, pleasant sounds - birds singing, gentle breezes, positive ambient sounds"
+    },
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "hopeful" },
+      { "tag": "positive" },
+      { "tag": "bright" },
+      { "tag": "encouraging" },
+      { "tag": "uplifting" }
+    ]
+  },
+  {
+    "name": "Melancholic",
+    "slug": "melancholic",
+    "description": "A bittersweet, contemplative emotional atmosphere that combines sadness with beauty, often nostalgic or wistful in nature.",
+    "category": "complex",
+    "intensity": "moderate",
+    "emotionalImpact": "Evokes thoughtful sadness, nostalgia, and emotional depth. Creates space for reflection and empathy.",
+    "visualElements": {
+      "colorAssociations": "Muted colors - soft grays, pale blues, faded pastels, autumn tones",
+      "lightingStyle": "Soft, diffused lighting with gentle shadows. Overcast or twilight atmospheres",
+      "compositionStyle": "Contemplative framing with empty spaces, distant subjects, reflective surfaces"
+    },
+    "audioElements": {
+      "musicStyle": "Minor keys, slow tempos, string instruments, piano, gentle and flowing melodies",
+      "soundDesign": "Subtle, atmospheric sounds - distant rain, wind through trees, quiet spaces"
+    },
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "bittersweet" },
+      { "tag": "nostalgic" },
+      { "tag": "contemplative" },
+      { "tag": "wistful" },
+      { "tag": "reflective" }
+    ]
+  },
+  {
+    "name": "Tense",
+    "slug": "tense",
+    "description": "A high-stress emotional atmosphere characterized by anxiety, anticipation, and nervous energy that keeps audiences on edge.",
+    "category": "negative",
+    "intensity": "strong",
+    "emotionalImpact": "Creates anxiety, anticipation, and nervous energy. Keeps audiences engaged through psychological pressure.",
+    "visualElements": {
+      "colorAssociations": "Sharp contrasts, cool blues, stark whites, deep shadows, unsettling color combinations",
+      "lightingStyle": "Harsh, directional lighting with strong shadows. Flickering or unstable light sources",
+      "compositionStyle": "Tight framing, unusual angles, claustrophobic spaces, off-balance compositions"
+    },
+    "audioElements": {
+      "musicStyle": "Dissonant harmonies, irregular rhythms, building crescendos, sudden stops and starts",
+      "soundDesign": "Unsettling sounds - creaking, footsteps, sudden noises, uncomfortable silence"
+    },
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "anxious" },
+      { "tag": "stressful" },
+      { "tag": "edge-of-seat" },
+      { "tag": "nervous" },
+      { "tag": "anticipatory" }
+    ]
+  },
+  {
+    "name": "Whimsical",
+    "slug": "whimsical",
+    "description": "A playful, imaginative emotional atmosphere that embraces the fantastical, quirky, and delightfully unexpected.",
+    "category": "positive",
+    "intensity": "moderate",
+    "emotionalImpact": "Sparks imagination, joy, and childlike wonder. Creates delight through unexpected and creative elements.",
+    "visualElements": {
+      "colorAssociations": "Bright, saturated colors - rainbow palettes, pastels, unexpected color combinations",
+      "lightingStyle": "Playful, colorful lighting with creative shadows and magical quality",
+      "compositionStyle": "Creative, unusual framing with fantastical elements and imaginative perspectives"
+    },
+    "audioElements": {
+      "musicStyle": "Playful melodies, unusual instruments, creative arrangements, light and bouncy rhythms",
+      "soundDesign": "Creative, fantastical sounds - magical effects, playful noises, imaginative audio"
+    },
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "playful" },
+      { "tag": "imaginative" },
+      { "tag": "fantastical" },
+      { "tag": "quirky" },
+      { "tag": "magical" }
+    ]
+  },
+  {
+    "name": "Gritty",
+    "slug": "gritty",
+    "description": "A raw, unpolished emotional atmosphere that emphasizes harsh realities, urban decay, and unvarnished truth.",
+    "category": "negative",
+    "intensity": "strong",
+    "emotionalImpact": "Creates sense of realism, toughness, and authenticity. Emphasizes harsh truths and difficult realities.",
+    "visualElements": {
+      "colorAssociations": "Desaturated colors, browns, grays, rust tones, dirty and weathered palettes",
+      "lightingStyle": "Harsh, unflattering lighting with deep shadows and high contrast",
+      "compositionStyle": "Raw, documentary-style framing with handheld camera feel and realistic angles"
+    },
+    "audioElements": {
+      "musicStyle": "Raw, unpolished sounds, industrial elements, heavy bass, aggressive rhythms",
+      "soundDesign": "Urban sounds - traffic, machinery, harsh environmental noise, realistic audio"
+    },
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "raw" },
+      { "tag": "harsh" },
+      { "tag": "realistic" },
+      { "tag": "unpolished" },
+      { "tag": "authentic" }
+    ]
+  },
+  {
+    "name": "Ethereal",
+    "slug": "ethereal",
+    "description": "A dreamlike, otherworldly emotional atmosphere that feels light, spiritual, and transcendent of ordinary reality.",
+    "category": "complex",
+    "intensity": "subtle",
+    "emotionalImpact": "Creates sense of wonder, spirituality, and transcendence. Evokes feelings of being transported beyond the ordinary.",
+    "visualElements": {
+      "colorAssociations": "Soft, luminous colors - whites, pale golds, soft blues, translucent tones",
+      "lightingStyle": "Soft, diffused lighting with glowing effects and heavenly illumination",
+      "compositionStyle": "Floating, weightless compositions with soft focus and dreamy perspectives"
+    },
+    "audioElements": {
+      "musicStyle": "Ambient, atmospheric music with reverb, soft synthesizers, celestial sounds",
+      "soundDesign": "Soft, atmospheric sounds - gentle winds, distant echoes, peaceful ambience"
+    },
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "dreamlike" },
+      { "tag": "otherworldly" },
+      { "tag": "spiritual" },
+      { "tag": "transcendent" },
+      { "tag": "luminous" }
+    ]
+  },
+  {
+    "name": "Energetic",
+    "slug": "energetic",
+    "description": "A high-energy, dynamic emotional atmosphere characterized by movement, excitement, and vibrant activity.",
+    "category": "positive",
+    "intensity": "strong",
+    "emotionalImpact": "Generates excitement, motivation, and physical energy. Creates sense of movement and dynamic action.",
+    "visualElements": {
+      "colorAssociations": "Vibrant, saturated colors - bright reds, electric blues, neon tones, high contrast",
+      "lightingStyle": "Dynamic, changing lighting with strong contrasts and energetic movement",
+      "compositionStyle": "Dynamic framing with movement, quick cuts, energetic camera work"
+    },
+    "audioElements": {
+      "musicStyle": "Fast tempos, driving rhythms, energetic instrumentation, upbeat melodies",
+      "soundDesign": "Dynamic sounds - movement, activity, energetic environmental audio"
+    },
+    "isActive": true,
+    "sortOrder": 7,
+    "aiGenerationTags": [
+      { "tag": "dynamic" },
+      { "tag": "vibrant" },
+      { "tag": "exciting" },
+      { "tag": "active" },
+      { "tag": "stimulating" }
+    ]
+  },
+  {
+    "name": "Contemplative",
+    "slug": "contemplative",
+    "description": "A thoughtful, introspective emotional atmosphere that encourages deep thinking, reflection, and philosophical consideration.",
+    "category": "neutral",
+    "intensity": "subtle",
+    "emotionalImpact": "Encourages reflection, deep thinking, and philosophical engagement. Creates space for internal dialogue.",
+    "visualElements": {
+      "colorAssociations": "Muted, sophisticated colors - earth tones, deep blues, soft grays, natural palettes",
+      "lightingStyle": "Soft, natural lighting that creates peaceful, thoughtful atmosphere",
+      "compositionStyle": "Balanced, symmetrical compositions with space for reflection and contemplation"
+    },
+    "audioElements": {
+      "musicStyle": "Slow, meditative music with space between notes, classical or ambient styles",
+      "soundDesign": "Quiet, peaceful sounds - nature sounds, gentle ambience, thoughtful silence"
+    },
+    "isActive": true,
+    "sortOrder": 8,
+    "aiGenerationTags": [
+      { "tag": "thoughtful" },
+      { "tag": "introspective" },
+      { "tag": "meditative" },
+      { "tag": "philosophical" },
+      { "tag": "peaceful" }
+    ]
+  }
+]

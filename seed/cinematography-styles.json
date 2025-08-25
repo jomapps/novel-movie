@@ -1,0 +1,266 @@
+[
+  {
+    "name": "Realistic",
+    "slug": "realistic",
+    "description": "Natural, lifelike cinematography that mimics how the human eye sees the world. Emphasizes authenticity and believability.",
+    "category": "realistic",
+    "complexity": "simple",
+    "technicalElements": {
+      "cameraMovement": "Smooth, natural movements that follow action organically. Handheld for intimacy, tripod for stability",
+      "framingApproach": "Standard framing rules, eye-level shots, natural perspectives that feel comfortable and familiar",
+      "lensChoices": "Standard focal lengths (35-85mm), minimal distortion, natural depth of field",
+      "colorGrading": "Natural color correction that enhances without calling attention to itself"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Natural lighting sources, soft shadows, realistic contrast ratios",
+      "depthOfField": "Natural depth of field that guides attention without being distracting",
+      "visualTexture": "Clean, natural texture that emphasizes the reality of the world"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "low",
+      "equipmentNeeds": "Standard camera equipment, natural lighting setups, minimal special equipment",
+      "skillRequirements": "Solid fundamentals in cinematography, understanding of natural lighting"
+    },
+    "examples": [
+      {
+        "title": "Manchester by the Sea",
+        "year": 2016,
+        "description": "Natural, unobtrusive cinematography that serves the emotional story"
+      },
+      {
+        "title": "The Social Network",
+        "year": 2010,
+        "description": "Clean, realistic visual style that focuses on character and dialogue"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "natural" },
+      { "tag": "authentic" },
+      { "tag": "believable" },
+      { "tag": "unobtrusive" },
+      { "tag": "lifelike" }
+    ]
+  },
+  {
+    "name": "Stylized",
+    "slug": "stylized",
+    "description": "Deliberately artificial cinematography that creates a specific visual aesthetic, often emphasizing mood and atmosphere over realism.",
+    "category": "stylized",
+    "complexity": "moderate",
+    "technicalElements": {
+      "cameraMovement": "Deliberate, choreographed movements that serve the visual style. May include unusual angles or movements",
+      "framingApproach": "Creative framing that may break traditional rules for artistic effect",
+      "lensChoices": "Wide variety of focal lengths used creatively, may include distortion for effect",
+      "colorGrading": "Strong color grading that creates specific moods and visual signatures"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Dramatic, artificial lighting that creates specific moods and visual effects",
+      "depthOfField": "Creative use of depth of field for artistic and narrative purposes",
+      "visualTexture": "Enhanced visual texture that may be heightened or artificial"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "medium",
+      "equipmentNeeds": "Specialized lighting equipment, creative camera rigs, post-production tools",
+      "skillRequirements": "Advanced cinematography skills, artistic vision, post-production expertise"
+    },
+    "examples": [
+      {
+        "title": "The Grand Budapest Hotel",
+        "year": 2014,
+        "description": "Highly stylized visual approach with symmetrical framing and distinctive color palette"
+      },
+      {
+        "title": "Blade Runner 2049",
+        "year": 2017,
+        "description": "Stylized sci-fi cinematography with dramatic lighting and color"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "artistic" },
+      { "tag": "creative" },
+      { "tag": "distinctive" },
+      { "tag": "atmospheric" },
+      { "tag": "visual" }
+    ]
+  },
+  {
+    "name": "Documentary",
+    "slug": "documentary",
+    "description": "Observational cinematography that captures reality as it unfolds, emphasizing authenticity and immediacy over polished aesthetics.",
+    "category": "documentary",
+    "complexity": "simple",
+    "technicalElements": {
+      "cameraMovement": "Handheld, reactive camera work that follows action as it happens",
+      "framingApproach": "Practical framing that captures events as they occur, may be imperfect but authentic",
+      "lensChoices": "Versatile zoom lenses, standard focal lengths for flexibility",
+      "colorGrading": "Minimal color correction to maintain natural, authentic look"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Available light, minimal artificial lighting, natural shadows and contrast",
+      "depthOfField": "Natural depth of field, focus follows action organically",
+      "visualTexture": "Raw, unpolished texture that emphasizes authenticity"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "low",
+      "equipmentNeeds": "Portable camera equipment, minimal lighting, audio recording equipment",
+      "skillRequirements": "Observational skills, ability to work quickly and adapt to situations"
+    },
+    "examples": [
+      {
+        "title": "Free Solo",
+        "year": 2018,
+        "description": "Documentary cinematography that captures real events with immediacy and authenticity"
+      },
+      {
+        "title": "Won't You Be My Neighbor?",
+        "year": 2018,
+        "description": "Intimate documentary style that feels personal and authentic"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "observational" },
+      { "tag": "authentic" },
+      { "tag": "immediate" },
+      { "tag": "raw" },
+      { "tag": "realistic" }
+    ]
+  },
+  {
+    "name": "Experimental",
+    "slug": "experimental",
+    "description": "Avant-garde cinematography that pushes boundaries and explores new visual languages, often prioritizing artistic expression over conventional storytelling.",
+    "category": "experimental",
+    "complexity": "highly-complex",
+    "technicalElements": {
+      "cameraMovement": "Unconventional camera movements, may include abstract or non-narrative motion",
+      "framingApproach": "Breaks traditional framing rules, may use unusual angles or perspectives",
+      "lensChoices": "Creative use of lenses including extreme wide-angle, macro, or modified optics",
+      "colorGrading": "Extreme or artistic color manipulation that serves the experimental vision"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Creative, artistic lighting that may be abstract or non-naturalistic",
+      "depthOfField": "Experimental use of focus for artistic rather than narrative purposes",
+      "visualTexture": "May include multiple exposures, digital effects, or unconventional techniques"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "variable",
+      "equipmentNeeds": "May require specialized or modified equipment, experimental techniques",
+      "skillRequirements": "Advanced technical skills, artistic vision, willingness to experiment"
+    },
+    "examples": [
+      {
+        "title": "2001: A Space Odyssey",
+        "year": 1968,
+        "description": "Groundbreaking experimental cinematography that created new visual languages"
+      },
+      {
+        "title": "Enter the Void",
+        "year": 2009,
+        "description": "Highly experimental visual approach with unique perspectives and techniques"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "avant-garde" },
+      { "tag": "innovative" },
+      { "tag": "unconventional" },
+      { "tag": "artistic" },
+      { "tag": "boundary-pushing" }
+    ]
+  },
+  {
+    "name": "Vintage",
+    "slug": "vintage",
+    "description": "Cinematography that emulates the look and feel of earlier film eras, using period-appropriate techniques and aesthetics.",
+    "category": "stylized",
+    "complexity": "moderate",
+    "technicalElements": {
+      "cameraMovement": "Period-appropriate camera movements, may be more static or formal",
+      "framingApproach": "Classical framing techniques from specific film eras",
+      "lensChoices": "Vintage lenses or modern lenses that emulate vintage characteristics",
+      "colorGrading": "Period-appropriate color timing, may include film grain or vintage processing"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Classical Hollywood lighting or period-specific lighting techniques",
+      "depthOfField": "Depth of field characteristics of vintage lenses and film stocks",
+      "visualTexture": "Film grain, vintage color characteristics, period-appropriate visual texture"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "medium",
+      "equipmentNeeds": "Vintage lenses, period-appropriate equipment, specialized post-production",
+      "skillRequirements": "Knowledge of film history, classical cinematography techniques"
+    },
+    "examples": [
+      {
+        "title": "The Artist",
+        "year": 2011,
+        "description": "Authentic recreation of silent film era cinematography"
+      },
+      {
+        "title": "Carol",
+        "year": 2015,
+        "description": "1950s-inspired cinematography with period-appropriate visual style"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "period-appropriate" },
+      { "tag": "classical" },
+      { "tag": "nostalgic" },
+      { "tag": "historical" },
+      { "tag": "timeless" }
+    ]
+  },
+  {
+    "name": "Modern",
+    "slug": "modern",
+    "description": "Contemporary cinematography that utilizes current technology and techniques to create clean, polished, and technically sophisticated visuals.",
+    "category": "realistic",
+    "complexity": "moderate",
+    "technicalElements": {
+      "cameraMovement": "Smooth, precise camera movements using modern stabilization technology",
+      "framingApproach": "Contemporary framing that may blend traditional and innovative approaches",
+      "lensChoices": "High-quality modern lenses with excellent optical characteristics",
+      "colorGrading": "Sophisticated digital color grading with precise control and modern aesthetics"
+    },
+    "visualCharacteristics": {
+      "lightingStyle": "Clean, controlled lighting using modern LED and digital techniques",
+      "depthOfField": "Precise control of depth of field for both aesthetic and narrative purposes",
+      "visualTexture": "Clean, high-resolution imagery with excellent technical quality"
+    },
+    "productionConsiderations": {
+      "budgetRequirements": "medium",
+      "equipmentNeeds": "Modern digital cameras, LED lighting, stabilization equipment",
+      "skillRequirements": "Current technical knowledge, digital workflow expertise"
+    },
+    "examples": [
+      {
+        "title": "La La Land",
+        "year": 2016,
+        "description": "Modern cinematography with classical influences and contemporary polish"
+      },
+      {
+        "title": "Her",
+        "year": 2013,
+        "description": "Clean, modern visual style that feels contemporary and sophisticated"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "contemporary" },
+      { "tag": "polished" },
+      { "tag": "sophisticated" },
+      { "tag": "clean" },
+      { "tag": "technical" }
+    ]
+  }
+]

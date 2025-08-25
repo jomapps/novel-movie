@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Serious",
+    "slug": "serious",
+    "description": "A grave, earnest tone that treats subject matter with weight and importance. Focuses on significant themes without frivolity.",
+    "category": "emotional",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": "Comedic",
+    "slug": "comedic",
+    "description": "A light, humorous tone designed to entertain and amuse. Uses wit, timing, and absurdity to create laughter.",
+    "category": "emotional",
+    "intensity": "moderate",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": "Dramatic",
+    "slug": "dramatic",
+    "description": "An emotionally intense tone that emphasizes character development and emotional conflict. Focuses on human relationships and personal stakes.",
+    "category": "emotional",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": "Satirical",
+    "slug": "satirical",
+    "description": "A critical, mocking tone that uses humor to expose and criticize flaws in society, institutions, or human behavior.",
+    "category": "stylistic",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": "Lighthearted",
+    "slug": "lighthearted",
+    "description": "A cheerful, optimistic tone that emphasizes joy and positivity. Avoids heavy themes in favor of uplifting content.",
+    "category": "emotional",
+    "intensity": "moderate",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": "Dark",
+    "slug": "dark",
+    "description": "A somber, pessimistic tone that explores difficult themes and the darker aspects of human nature or society.",
+    "category": "atmospheric",
+    "intensity": "intense",
+    "isActive": true,
+    "sortOrder": 6
+  },
+  {
+    "name": "Inspirational",
+    "slug": "inspirational",
+    "description": "An uplifting tone that motivates and encourages audiences through stories of triumph, perseverance, and human potential.",
+    "category": "emotional",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 7
+  },
+  {
+    "name": "Suspenseful",
+    "slug": "suspenseful",
+    "description": "A tense tone that keeps audiences on edge through uncertainty, anticipation, and carefully built tension.",
+    "category": "atmospheric",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 8
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Realistic",
+    "slug": "realistic",
+    "description": "Natural, lifelike cinematography that mimics how the human eye sees the world. Emphasizes authenticity and believability.",
+    "category": "realistic",
+    "complexity": "simple",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": "Stylized",
+    "slug": "stylized",
+    "description": "Deliberately artificial cinematography that creates a specific visual aesthetic, often emphasizing mood and atmosphere over realism.",
+    "category": "stylized",
+    "complexity": "moderate",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": "Documentary",
+    "slug": "documentary",
+    "description": "Observational cinematography that captures reality as it unfolds, emphasizing authenticity and immediacy over polished aesthetics.",
+    "category": "documentary",
+    "complexity": "simple",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": "Experimental",
+    "slug": "experimental",
+    "description": "Avant-garde cinematography that pushes boundaries and explores new visual languages, often prioritizing artistic expression over conventional storytelling.",
+    "category": "experimental",
+    "complexity": "highly-complex",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": "Vintage",
+    "slug": "vintage",
+    "description": "Cinematography that emulates the look and feel of earlier film eras, using period-appropriate techniques and aesthetics.",
+    "category": "stylized",
+    "complexity": "moderate",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": "Modern",
+    "slug": "modern",
+    "description": "Contemporary cinematography that utilizes current technology and techniques to create clean, polished, and technically sophisticated visuals.",
+    "category": "realistic",
+    "complexity": "moderate",
+    "isActive": true,
+    "sortOrder": 6
+  }
+]

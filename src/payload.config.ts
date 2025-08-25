@@ -13,6 +13,13 @@ import { Projects } from './collections/Projects'
 import { MovieFormats } from './collections/MovieFormats'
 import { MovieStyles } from './collections/MovieStyles'
 import { Series } from './collections/Series'
+import { InitialConcepts } from './collections/InitialConcepts'
+import { Genres } from './collections/Genres'
+import { AudienceDemographics } from './collections/AudienceDemographics'
+import { ToneOptions } from './collections/ToneOptions'
+import { CentralThemes } from './collections/CentralThemes'
+import { MoodDescriptors } from './collections/MoodDescriptors'
+import { CinematographyStyles } from './collections/CinematographyStyles'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -24,7 +31,21 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Projects, MovieFormats, MovieStyles, Series],
+  collections: [
+    Users,
+    Media,
+    Projects,
+    MovieFormats,
+    MovieStyles,
+    Series,
+    InitialConcepts,
+    Genres,
+    AudienceDemographics,
+    ToneOptions,
+    CentralThemes,
+    MoodDescriptors,
+    CinematographyStyles,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

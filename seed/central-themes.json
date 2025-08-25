@@ -1,0 +1,474 @@
+[
+  {
+    "name": "Love",
+    "slug": "love",
+    "description": "The exploration of romantic, familial, or platonic love in its various forms, including the sacrifices, joys, and challenges that come with deep emotional connections.",
+    "category": "relationships",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "What does it mean to truly love someone?" },
+        { "question": "How far would you go for love?" },
+        { "question": "Can love conquer all obstacles?" },
+        { "question": "What is the difference between love and obsession?" }
+      ],
+      "commonConflicts": "Forbidden love, unrequited love, love triangles, choosing between love and duty, sacrifice for loved ones",
+      "characterArcs": "Characters learn to love selflessly, overcome barriers to love, or discover the true meaning of love through loss or sacrifice",
+      "resolutionPatterns": "Love triumphs over obstacles, tragic separation, bittersweet acceptance, or transformation through love"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Drives character decisions and creates central conflicts. Often the primary motivation for character actions",
+      "characterDevelopment": "Characters grow through loving relationships, learn selflessness, or are transformed by love",
+      "dialogueStyle": "Intimate, emotional dialogue. Expressions of affection, vulnerability, and emotional honesty",
+      "symbolism": "Hearts, rings, flowers, light, warmth, unity symbols, intertwined imagery"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Deep emotional connection, empathy, hope, heartbreak, catharsis through vicarious love",
+      "culturalConsiderations": "Universal theme but expressions vary by culture. Different cultural attitudes toward romantic vs. familial love"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Warm colors - reds, pinks, golds. Soft, romantic lighting",
+      "visualMotifs": "Close-ups of faces, hands touching, embraces, shared spaces, parallel imagery",
+      "settingInfluence": "Intimate settings, beautiful locations, places of significance to the relationship"
+    },
+    "examples": [
+      {
+        "title": "Casablanca",
+        "year": 1942,
+        "thematicTreatment": "Explores love versus duty, sacrifice for the greater good, and the pain of letting go"
+      },
+      {
+        "title": "The Princess Bride",
+        "year": 1987,
+        "thematicTreatment": "True love as a force that overcomes all obstacles, with humor and adventure"
+      },
+      {
+        "title": "Her",
+        "year": 2013,
+        "thematicTreatment": "Modern exploration of love, connection, and what it means to truly know someone"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "romantic" },
+      { "tag": "emotional" },
+      { "tag": "intimate" },
+      { "tag": "heartfelt" },
+      { "tag": "passionate" }
+    ]
+  },
+  {
+    "name": "Redemption",
+    "slug": "redemption",
+    "description": "The journey of a character seeking to atone for past mistakes, find forgiveness, or transform themselves from a flawed or fallen state to a better version of themselves.",
+    "category": "growth",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "Can anyone truly be redeemed?" },
+        { "question": "What does it take to earn forgiveness?" },
+        { "question": "How do we make amends for past wrongs?" },
+        { "question": "Is redemption possible without forgiveness from others?" }
+      ],
+      "commonConflicts": "Confronting past mistakes, earning trust, overcoming guilt and shame, facing consequences of actions",
+      "characterArcs": "Character acknowledges wrongdoing, struggles with guilt, takes action to make amends, and ultimately finds peace or acceptance",
+      "resolutionPatterns": "Successful redemption through sacrifice, partial redemption with ongoing consequences, or tragic failure to achieve redemption"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Character's past drives present conflicts. Journey toward redemption provides narrative structure",
+      "characterDevelopment": "Deep character transformation from flawed to redeemed state. Internal and external obstacles",
+      "dialogueStyle": "Confessional moments, apologies, expressions of regret, and declarations of change",
+      "symbolism": "Light emerging from darkness, cleansing water, broken chains, rising imagery, rebirth symbols"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Hope for personal change, catharsis through vicarious redemption, inspiration for self-improvement",
+      "culturalConsiderations": "Different cultural and religious concepts of redemption, forgiveness, and atonement"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Progression from dark to light colors, warm tones for redemption moments",
+      "visualMotifs": "Upward movement, cleansing imagery, mirrors and reflections, before/after contrasts",
+      "settingInfluence": "Locations that represent past mistakes and new beginnings, symbolic journeys"
+    },
+    "examples": [
+      {
+        "title": "The Shawshank Redemption",
+        "year": 1994,
+        "thematicTreatment": "Redemption through friendship, hope, and maintaining humanity in harsh circumstances"
+      },
+      {
+        "title": "A Christmas Carol",
+        "year": 1951,
+        "thematicTreatment": "Classic redemption story of transformation through confronting one's past and future"
+      },
+      {
+        "title": "Logan",
+        "year": 2017,
+        "thematicTreatment": "Aging hero seeks redemption for past violence through protecting the innocent"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "transformative" },
+      { "tag": "hopeful" },
+      { "tag": "cathartic" },
+      { "tag": "meaningful" },
+      { "tag": "inspiring" }
+    ]
+  },
+  {
+    "name": "Coming of Age",
+    "slug": "coming-of-age",
+    "description": "The transition from childhood to adulthood, exploring themes of identity formation, loss of innocence, and the discovery of one's place in the world.",
+    "category": "growth",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "Who am I becoming?" },
+        { "question": "What does it mean to be an adult?" },
+        { "question": "How do I find my place in the world?" },
+        { "question": "What must I leave behind to grow up?" }
+      ],
+      "commonConflicts": "Identity crisis, peer pressure, family expectations, first love, moral dilemmas, loss of innocence",
+      "characterArcs": "Character faces challenges that force growth, makes difficult choices, and emerges with greater self-knowledge",
+      "resolutionPatterns": "Acceptance of adult responsibilities, integration of childhood and adult selves, or bittersweet loss of innocence"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Character's growth drives the narrative. Events test and shape the developing personality",
+      "characterDevelopment": "Fundamental character change from naive to experienced, dependent to independent",
+      "dialogueStyle": "Evolution from childish to mature speech patterns, questioning authority, seeking identity",
+      "symbolism": "Thresholds, mirrors, seasonal changes, butterflies, bridges, keys, doors"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Nostalgia, recognition of universal experiences, empathy for youth struggles",
+      "culturalConsiderations": "Different cultural markers of adulthood, varying expectations and rites of passage"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Transition from bright, childlike colors to more mature, complex palettes",
+      "visualMotifs": "Growth imagery, changing seasons, before/after comparisons, symbolic journeys",
+      "settingInfluence": "School settings, family homes, new environments that challenge the character"
+    },
+    "examples": [
+      {
+        "title": "Stand by Me",
+        "year": 1986,
+        "thematicTreatment": "Four boys' journey becomes a metaphor for the end of childhood innocence"
+      },
+      {
+        "title": "Lady Bird",
+        "year": 2017,
+        "thematicTreatment": "Modern coming-of-age exploring identity, family relationships, and finding independence"
+      },
+      {
+        "title": "The Breakfast Club",
+        "year": 1985,
+        "thematicTreatment": "Teenagers discover their true selves beyond social labels and expectations"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "nostalgic" },
+      { "tag": "transformative" },
+      { "tag": "relatable" },
+      { "tag": "emotional" },
+      { "tag": "universal" }
+    ]
+  },
+  {
+    "name": "Justice",
+    "slug": "justice",
+    "description": "The pursuit of fairness, moral rightness, and the struggle between right and wrong. Explores legal, moral, and personal concepts of justice.",
+    "category": "moral",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "What is true justice?" },
+        { "question": "Is revenge the same as justice?" },
+        { "question": "Who has the right to judge others?" },
+        { "question": "Can justice exist without mercy?" }
+      ],
+      "commonConflicts": "Legal vs. moral justice, vigilante justice vs. law, corruption in justice systems, personal vengeance",
+      "characterArcs": "Character seeks justice for wrongs, learns the complexity of moral decisions, or becomes an agent of justice",
+      "resolutionPatterns": "Justice served through legal means, poetic justice, moral victory despite legal defeat, or tragic injustice"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Quest for justice drives plot forward. Moral dilemmas create conflict and tension",
+      "characterDevelopment": "Characters develop moral compass, face ethical choices, learn about fairness and consequences",
+      "dialogueStyle": "Moral arguments, courtroom drama, ethical debates, declarations of right and wrong",
+      "symbolism": "Scales, blindfolded figures, gavels, light vs. darkness, balance imagery"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Satisfaction when justice is served, frustration with injustice, moral engagement",
+      "culturalConsiderations": "Different cultural concepts of justice, legal systems, and moral frameworks"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Strong contrasts between light and dark, blues for law and order, gold for truth",
+      "visualMotifs": "Courtrooms, authority figures, symbolic balance, confrontations between opposing forces",
+      "settingInfluence": "Legal settings, places of authority, locations where moral choices are made"
+    },
+    "examples": [
+      {
+        "title": "12 Angry Men",
+        "year": 1957,
+        "thematicTreatment": "Exploration of justice through jury deliberation and the importance of reasonable doubt"
+      },
+      {
+        "title": "To Kill a Mockingbird",
+        "year": 1962,
+        "thematicTreatment": "Justice and injustice in the American South, moral courage in the face of prejudice"
+      },
+      {
+        "title": "The Dark Knight",
+        "year": 2008,
+        "thematicTreatment": "Complex exploration of justice, vigilantism, and the cost of maintaining order"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "moral" },
+      { "tag": "righteous" },
+      { "tag": "ethical" },
+      { "tag": "principled" },
+      { "tag": "fair" }
+    ]
+  },
+  {
+    "name": "Survival",
+    "slug": "survival",
+    "description": "The fundamental drive to stay alive and overcome life-threatening challenges, whether physical, emotional, or psychological.",
+    "category": "universal",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "What would you do to survive?" },
+        { "question": "What makes life worth living?" },
+        { "question": "How far can the human spirit endure?" },
+        { "question": "What separates survival from truly living?" }
+      ],
+      "commonConflicts": "Life-threatening situations, resource scarcity, hostile environments, moral compromises for survival",
+      "characterArcs": "Character faces extreme challenges, discovers inner strength, makes difficult survival choices",
+      "resolutionPatterns": "Triumphant survival against odds, tragic death despite efforts, or survival with lasting consequences"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Survival needs drive every plot decision. Creates immediate, visceral stakes",
+      "characterDevelopment": "Characters discover their limits, develop resilience, or are broken by extreme circumstances",
+      "dialogueStyle": "Urgent, practical dialogue focused on immediate needs and difficult choices",
+      "symbolism": "Fire, water, shelter, food, tools, natural elements, predator/prey imagery"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Tension, admiration for human resilience, fear, relief, inspiration",
+      "culturalConsiderations": "Different cultural attitudes toward nature, community vs. individual survival"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Natural colors, harsh contrasts, earth tones, the colors of the threatening environment",
+      "visualMotifs": "Harsh landscapes, weather, physical struggle, resourcefulness, adaptation",
+      "settingInfluence": "Hostile environments - wilderness, disasters, war zones, dystopian worlds"
+    },
+    "examples": [
+      {
+        "title": "Cast Away",
+        "year": 2000,
+        "thematicTreatment": "Physical and psychological survival in isolation, finding meaning in extreme circumstances"
+      },
+      {
+        "title": "The Revenant",
+        "year": 2015,
+        "thematicTreatment": "Survival against nature and human enemies, driven by revenge and will to live"
+      },
+      {
+        "title": "Life of Pi",
+        "year": 2012,
+        "thematicTreatment": "Survival at sea becomes a spiritual journey and test of faith"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "intense" },
+      { "tag": "primal" },
+      { "tag": "resilient" },
+      { "tag": "desperate" },
+      { "tag": "enduring" }
+    ]
+  },
+  {
+    "name": "Identity",
+    "slug": "identity",
+    "description": "The search for self-understanding, exploring who we are, where we belong, and what defines us as individuals.",
+    "category": "growth",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "Who am I really?" },
+        { "question": "Where do I belong?" },
+        { "question": "What makes me unique?" },
+        { "question": "How do others see me vs. how I see myself?" }
+      ],
+      "commonConflicts": "Identity crisis, cultural displacement, role expectations vs. personal desires, authenticity vs. acceptance",
+      "characterArcs": "Character questions their identity, explores different aspects of self, ultimately accepts or transforms their identity",
+      "resolutionPatterns": "Self-acceptance, integration of multiple identities, or ongoing journey of self-discovery"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Character's search for identity drives exploration and conflict. Internal journey reflected in external events",
+      "characterDevelopment": "Deep internal change as character discovers or creates their true self",
+      "dialogueStyle": "Self-questioning, exploration of personal history, discussions about belonging and purpose",
+      "symbolism": "Mirrors, masks, photographs, names, cultural symbols, crossroads, metamorphosis imagery"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Recognition of universal struggle, empathy for identity confusion, satisfaction with self-discovery",
+      "culturalConsiderations": "Cultural identity, immigrant experiences, generational differences, social expectations"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Colors that shift and change, representing the fluid nature of identity exploration",
+      "visualMotifs": "Reflections, multiple versions of character, cultural symbols, transformation imagery",
+      "settingInfluence": "Places of origin vs. new environments, cultural landmarks, spaces of self-discovery"
+    },
+    "examples": [
+      {
+        "title": "Moonlight",
+        "year": 2016,
+        "thematicTreatment": "Exploration of sexual and cultural identity through three stages of life"
+      },
+      {
+        "title": "The Joy Luck Club",
+        "year": 1993,
+        "thematicTreatment": "Cultural identity and generational differences between Chinese mothers and American daughters"
+      },
+      {
+        "title": "Black Swan",
+        "year": 2010,
+        "thematicTreatment": "Psychological exploration of identity, perfectionism, and the cost of transformation"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "introspective" },
+      { "tag": "personal" },
+      { "tag": "searching" },
+      { "tag": "authentic" },
+      { "tag": "transformative" }
+    ]
+  },
+  {
+    "name": "Sacrifice",
+    "slug": "sacrifice",
+    "description": "The act of giving up something valuable for the sake of others or a greater cause, exploring the nobility and cost of selfless acts.",
+    "category": "moral",
+    "universality": "universal",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "What would you sacrifice for others?" },
+        { "question": "Is any sacrifice too great?" },
+        { "question": "What makes a sacrifice meaningful?" },
+        { "question": "Can sacrifice be selfish?" }
+      ],
+      "commonConflicts": "Personal desires vs. duty to others, individual needs vs. greater good, immediate vs. long-term consequences",
+      "characterArcs": "Character faces choice between self-interest and sacrifice, learns the value of selflessness, or pays the price of sacrifice",
+      "resolutionPatterns": "Noble sacrifice rewarded, tragic sacrifice for greater good, or sacrifice that transforms others"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Sacrifice creates climactic moments and drives character decisions throughout the story",
+      "characterDevelopment": "Characters grow through learning to put others first, or are ennobled by their sacrifices",
+      "dialogueStyle": "Expressions of love and duty, difficult goodbyes, declarations of purpose and commitment",
+      "symbolism": "Religious imagery, giving/offering symbols, light conquering darkness, protective imagery"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Admiration for selflessness, emotional catharsis, inspiration to be better, grief for loss",
+      "culturalConsiderations": "Different cultural values around individual vs. collective good, family duty, honor"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Noble colors - golds, whites, deep blues. Light emerging from darkness",
+      "visualMotifs": "Protective gestures, giving imagery, religious or spiritual symbols, heroic poses",
+      "settingInfluence": "Places where sacrifice occurs - battlefields, altars, family homes, places of significance"
+    },
+    "examples": [
+      {
+        "title": "Saving Private Ryan",
+        "year": 1998,
+        "thematicTreatment": "Military sacrifice and the question of whether one life is worth many others"
+      },
+      {
+        "title": "A Quiet Place",
+        "year": 2018,
+        "thematicTreatment": "Parental sacrifice to protect children in a dangerous world"
+      },
+      {
+        "title": "The Lion King",
+        "year": 1994,
+        "thematicTreatment": "Sacrifice for family and responsibility, the circle of life and duty"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 7,
+    "aiGenerationTags": [
+      { "tag": "noble" },
+      { "tag": "selfless" },
+      { "tag": "heroic" },
+      { "tag": "meaningful" },
+      { "tag": "emotional" }
+    ]
+  },
+  {
+    "name": "Power and Corruption",
+    "slug": "power-and-corruption",
+    "description": "The exploration of how power affects individuals and institutions, and the corrupting influence of unchecked authority.",
+    "category": "social",
+    "universality": "broad",
+    "thematicElements": {
+      "coreQuestions": [
+        { "question": "Does power inevitably corrupt?" },
+        { "question": "Who can be trusted with power?" },
+        { "question": "What is the cost of ambition?" },
+        { "question": "How do we resist corruption?" }
+      ],
+      "commonConflicts": "Abuse of authority, moral compromise for power, resistance against corrupt systems, temptation of power",
+      "characterArcs": "Character gains power and faces corruption, fights against corrupt systems, or falls to power's temptation",
+      "resolutionPatterns": "Power corrupts and destroys, power used responsibly for good, or system reformed through resistance"
+    },
+    "narrativeImpact": {
+      "plotInfluence": "Power struggles drive conflict, corruption creates obstacles and moral dilemmas",
+      "characterDevelopment": "Characters tested by power, learn about responsibility, or are transformed by authority",
+      "dialogueStyle": "Political maneuvering, moral arguments, expressions of ambition and idealism",
+      "symbolism": "Crowns, thrones, towers, scales of justice, chains, broken symbols of authority"
+    },
+    "audienceResonance": {
+      "emotionalImpact": "Frustration with injustice, satisfaction when corruption is exposed, fear of unchecked power",
+      "culturalConsiderations": "Different political systems, cultural attitudes toward authority and resistance"
+    },
+    "visualRepresentation": {
+      "colorAssociations": "Rich, imperial colors contrasted with stark, oppressive tones",
+      "visualMotifs": "Symbols of authority, hierarchical compositions, corruption imagery, resistance symbols",
+      "settingInfluence": "Seats of power - palaces, corporate offices, government buildings, vs. places of resistance"
+    },
+    "examples": [
+      {
+        "title": "All the President's Men",
+        "year": 1976,
+        "thematicTreatment": "Investigation of political corruption and the importance of accountability"
+      },
+      {
+        "title": "The Godfather",
+        "year": 1972,
+        "thematicTreatment": "Power within criminal organizations and its effect on family and morality"
+      },
+      {
+        "title": "Network",
+        "year": 1976,
+        "thematicTreatment": "Corporate power and media manipulation in modern society"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 8,
+    "aiGenerationTags": [
+      { "tag": "political" },
+      { "tag": "corrupt" },
+      { "tag": "authoritative" },
+      { "tag": "systemic" },
+      { "tag": "resistance" }
+    ]
+  }
+]

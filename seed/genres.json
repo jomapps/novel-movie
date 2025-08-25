@@ -1,0 +1,582 @@
+[
+  {
+    "name": "Action",
+    "slug": "action",
+    "description": "High-energy films featuring physical feats, chases, fights, and spectacular stunts. Emphasizes excitement and adrenaline through dynamic sequences.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Three-act structure with escalating action sequences, clear protagonist vs antagonist conflict, and climactic showdown",
+      "characterArchetypes": "Hero protagonist, villain antagonist, mentor figure, love interest, sidekick/ally",
+      "commonThemes": "Good vs evil, justice, heroism, survival, redemption, sacrifice",
+      "visualStyle": "Dynamic camera work, quick cuts during action, wide shots for stunts, high contrast lighting"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Broad appeal, particularly strong with 18-34 male demographic, international audiences",
+      "emotionalAppeal": "Excitement, tension, triumph, catharsis through vicarious heroism"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Stunt coordination, special effects, action choreography, safety equipment"
+    },
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "high-energy" },
+      { "tag": "physical-conflict" },
+      { "tag": "heroic" },
+      { "tag": "fast-paced" },
+      { "tag": "spectacular" }
+    ]
+  },
+  {
+    "name": "Adventure",
+    "slug": "adventure",
+    "description": "Stories of exploration, discovery, and journeys to exotic or dangerous locations. Characters face challenges and overcome obstacles in pursuit of a goal.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Hero's journey structure, quest narrative, episodic challenges leading to ultimate goal",
+      "characterArchetypes": "Explorer protagonist, wise guide, loyal companion, mysterious stranger, indigenous helper",
+      "commonThemes": "Discovery, courage, friendship, coming-of-age, man vs nature, cultural clash",
+      "visualStyle": "Sweeping landscapes, exotic locations, natural lighting, wide establishing shots"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Family audiences, young adults, fans of exploration and travel",
+      "emotionalAppeal": "Wonder, excitement, curiosity, inspiration, sense of possibility"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Location shooting, travel logistics, outdoor equipment, weather contingencies"
+    },
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "exploration" },
+      { "tag": "journey" },
+      { "tag": "exotic-locations" },
+      { "tag": "discovery" },
+      { "tag": "quest" }
+    ]
+  },
+  {
+    "name": "Animation",
+    "slug": "animation",
+    "description": "Films created through various animation techniques, from traditional hand-drawn to computer-generated imagery. Offers unlimited creative possibilities.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Flexible structure allowing for fantastical elements, often follows classic storytelling patterns",
+      "characterArchetypes": "Anthropomorphic characters, magical beings, exaggerated personality types",
+      "commonThemes": "Imagination, friendship, growing up, good vs evil, family bonds, self-acceptance",
+      "visualStyle": "Stylized visuals, vibrant colors, exaggerated expressions, impossible physics"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Children and families, animation enthusiasts, broad international appeal",
+      "emotionalAppeal": "Joy, wonder, nostalgia, emotional catharsis, visual delight"
+    },
+    "productionConsiderations": {
+      "budgetRange": "variable",
+      "technicalRequirements": "Animation software, skilled animators, voice acting, extensive post-production"
+    },
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "stylized" },
+      { "tag": "fantastical" },
+      { "tag": "colorful" },
+      { "tag": "expressive" },
+      { "tag": "imaginative" }
+    ]
+  },
+  {
+    "name": "Biography",
+    "slug": "biography",
+    "description": "Dramatized accounts of real people's lives, focusing on significant events, achievements, or periods that shaped their legacy.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Chronological or thematic structure following key life events, rise-fall-redemption arcs",
+      "characterArchetypes": "Historical figure protagonist, family members, mentors, rivals, historical contemporaries",
+      "commonThemes": "Legacy, struggle, triumph over adversity, historical significance, human complexity",
+      "visualStyle": "Period-appropriate settings, realistic portrayal, documentary-style elements"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Adult audiences, history enthusiasts, fans of the biographical subject",
+      "emotionalAppeal": "Inspiration, education, emotional connection to historical figures"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Historical research, period costumes and sets, makeup for aging, archival footage"
+    },
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "historical" },
+      { "tag": "realistic" },
+      { "tag": "inspirational" },
+      { "tag": "factual" },
+      { "tag": "character-driven" }
+    ]
+  },
+  {
+    "name": "Comedy",
+    "slug": "comedy",
+    "description": "Films designed to entertain and amuse through humor, wit, and comedic situations. Ranges from slapstick to sophisticated wordplay.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Setup-conflict-resolution with comedic beats, often subverts dramatic conventions",
+      "characterArchetypes": "Comic protagonist, straight man, eccentric supporting characters, comic relief",
+      "commonThemes": "Absurdity of life, social commentary, relationships, mistaken identity, fish-out-of-water",
+      "visualStyle": "Bright lighting, colorful palettes, timing-focused editing, physical comedy staging"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Broad appeal across age groups, stress relief seekers, social viewers",
+      "emotionalAppeal": "Laughter, joy, relief, social bonding, escapism"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Strong writing, comedic timing, skilled performers, sound design for comedy"
+    },
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "humorous" },
+      { "tag": "lighthearted" },
+      { "tag": "entertaining" },
+      { "tag": "witty" },
+      { "tag": "amusing" }
+    ]
+  },
+  {
+    "name": "Crime",
+    "slug": "crime",
+    "description": "Stories centered around criminal activity, law enforcement, or the criminal justice system. Explores moral ambiguity and consequences.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Investigation structure, heist planning, cat-and-mouse dynamics, moral complexity",
+      "characterArchetypes": "Detective, criminal mastermind, corrupt official, innocent victim, informant",
+      "commonThemes": "Justice vs revenge, moral ambiguity, corruption, loyalty, consequences of choices",
+      "visualStyle": "Urban settings, noir lighting, gritty realism, surveillance aesthetics"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Adult audiences, thriller fans, true crime enthusiasts",
+      "emotionalAppeal": "Suspense, moral complexity, justice satisfaction, intellectual engagement"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Urban locations, police/legal consultation, realistic props, action sequences"
+    },
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "gritty" },
+      { "tag": "suspenseful" },
+      { "tag": "morally-complex" },
+      { "tag": "urban" },
+      { "tag": "investigative" }
+    ]
+  },
+  {
+    "name": "Documentary",
+    "slug": "documentary",
+    "description": "Non-fiction films that document reality, presenting factual information about real people, events, or issues for educational or informational purposes.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Investigative structure, chronological narrative, problem-solution format, observational style",
+      "characterArchetypes": "Real people as subjects, expert interviews, narrator/filmmaker presence",
+      "commonThemes": "Truth-seeking, social issues, historical events, human interest, environmental concerns",
+      "visualStyle": "Realistic cinematography, archival footage, talking heads, observational camera work"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Educated audiences, issue-conscious viewers, lifelong learners",
+      "emotionalAppeal": "Enlightenment, empathy, call to action, intellectual satisfaction"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Research, interview setup, archival rights, fact-checking, ethical considerations"
+    },
+    "isActive": true,
+    "sortOrder": 7,
+    "aiGenerationTags": [
+      { "tag": "factual" },
+      { "tag": "educational" },
+      { "tag": "realistic" },
+      { "tag": "informative" },
+      { "tag": "observational" }
+    ]
+  },
+  {
+    "name": "Drama",
+    "slug": "drama",
+    "description": "Character-driven stories that explore serious themes and emotional conflicts. Focuses on realistic portrayals of human relationships and struggles.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Character arc-driven structure, emotional climax, internal and external conflicts",
+      "characterArchetypes": "Complex protagonist, family members, friends, rivals, authority figures",
+      "commonThemes": "Human relationships, personal growth, moral dilemmas, social issues, life transitions",
+      "visualStyle": "Naturalistic lighting, intimate framing, realistic settings, emotional close-ups"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Adult audiences, critics, awards voters, serious film enthusiasts",
+      "emotionalAppeal": "Emotional catharsis, empathy, reflection, intellectual engagement"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Strong performances, realistic locations, subtle cinematography, sound design"
+    },
+    "isActive": true,
+    "sortOrder": 8,
+    "aiGenerationTags": [
+      { "tag": "emotional" },
+      { "tag": "character-driven" },
+      { "tag": "realistic" },
+      { "tag": "serious" },
+      { "tag": "introspective" }
+    ]
+  },
+  {
+    "name": "Family",
+    "slug": "family",
+    "description": "Films suitable for all ages that often focus on family relationships, values, and experiences that multiple generations can enjoy together.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Clear moral lessons, positive resolution, multi-generational appeal, simple conflicts",
+      "characterArchetypes": "Family members, wise elder, rebellious youth, loyal pet, community figures",
+      "commonThemes": "Family bonds, growing up, friendship, responsibility, acceptance, tradition vs change",
+      "visualStyle": "Warm lighting, colorful palettes, safe environments, wholesome imagery"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Families with children, multi-generational viewing groups",
+      "emotionalAppeal": "Warmth, security, shared experience, moral guidance, nostalgia"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Child-friendly sets, family-appropriate content, broad appeal elements"
+    },
+    "isActive": true,
+    "sortOrder": 9,
+    "aiGenerationTags": [
+      { "tag": "wholesome" },
+      { "tag": "family-friendly" },
+      { "tag": "heartwarming" },
+      { "tag": "positive" },
+      { "tag": "universal" }
+    ]
+  },
+  {
+    "name": "Fantasy",
+    "slug": "fantasy",
+    "description": "Stories set in imaginary worlds with magical or supernatural elements that don't exist in reality. Often features mythical creatures and magical powers.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Hero's journey, quest narrative, world-building exposition, magical conflict resolution",
+      "characterArchetypes": "Chosen one, wizard/mentor, magical creatures, dark lord, loyal companions",
+      "commonThemes": "Good vs evil, power and responsibility, destiny, sacrifice, friendship, magic vs technology",
+      "visualStyle": "Elaborate costumes, fantastical sets, magical effects, otherworldly landscapes"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Young adults, fantasy enthusiasts, escapism seekers, gamers",
+      "emotionalAppeal": "Wonder, escapism, empowerment, adventure, magical thinking"
+    },
+    "productionConsiderations": {
+      "budgetRange": "high",
+      "technicalRequirements": "Extensive VFX, costume design, set construction, creature effects, world-building"
+    },
+    "isActive": true,
+    "sortOrder": 10,
+    "aiGenerationTags": [
+      { "tag": "magical" },
+      { "tag": "fantastical" },
+      { "tag": "otherworldly" },
+      { "tag": "mythical" },
+      { "tag": "epic" }
+    ]
+  },
+  {
+    "name": "History",
+    "slug": "history",
+    "description": "Films set in the past that recreate historical periods, events, or figures with attention to historical accuracy and period detail.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Historical chronology, period-specific conflicts, cultural context, historical accuracy",
+      "characterArchetypes": "Historical figures, period-appropriate roles, cultural representatives",
+      "commonThemes": "Historical significance, cultural values, social change, human nature across time",
+      "visualStyle": "Period-accurate costumes, historical locations, authentic props, period cinematography"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "History enthusiasts, educational audiences, mature viewers",
+      "emotionalAppeal": "Educational value, cultural connection, historical perspective, nostalgia"
+    },
+    "productionConsiderations": {
+      "budgetRange": "high",
+      "technicalRequirements": "Historical research, period costumes, authentic locations, historical consultants"
+    },
+    "isActive": true,
+    "sortOrder": 11,
+    "aiGenerationTags": [
+      { "tag": "historical" },
+      { "tag": "period-accurate" },
+      { "tag": "authentic" },
+      { "tag": "educational" },
+      { "tag": "cultural" }
+    ]
+  },
+  {
+    "name": "Horror",
+    "slug": "horror",
+    "description": "Films designed to frighten, unsettle, and create suspense through supernatural or psychological elements. Explores fear and the unknown.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Building tension, jump scares, final confrontation, survival elements",
+      "characterArchetypes": "Final girl/boy, monster/killer, victims, skeptic, believer",
+      "commonThemes": "Fear of unknown, survival, good vs evil, psychological terror, supernatural forces",
+      "visualStyle": "Dark lighting, shadows, unsettling angles, gore effects, atmospheric tension"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Thrill-seekers, young adults, horror fans, adrenaline junkies",
+      "emotionalAppeal": "Fear, adrenaline, cathartic release, group bonding through shared scares"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Special effects makeup, atmospheric lighting, sound design, practical effects"
+    },
+    "isActive": true,
+    "sortOrder": 12,
+    "aiGenerationTags": [
+      { "tag": "frightening" },
+      { "tag": "suspenseful" },
+      { "tag": "dark" },
+      { "tag": "atmospheric" },
+      { "tag": "terrifying" }
+    ]
+  },
+  {
+    "name": "Music",
+    "slug": "music",
+    "description": "Films where music and musical performances are central to the narrative, including musicals, concert films, and music biopics.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Musical numbers integrated into narrative, performance-based storytelling",
+      "characterArchetypes": "Musician protagonist, band members, music industry figures, audience",
+      "commonThemes": "Artistic expression, fame and success, creative passion, music industry, performance",
+      "visualStyle": "Performance staging, musical choreography, concert lighting, rhythmic editing"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Music lovers, musical theater fans, specific genre enthusiasts",
+      "emotionalAppeal": "Musical enjoyment, emotional expression through song, artistic appreciation"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Musical talent, choreography, sound recording, performance rights, staging"
+    },
+    "isActive": true,
+    "sortOrder": 13,
+    "aiGenerationTags": [
+      { "tag": "musical" },
+      { "tag": "rhythmic" },
+      { "tag": "performance-based" },
+      { "tag": "artistic" },
+      { "tag": "expressive" }
+    ]
+  },
+  {
+    "name": "Mystery",
+    "slug": "mystery",
+    "description": "Stories centered around puzzles, crimes, or unexplained events that characters must solve through investigation and deduction.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Mystery setup, investigation, clues and red herrings, revelation and resolution",
+      "characterArchetypes": "Detective, suspects, witnesses, victim, red herring characters",
+      "commonThemes": "Truth vs deception, justice, human nature, secrets, logical deduction",
+      "visualStyle": "Atmospheric lighting, investigative close-ups, shadowy environments, clue emphasis"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Puzzle enthusiasts, intellectual viewers, crime fiction fans",
+      "emotionalAppeal": "Intellectual challenge, satisfaction of solution, suspense, curiosity"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Complex plotting, clue placement, investigative props, atmospheric design"
+    },
+    "isActive": true,
+    "sortOrder": 14,
+    "aiGenerationTags": [
+      { "tag": "puzzling" },
+      { "tag": "investigative" },
+      { "tag": "suspenseful" },
+      { "tag": "intellectual" },
+      { "tag": "deductive" }
+    ]
+  },
+  {
+    "name": "Romance",
+    "slug": "romance",
+    "description": "Stories focused on romantic relationships, love, and emotional connections between characters. Explores the complexities of human attraction and partnership.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Meet-cute, relationship development, conflict/separation, romantic resolution",
+      "characterArchetypes": "Romantic leads, best friend confidant, rival love interest, disapproving parent",
+      "commonThemes": "Love conquers all, soulmates, relationship challenges, personal growth through love",
+      "visualStyle": "Soft lighting, intimate framing, beautiful locations, warm color palettes"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Romance enthusiasts, date night audiences, emotional connection seekers",
+      "emotionalAppeal": "Love, hope, emotional satisfaction, vicarious romance, happy endings"
+    },
+    "productionConsiderations": {
+      "budgetRange": "low",
+      "technicalRequirements": "Chemistry between leads, romantic locations, emotional storytelling, music"
+    },
+    "isActive": true,
+    "sortOrder": 15,
+    "aiGenerationTags": [
+      { "tag": "romantic" },
+      { "tag": "emotional" },
+      { "tag": "intimate" },
+      { "tag": "heartwarming" },
+      { "tag": "passionate" }
+    ]
+  },
+  {
+    "name": "Sci-Fi",
+    "slug": "sci-fi",
+    "description": "Science fiction films that explore futuristic concepts, advanced technology, space exploration, time travel, and speculative scientific possibilities.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "World-building exposition, technological conflict, scientific problem-solving, future implications",
+      "characterArchetypes": "Scientist, space explorer, AI/robot, alien, time traveler, dystopian authority",
+      "commonThemes": "Technology vs humanity, future consequences, scientific ethics, exploration, evolution",
+      "visualStyle": "Futuristic design, special effects, technological environments, otherworldly visuals"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Science enthusiasts, tech-savvy audiences, speculative fiction fans",
+      "emotionalAppeal": "Wonder, intellectual stimulation, future possibilities, technological awe"
+    },
+    "productionConsiderations": {
+      "budgetRange": "high",
+      "technicalRequirements": "Advanced VFX, futuristic design, scientific consultation, complex world-building"
+    },
+    "isActive": true,
+    "sortOrder": 16,
+    "aiGenerationTags": [
+      { "tag": "futuristic" },
+      { "tag": "technological" },
+      { "tag": "speculative" },
+      { "tag": "scientific" },
+      { "tag": "otherworldly" }
+    ]
+  },
+  {
+    "name": "Sport",
+    "slug": "sport",
+    "description": "Films centered around athletic competition, sports figures, or the world of professional and amateur athletics. Often focuses on triumph and perseverance.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Training montage, competition buildup, climactic game/match, victory or noble defeat",
+      "characterArchetypes": "Athlete protagonist, coach/mentor, team members, rival competitor, supportive family",
+      "commonThemes": "Perseverance, teamwork, overcoming odds, dedication, fair play, personal best",
+      "visualStyle": "Athletic action, training sequences, competition venues, dynamic sports cinematography"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Sports fans, inspirational story seekers, competitive personalities",
+      "emotionalAppeal": "Inspiration, triumph, team spirit, overcoming adversity, athletic achievement"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Athletic coordination, sports equipment, venue access, action cinematography"
+    },
+    "isActive": true,
+    "sortOrder": 17,
+    "aiGenerationTags": [
+      { "tag": "athletic" },
+      { "tag": "competitive" },
+      { "tag": "inspirational" },
+      { "tag": "team-oriented" },
+      { "tag": "triumphant" }
+    ]
+  },
+  {
+    "name": "Thriller",
+    "slug": "thriller",
+    "description": "Suspenseful films designed to keep audiences on edge through tension, excitement, and anticipation. Often features danger and high stakes.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Escalating tension, multiple plot twists, high-stakes conflict, intense climax",
+      "characterArchetypes": "Protagonist in danger, antagonist pursuer, helpful ally, double agent, innocent bystander",
+      "commonThemes": "Survival, paranoia, conspiracy, cat-and-mouse, time pressure, moral ambiguity",
+      "visualStyle": "Tense cinematography, quick cuts, shadowy lighting, claustrophobic framing"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Suspense lovers, adrenaline seekers, puzzle enthusiasts",
+      "emotionalAppeal": "Tension, excitement, relief, intellectual engagement, adrenaline rush"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Suspenseful pacing, tension-building techniques, action sequences, atmospheric design"
+    },
+    "isActive": true,
+    "sortOrder": 18,
+    "aiGenerationTags": [
+      { "tag": "suspenseful" },
+      { "tag": "tense" },
+      { "tag": "high-stakes" },
+      { "tag": "edge-of-seat" },
+      { "tag": "intense" }
+    ]
+  },
+  {
+    "name": "War",
+    "slug": "war",
+    "description": "Films depicting military conflict, warfare, and the experiences of soldiers and civilians during times of war. Explores themes of heroism, sacrifice, and survival.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Military mission structure, brotherhood bonds, battle sequences, sacrifice and honor",
+      "characterArchetypes": "Soldier protagonist, commanding officer, enemy combatant, civilian casualties, war correspondent",
+      "commonThemes": "Honor and duty, brotherhood, sacrifice, futility of war, heroism, survival",
+      "visualStyle": "Realistic battle scenes, military equipment, war-torn environments, documentary-style realism"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "History enthusiasts, military audiences, action fans, mature viewers",
+      "emotionalAppeal": "Patriotism, honor, emotional intensity, historical connection, respect for sacrifice"
+    },
+    "productionConsiderations": {
+      "budgetRange": "high",
+      "technicalRequirements": "Military consultation, period weapons, battle choreography, explosive effects, historical accuracy"
+    },
+    "isActive": true,
+    "sortOrder": 19,
+    "aiGenerationTags": [
+      { "tag": "military" },
+      { "tag": "heroic" },
+      { "tag": "intense" },
+      { "tag": "realistic" },
+      { "tag": "brotherhood" }
+    ]
+  },
+  {
+    "name": "Western",
+    "slug": "western",
+    "description": "Films set in the American Old West, typically featuring cowboys, outlaws, and frontier life. Explores themes of justice, survival, and civilization vs wilderness.",
+    "category": "primary",
+    "narrativeElements": {
+      "typicalStructure": "Frontier conflict, showdown structure, law vs lawlessness, civilization vs wilderness",
+      "characterArchetypes": "Cowboy hero, outlaw villain, sheriff, saloon owner, frontier woman, Native American",
+      "commonThemes": "Justice, frontier spirit, good vs evil, civilization, individual vs society, manifest destiny",
+      "visualStyle": "Wide open landscapes, dusty towns, period costumes, natural lighting, horseback action"
+    },
+    "audienceAppeal": {
+      "primaryDemographics": "Traditional film fans, history enthusiasts, action fans, older demographics",
+      "emotionalAppeal": "Nostalgia, adventure, moral clarity, rugged individualism, frontier romance"
+    },
+    "productionConsiderations": {
+      "budgetRange": "medium",
+      "technicalRequirements": "Period costumes, western locations, horseback riding, period weapons, authentic sets"
+    },
+    "isActive": true,
+    "sortOrder": 20,
+    "aiGenerationTags": [
+      { "tag": "frontier" },
+      { "tag": "rugged" },
+      { "tag": "traditional" },
+      { "tag": "lawless" },
+      { "tag": "individualistic" }
+    ]
+  }
+]

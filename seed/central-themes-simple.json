@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Love",
+    "slug": "love",
+    "description": "The exploration of romantic, familial, or platonic love in its various forms, including the sacrifices, joys, and challenges that come with deep emotional connections.",
+    "category": "relationships",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": "Redemption",
+    "slug": "redemption",
+    "description": "The journey of a character seeking to atone for past mistakes, find forgiveness, or transform themselves from a flawed or fallen state to a better version of themselves.",
+    "category": "growth",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": "Coming of Age",
+    "slug": "coming-of-age",
+    "description": "The transition from childhood to adulthood, exploring themes of identity formation, loss of innocence, and the discovery of one's place in the world.",
+    "category": "growth",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": "Justice",
+    "slug": "justice",
+    "description": "The pursuit of fairness, moral rightness, and the struggle between right and wrong. Explores legal, moral, and personal concepts of justice.",
+    "category": "moral",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": "Survival",
+    "slug": "survival",
+    "description": "The fundamental drive to stay alive and overcome life-threatening challenges, whether physical, emotional, or psychological.",
+    "category": "universal",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": "Identity",
+    "slug": "identity",
+    "description": "The search for self-understanding, exploring who we are, where we belong, and what defines us as individuals.",
+    "category": "growth",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 6
+  },
+  {
+    "name": "Sacrifice",
+    "slug": "sacrifice",
+    "description": "The act of giving up something valuable for the sake of others or a greater cause, exploring the nobility and cost of selfless acts.",
+    "category": "moral",
+    "universality": "universal",
+    "isActive": true,
+    "sortOrder": 7
+  },
+  {
+    "name": "Power and Corruption",
+    "slug": "power-and-corruption",
+    "description": "The exploration of how power affects individuals and institutions, and the corrupting influence of unchecked authority.",
+    "category": "social",
+    "universality": "broad",
+    "isActive": true,
+    "sortOrder": 8
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Short Film",
+    "slug": "short-film",
+    "description": "A brief film, typically under 30 minutes, that tells a complete story in a condensed format. Perfect for showcasing specific moments, concepts, or experimental ideas.",
+    "suggestedDuration": 15,
+    "isActive": true
+  },
+  {
+    "name": "Feature Film",
+    "slug": "feature-film", 
+    "description": "A full-length movie, typically 90-180 minutes, that provides comprehensive character development and complex storytelling. The standard format for theatrical releases.",
+    "suggestedDuration": 120,
+    "isActive": true
+  },
+  {
+    "name": "Series Episode",
+    "slug": "series",
+    "description": "An individual episode within a larger series or show, typically 20-60 minutes. Part of an ongoing narrative with recurring characters and themes.",
+    "suggestedDuration": 45,
+    "isActive": true
+  },
+  {
+    "name": "Micro Film",
+    "slug": "micro-film",
+    "description": "An extremely short film, typically under 5 minutes, that captures a single moment, emotion, or concept. Often used for social media or experimental storytelling.",
+    "suggestedDuration": 3,
+    "isActive": true
+  },
+  {
+    "name": "Documentary Short",
+    "slug": "documentary-short",
+    "description": "A brief documentary film, typically 10-30 minutes, that explores a specific topic, person, or event in a focused, informative format.",
+    "suggestedDuration": 20,
+    "isActive": true
+  },
+  {
+    "name": "Music Video",
+    "slug": "music-video",
+    "description": "A short film that accompanies a musical piece, typically 3-6 minutes, combining visual storytelling with musical performance or narrative.",
+    "suggestedDuration": 4,
+    "isActive": true
+  },
+  {
+    "name": "Commercial/Advertisement",
+    "slug": "commercial",
+    "description": "A brief promotional film, typically 15-60 seconds, designed to advertise a product, service, or brand through compelling visual storytelling.",
+    "suggestedDuration": 1,
+    "isActive": true
+  },
+  {
+    "name": "Web Series Episode",
+    "slug": "web-series",
+    "description": "An episode designed for online distribution, typically 5-20 minutes, optimized for digital platforms and social media consumption.",
+    "suggestedDuration": 10,
+    "isActive": true
+  }
+]

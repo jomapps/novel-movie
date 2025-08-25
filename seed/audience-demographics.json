@@ -1,0 +1,356 @@
+[
+  {
+    "name": "Children (Ages 4-8)",
+    "slug": "children-4-8",
+    "description": "Young children in early elementary school years, requiring simple narratives and age-appropriate content.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 4,
+      "maxAge": 8,
+      "ratingGuideline": "G"
+    },
+    "characteristics": {
+      "interests": "Colorful visuals, simple stories, animals, fantasy, friendship, family",
+      "mediaConsumption": "Short attention spans, prefer visual content, watch with parents/guardians",
+      "values": "Fairness, friendship, family bonds, helping others, learning new things",
+      "lifestyle": "School, play, family activities, structured routines"
+    },
+    "contentPreferences": {
+      "contentComplexity": "simple",
+      "attentionSpan": "short",
+      "emotionalPreferences": "Happy endings, gentle conflicts, positive emotions, minimal scary content"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Parents/guardians, children's programming, family-oriented platforms",
+      "messagingTone": "Fun, colorful, simple, reassuring",
+      "influencers": "Parents, teachers, children's content creators"
+    },
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "child-friendly" },
+      { "tag": "simple" },
+      { "tag": "colorful" },
+      { "tag": "educational" },
+      { "tag": "wholesome" }
+    ]
+  },
+  {
+    "name": "Tweens (Ages 9-12)",
+    "slug": "tweens-9-12",
+    "description": "Pre-adolescents developing independence and more sophisticated interests while still enjoying childhood themes.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 9,
+      "maxAge": 12,
+      "ratingGuideline": "PG"
+    },
+    "characteristics": {
+      "interests": "Adventure, friendship drama, school life, mild romance, identity exploration",
+      "mediaConsumption": "Longer attention spans, beginning to watch independently, social viewing",
+      "values": "Friendship, fairness, independence, belonging, self-discovery",
+      "lifestyle": "School activities, friendships, family time, beginning social media awareness"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["adventure", "family", "comedy", "fantasy"],
+      "contentComplexity": "moderate",
+      "attentionSpan": "medium",
+      "emotionalPreferences": "Coming-of-age themes, friendship challenges, mild conflict resolution"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Family platforms, school networks, peer recommendations",
+      "messagingTone": "Encouraging, relatable, slightly more mature than children's content",
+      "influencers": "Older siblings, teachers, family-friendly content creators"
+    },
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "coming-of-age" },
+      { "tag": "relatable" },
+      { "tag": "friendship-focused" },
+      { "tag": "age-appropriate" },
+      { "tag": "inspiring" }
+    ]
+  },
+  {
+    "name": "Teens (Ages 13-17)",
+    "slug": "teens-13-17",
+    "description": "Adolescents dealing with identity formation, relationships, and preparation for adulthood.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 13,
+      "maxAge": 17,
+      "ratingGuideline": "PG-13"
+    },
+    "characteristics": {
+      "interests": "Romance, identity, rebellion, social issues, future planning, peer relationships",
+      "mediaConsumption": "Independent viewing, social media influence, binge-watching, mobile consumption",
+      "values": "Authenticity, independence, social justice, peer acceptance, self-expression",
+      "lifestyle": "School, part-time jobs, social activities, college preparation, dating"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["romance", "drama", "action", "sci-fi", "thriller"],
+      "contentComplexity": "moderate",
+      "attentionSpan": "medium",
+      "emotionalPreferences": "Intense emotions, romantic themes, identity struggles, social issues"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Social media, streaming platforms, peer networks, school events",
+      "messagingTone": "Authentic, edgy, relatable, empowering",
+      "influencers": "Social media influencers, young celebrities, peer groups"
+    },
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "teen-focused" },
+      { "tag": "authentic" },
+      { "tag": "emotional" },
+      { "tag": "contemporary" },
+      { "tag": "relatable" }
+    ]
+  },
+  {
+    "name": "Young Adults (Ages 18-24)",
+    "slug": "young-adults-18-24",
+    "description": "College-age and early career individuals exploring independence, relationships, and life direction.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 18,
+      "maxAge": 24,
+      "ratingGuideline": "R"
+    },
+    "characteristics": {
+      "interests": "Career development, relationships, social causes, entertainment, travel, technology",
+      "mediaConsumption": "Streaming services, social media, mobile devices, binge-watching, social viewing",
+      "values": "Authenticity, social justice, personal growth, experiences over possessions",
+      "lifestyle": "College/university, entry-level careers, social activities, dating, financial independence"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "comedy", "action", "romance", "thriller"],
+      "contentComplexity": "complex",
+      "attentionSpan": "long",
+      "emotionalPreferences": "Complex emotions, realistic relationships, social commentary, aspirational content"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Social media, streaming platforms, college networks, workplace connections",
+      "messagingTone": "Aspirational, authentic, socially conscious, trendy",
+      "influencers": "Social media personalities, young professionals, activists"
+    },
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "young-adult" },
+      { "tag": "aspirational" },
+      { "tag": "socially-conscious" },
+      { "tag": "trendy" },
+      { "tag": "authentic" }
+    ]
+  },
+  {
+    "name": "Adults (Ages 25-44)",
+    "slug": "adults-25-44",
+    "description": "Established adults in career-building and family-formation years with diverse interests and responsibilities.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 25,
+      "maxAge": 44,
+      "ratingGuideline": "R"
+    },
+    "characteristics": {
+      "interests": "Career advancement, family life, home ownership, financial planning, health, relationships",
+      "mediaConsumption": "Streaming services, limited time for entertainment, quality over quantity",
+      "values": "Success, family, stability, personal fulfillment, work-life balance",
+      "lifestyle": "Career focus, family responsibilities, homeownership, financial planning"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "thriller", "comedy", "action", "biography"],
+      "contentComplexity": "complex",
+      "attentionSpan": "variable",
+      "emotionalPreferences": "Sophisticated themes, realistic portrayals, character development, quality storytelling"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Professional networks, streaming platforms, social media, workplace",
+      "messagingTone": "Professional, sophisticated, relatable, time-conscious",
+      "influencers": "Industry professionals, lifestyle experts, family-oriented personalities"
+    },
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "professional" },
+      { "tag": "sophisticated" },
+      { "tag": "family-oriented" },
+      { "tag": "quality-focused" },
+      { "tag": "time-conscious" }
+    ]
+  },
+  {
+    "name": "Middle-Aged Adults (Ages 45-64)",
+    "slug": "middle-aged-45-64",
+    "description": "Mature adults with established careers, family responsibilities, and growing interest in legacy and meaning.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 45,
+      "maxAge": 64,
+      "ratingGuideline": "R"
+    },
+    "characteristics": {
+      "interests": "Career peak, family legacy, health, travel, cultural activities, grandchildren",
+      "mediaConsumption": "Traditional and streaming media, quality content preference, scheduled viewing",
+      "values": "Legacy, wisdom, family bonds, cultural preservation, meaningful experiences",
+      "lifestyle": "Peak earning years, family leadership, community involvement, health focus"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "biography", "history", "thriller", "documentary"],
+      "contentComplexity": "complex",
+      "attentionSpan": "long",
+      "emotionalPreferences": "Meaningful themes, historical context, character depth, moral complexity"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Traditional media, professional networks, community organizations",
+      "messagingTone": "Respectful, sophisticated, meaningful, value-oriented",
+      "influencers": "Industry experts, cultural figures, community leaders"
+    },
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "mature" },
+      { "tag": "sophisticated" },
+      { "tag": "meaningful" },
+      { "tag": "experienced" },
+      { "tag": "legacy-focused" }
+    ]
+  },
+  {
+    "name": "Seniors (Ages 65+)",
+    "slug": "seniors-65-plus",
+    "description": "Older adults with life experience, often retired, interested in reflection, family, and cultural content.",
+    "category": "age",
+    "ageRange": {
+      "minAge": 65,
+      "maxAge": 100,
+      "ratingGuideline": "PG"
+    },
+    "characteristics": {
+      "interests": "Family history, cultural heritage, health, travel, grandchildren, community service",
+      "mediaConsumption": "Traditional media, some streaming, scheduled viewing, social viewing with family",
+      "values": "Family bonds, tradition, wisdom sharing, cultural preservation, community",
+      "lifestyle": "Retirement, grandparenting, community involvement, health management, leisure activities"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "biography", "history", "family", "documentary"],
+      "contentComplexity": "moderate",
+      "attentionSpan": "long",
+      "emotionalPreferences": "Nostalgic themes, family stories, historical content, positive messages"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Traditional media, community centers, family recommendations",
+      "messagingTone": "Respectful, warm, nostalgic, family-oriented",
+      "influencers": "Community leaders, family members, trusted media personalities"
+    },
+    "isActive": true,
+    "sortOrder": 7,
+    "aiGenerationTags": [
+      { "tag": "nostalgic" },
+      { "tag": "family-oriented" },
+      { "tag": "traditional" },
+      { "tag": "respectful" },
+      { "tag": "meaningful" }
+    ]
+  },
+  {
+    "name": "Global Audience",
+    "slug": "global-audience",
+    "description": "International viewers from diverse cultural backgrounds seeking universal themes and stories.",
+    "category": "geographic",
+    "characteristics": {
+      "interests": "Universal themes, cultural exchange, diverse perspectives, global issues",
+      "mediaConsumption": "Streaming platforms, subtitled content, cultural content sharing",
+      "values": "Cultural diversity, universal human experiences, global connectivity",
+      "lifestyle": "Varied based on region, but connected through global media"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "action", "family", "documentary", "animation"],
+      "contentComplexity": "variable",
+      "attentionSpan": "variable",
+      "emotionalPreferences": "Universal emotions, cultural authenticity, diverse representation"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "International streaming platforms, social media, cultural networks",
+      "messagingTone": "Inclusive, culturally sensitive, universal",
+      "influencers": "International celebrities, cultural ambassadors, global content creators"
+    },
+    "isActive": true,
+    "sortOrder": 8,
+    "aiGenerationTags": [
+      { "tag": "universal" },
+      { "tag": "diverse" },
+      { "tag": "inclusive" },
+      { "tag": "cross-cultural" },
+      { "tag": "global" }
+    ]
+  },
+  {
+    "name": "Families with Young Children",
+    "slug": "families-young-children",
+    "description": "Multi-generational viewing groups seeking content suitable for children while engaging for adults.",
+    "category": "lifestyle",
+    "characteristics": {
+      "interests": "Family bonding, educational content, shared experiences, values-based entertainment",
+      "mediaConsumption": "Scheduled family viewing, streaming services, content screening by parents",
+      "values": "Family bonds, education, moral guidance, shared experiences",
+      "lifestyle": "Busy family schedules, child-centered activities, educational priorities"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["family", "animation", "adventure", "comedy"],
+      "contentComplexity": "simple",
+      "attentionSpan": "medium",
+      "emotionalPreferences": "Positive messages, moral lessons, humor, heartwarming themes"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Family platforms, parenting networks, school communities",
+      "messagingTone": "Family-friendly, educational, wholesome, trustworthy",
+      "influencers": "Parenting experts, family content creators, educators"
+    },
+    "isActive": true,
+    "sortOrder": 9,
+    "aiGenerationTags": [
+      { "tag": "family-viewing" },
+      { "tag": "multi-generational" },
+      { "tag": "educational" },
+      { "tag": "wholesome" },
+      { "tag": "values-based" }
+    ]
+  },
+  {
+    "name": "Film Enthusiasts",
+    "slug": "film-enthusiasts",
+    "description": "Dedicated movie lovers who appreciate cinematic artistry, storytelling craft, and film history.",
+    "category": "lifestyle",
+    "characteristics": {
+      "interests": "Cinematography, storytelling techniques, film history, director studies, genre analysis",
+      "mediaConsumption": "Art house theaters, film festivals, criterion collection, director commentaries",
+      "values": "Artistic expression, storytelling craft, cultural significance, cinematic innovation",
+      "lifestyle": "Film festival attendance, movie discussions, collecting, critical analysis"
+    },
+    "contentPreferences": {
+      "preferredGenres": ["drama", "thriller", "documentary", "biography", "history"],
+      "contentComplexity": "complex",
+      "attentionSpan": "long",
+      "emotionalPreferences": "Artistic merit, narrative complexity, emotional depth, technical excellence"
+    },
+    "marketingConsiderations": {
+      "primaryChannels": "Film festivals, art house theaters, film criticism platforms, specialty media",
+      "messagingTone": "Sophisticated, artistic, intellectually engaging, craft-focused",
+      "influencers": "Film critics, directors, film scholars, festival programmers"
+    },
+    "isActive": true,
+    "sortOrder": 10,
+    "aiGenerationTags": [
+      { "tag": "cinematic" },
+      { "tag": "artistic" },
+      { "tag": "sophisticated" },
+      { "tag": "craft-focused" },
+      { "tag": "intellectually-engaging" }
+    ]
+  }
+]

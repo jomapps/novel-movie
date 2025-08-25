@@ -1,0 +1,74 @@
+[
+  {
+    "name": "Optimistic",
+    "slug": "optimistic",
+    "description": "A hopeful, positive emotional atmosphere that emphasizes the bright side of situations and maintains faith in positive outcomes.",
+    "category": "positive",
+    "intensity": "moderate",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": "Melancholic",
+    "slug": "melancholic",
+    "description": "A bittersweet, contemplative emotional atmosphere that combines sadness with beauty, often nostalgic or wistful in nature.",
+    "category": "complex",
+    "intensity": "moderate",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": "Tense",
+    "slug": "tense",
+    "description": "A high-stress emotional atmosphere characterized by anxiety, anticipation, and nervous energy that keeps audiences on edge.",
+    "category": "negative",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": "Whimsical",
+    "slug": "whimsical",
+    "description": "A playful, imaginative emotional atmosphere that embraces the fantastical, quirky, and delightfully unexpected.",
+    "category": "positive",
+    "intensity": "moderate",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": "Gritty",
+    "slug": "gritty",
+    "description": "A raw, unpolished emotional atmosphere that emphasizes harsh realities, urban decay, and unvarnished truth.",
+    "category": "negative",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": "Ethereal",
+    "slug": "ethereal",
+    "description": "A dreamlike, otherworldly emotional atmosphere that feels light, spiritual, and transcendent of ordinary reality.",
+    "category": "complex",
+    "intensity": "subtle",
+    "isActive": true,
+    "sortOrder": 6
+  },
+  {
+    "name": "Energetic",
+    "slug": "energetic",
+    "description": "A high-energy, dynamic emotional atmosphere characterized by movement, excitement, and vibrant activity.",
+    "category": "positive",
+    "intensity": "strong",
+    "isActive": true,
+    "sortOrder": 7
+  },
+  {
+    "name": "Contemplative",
+    "slug": "contemplative",
+    "description": "A thoughtful, introspective emotional atmosphere that encourages deep thinking, reflection, and philosophical consideration.",
+    "category": "neutral",
+    "intensity": "subtle",
+    "isActive": true,
+    "sortOrder": 8
+  }
+]

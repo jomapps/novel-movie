@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Children (Ages 4-8)",
+    "slug": "children-4-8",
+    "description": "Young children in early elementary school years, requiring simple narratives and age-appropriate content.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 1
+  },
+  {
+    "name": "Tweens (Ages 9-12)",
+    "slug": "tweens-9-12",
+    "description": "Pre-adolescents developing independence and more sophisticated interests while still enjoying childhood themes.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 2
+  },
+  {
+    "name": "Teens (Ages 13-17)",
+    "slug": "teens-13-17",
+    "description": "Adolescents dealing with identity formation, relationships, and preparation for adulthood.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 3
+  },
+  {
+    "name": "Young Adults (Ages 18-24)",
+    "slug": "young-adults-18-24",
+    "description": "College-age and early career individuals exploring independence, relationships, and life direction.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 4
+  },
+  {
+    "name": "Adults (Ages 25-44)",
+    "slug": "adults-25-44",
+    "description": "Established adults in career-building and family-formation years with diverse interests and responsibilities.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 5
+  },
+  {
+    "name": "Middle-Aged Adults (Ages 45-64)",
+    "slug": "middle-aged-45-64",
+    "description": "Mature adults with established careers, family responsibilities, and growing interest in legacy and meaning.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 6
+  },
+  {
+    "name": "Seniors (Ages 65+)",
+    "slug": "seniors-65-plus",
+    "description": "Older adults with life experience, often retired, interested in reflection, family, and cultural content.",
+    "category": "age",
+    "isActive": true,
+    "sortOrder": 7
+  },
+  {
+    "name": "Global Audience",
+    "slug": "global-audience",
+    "description": "International viewers from diverse cultural backgrounds seeking universal themes and stories.",
+    "category": "geographic",
+    "isActive": true,
+    "sortOrder": 8
+  },
+  {
+    "name": "Families with Young Children",
+    "slug": "families-young-children",
+    "description": "Multi-generational viewing groups seeking content suitable for children while engaging for adults.",
+    "category": "lifestyle",
+    "isActive": true,
+    "sortOrder": 9
+  },
+  {
+    "name": "Film Enthusiasts",
+    "slug": "film-enthusiasts",
+    "description": "Dedicated movie lovers who appreciate cinematic artistry, storytelling craft, and film history.",
+    "category": "lifestyle",
+    "isActive": true,
+    "sortOrder": 10
+  }
+]

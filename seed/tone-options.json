@@ -1,0 +1,402 @@
+[
+  {
+    "name": "Serious",
+    "slug": "serious",
+    "description": "A grave, earnest tone that treats subject matter with weight and importance. Focuses on significant themes without frivolity.",
+    "category": "emotional",
+    "intensity": "strong",
+    "narrativeImpact": {
+      "dialogueStyle": "Formal, thoughtful dialogue with careful word choice. Characters speak with purpose and consideration.",
+      "pacingInfluence": "Deliberate pacing that allows themes to develop fully. Moments of reflection and contemplation.",
+      "characterBehavior": "Characters act with gravity and consideration. Decisions carry weight and consequences.",
+      "conflictStyle": "Conflicts are meaningful and have lasting impact. Resolution requires genuine growth or sacrifice."
+    },
+    "visualElements": {
+      "colorPalette": "Muted, sophisticated colors. Earth tones, deep blues, grays. Avoids bright, playful colors.",
+      "lightingStyle": "Natural, realistic lighting. Soft shadows that add depth without drama.",
+      "cameraWork": "Steady, purposeful camera movements. Static shots for contemplative moments.",
+      "editingStyle": "Measured pacing with longer takes. Cuts serve story rather than style."
+    },
+    "audioElements": {
+      "musicStyle": "Orchestral, classical, or minimal ambient music. Supports rather than dominates scenes.",
+      "soundDesign": "Realistic, naturalistic sound. Silence used effectively for emphasis.",
+      "voiceDirection": "Clear, measured delivery. Emphasis on meaning over entertainment."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Contemplation, respect, intellectual engagement, emotional depth",
+      "engagementLevel": "active",
+      "demographicAppeal": ["adults-25-44", "middle-aged-45-64", "film-enthusiasts"]
+    },
+    "examples": [
+      {
+        "title": "The Godfather",
+        "year": 1972,
+        "description": "Treats crime family dynamics with gravity and respect, never trivializing violence or consequences"
+      },
+      {
+        "title": "Schindler's List",
+        "year": 1993,
+        "description": "Approaches Holocaust subject matter with appropriate seriousness and reverence"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 1,
+    "aiGenerationTags": [
+      { "tag": "grave" },
+      { "tag": "earnest" },
+      { "tag": "weighty" },
+      { "tag": "thoughtful" },
+      { "tag": "respectful" }
+    ]
+  },
+  {
+    "name": "Comedic",
+    "slug": "comedic",
+    "description": "A light, humorous tone designed to entertain and amuse. Uses wit, timing, and absurdity to create laughter.",
+    "category": "emotional",
+    "intensity": "moderate",
+    "narrativeImpact": {
+      "dialogueStyle": "Witty, playful dialogue with comedic timing. Wordplay, banter, and humorous observations.",
+      "pacingInfluence": "Quick pacing with comedic beats and timing. Setup and payoff structure for jokes.",
+      "characterBehavior": "Characters may be exaggerated or quirky. Comedic flaws and misunderstandings drive plot.",
+      "conflictStyle": "Conflicts often based on misunderstandings or comedic situations. Light consequences."
+    },
+    "visualElements": {
+      "colorPalette": "Bright, cheerful colors. Warm tones that feel inviting and playful.",
+      "lightingStyle": "Bright, even lighting that creates a cheerful atmosphere. Avoids dark shadows.",
+      "cameraWork": "Dynamic camera work that supports physical comedy. Quick cuts for comedic timing.",
+      "editingStyle": "Fast-paced editing with precise timing for comedic effect. Visual gags and reactions."
+    },
+    "audioElements": {
+      "musicStyle": "Upbeat, playful music that enhances comedic moments. Musical stings for punchlines.",
+      "soundDesign": "Exaggerated sound effects for physical comedy. Comedic timing in audio cues.",
+      "voiceDirection": "Expressive delivery with comedic timing. Emphasis on humor and entertainment."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Laughter, joy, stress relief, entertainment, social bonding",
+      "engagementLevel": "moderate",
+      "demographicAppeal": ["families-young-children", "young-adults-18-24", "adults-25-44"]
+    },
+    "examples": [
+      {
+        "title": "The Grand Budapest Hotel",
+        "year": 2014,
+        "description": "Whimsical, sophisticated comedy with precise timing and visual humor"
+      },
+      {
+        "title": "Airplane!",
+        "year": 1980,
+        "description": "Rapid-fire comedy with visual gags and wordplay throughout"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 2,
+    "aiGenerationTags": [
+      { "tag": "humorous" },
+      { "tag": "witty" },
+      { "tag": "playful" },
+      { "tag": "entertaining" },
+      { "tag": "lighthearted" }
+    ]
+  },
+  {
+    "name": "Dramatic",
+    "slug": "dramatic",
+    "description": "An emotionally intense tone that emphasizes character development and emotional conflict. Focuses on human relationships and personal stakes.",
+    "category": "emotional",
+    "intensity": "strong",
+    "narrativeImpact": {
+      "dialogueStyle": "Emotionally charged dialogue that reveals character depth. Subtext and emotional honesty.",
+      "pacingInfluence": "Builds emotional tension through pacing. Allows time for character moments and reactions.",
+      "characterBehavior": "Characters driven by strong emotions and personal stakes. Internal conflicts externalized.",
+      "conflictStyle": "Personal, emotional conflicts with high stakes for characters. Resolution requires growth."
+    },
+    "visualElements": {
+      "colorPalette": "Rich, saturated colors that support emotional intensity. Warm and cool contrasts.",
+      "lightingStyle": "Dramatic lighting with strong contrasts. Shadows and highlights emphasize emotion.",
+      "cameraWork": "Close-ups for emotional moments. Camera movement that supports dramatic beats.",
+      "editingStyle": "Pacing that builds emotional tension. Cuts that emphasize character reactions."
+    },
+    "audioElements": {
+      "musicStyle": "Orchestral or emotional music that underscores dramatic moments. Swelling themes.",
+      "soundDesign": "Realistic sound that supports emotional reality. Silence for dramatic emphasis.",
+      "voiceDirection": "Emotionally authentic delivery. Range from whispers to passionate outbursts."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Emotional catharsis, empathy, investment in characters, tears",
+      "engagementLevel": "intense",
+      "demographicAppeal": ["adults-25-44", "middle-aged-45-64", "film-enthusiasts"]
+    },
+    "examples": [
+      {
+        "title": "Manchester by the Sea",
+        "year": 2016,
+        "description": "Intense emotional drama exploring grief and family relationships"
+      },
+      {
+        "title": "A Star Is Born",
+        "year": 2018,
+        "description": "Dramatic exploration of love, addiction, and artistic passion"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 3,
+    "aiGenerationTags": [
+      { "tag": "emotional" },
+      { "tag": "intense" },
+      { "tag": "character-driven" },
+      { "tag": "passionate" },
+      { "tag": "heartfelt" }
+    ]
+  },
+  {
+    "name": "Satirical",
+    "slug": "satirical",
+    "description": "A critical, mocking tone that uses humor to expose and criticize flaws in society, institutions, or human behavior.",
+    "category": "stylistic",
+    "intensity": "strong",
+    "narrativeImpact": {
+      "dialogueStyle": "Sharp, witty dialogue with double meanings. Characters may speak in irony or sarcasm.",
+      "pacingInfluence": "Quick wit and rapid-fire social commentary. Builds to satirical revelations.",
+      "characterBehavior": "Characters may be exaggerated representations of social types or institutions.",
+      "conflictStyle": "Conflicts highlight social absurdities or institutional failures. Ironic resolutions."
+    },
+    "visualElements": {
+      "colorPalette": "Often exaggerated or artificial colors that emphasize the satirical nature.",
+      "lightingStyle": "May use artificial or stylized lighting to create an unnatural, satirical atmosphere.",
+      "cameraWork": "May use unusual angles or framing to emphasize absurdity or social commentary.",
+      "editingStyle": "Quick cuts and juxtapositions that highlight contradictions and absurdities."
+    },
+    "audioElements": {
+      "musicStyle": "Music that may contrast with or comment on the action. Ironic musical choices.",
+      "soundDesign": "May use exaggerated or artificial sounds to emphasize satirical points.",
+      "voiceDirection": "Delivery that emphasizes irony, sarcasm, or social commentary."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Intellectual amusement, social awareness, critical thinking, uncomfortable laughter",
+      "engagementLevel": "active",
+      "demographicAppeal": ["young-adults-18-24", "adults-25-44", "film-enthusiasts"]
+    },
+    "examples": [
+      {
+        "title": "Dr. Strangelove",
+        "year": 1964,
+        "description": "Satirical take on nuclear war and military-industrial complex"
+      },
+      {
+        "title": "The Great Dictator",
+        "year": 1940,
+        "description": "Chaplin's satirical critique of fascism and dictatorship"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 4,
+    "aiGenerationTags": [
+      { "tag": "critical" },
+      { "tag": "mocking" },
+      { "tag": "ironic" },
+      { "tag": "sharp" },
+      { "tag": "socially-conscious" }
+    ]
+  },
+  {
+    "name": "Lighthearted",
+    "slug": "lighthearted",
+    "description": "A cheerful, optimistic tone that emphasizes joy and positivity. Avoids heavy themes in favor of uplifting content.",
+    "category": "emotional",
+    "intensity": "moderate",
+    "narrativeImpact": {
+      "dialogueStyle": "Upbeat, positive dialogue with optimistic outlook. Characters support each other.",
+      "pacingInfluence": "Breezy pacing that maintains positive energy. Avoids dwelling on negative moments.",
+      "characterBehavior": "Characters are generally positive and resilient. Problems are overcome with optimism.",
+      "conflictStyle": "Light conflicts that don't cause lasting harm. Resolutions are positive and uplifting."
+    },
+    "visualElements": {
+      "colorPalette": "Bright, cheerful colors. Pastels and warm tones that feel inviting and positive.",
+      "lightingStyle": "Soft, warm lighting that creates a pleasant, comfortable atmosphere.",
+      "cameraWork": "Smooth, flowing camera movements. Avoids jarring or aggressive techniques.",
+      "editingStyle": "Gentle pacing with smooth transitions. Maintains positive energy flow."
+    },
+    "audioElements": {
+      "musicStyle": "Upbeat, melodic music that supports positive emotions. Major keys and cheerful rhythms.",
+      "soundDesign": "Pleasant, natural sounds that support the positive atmosphere.",
+      "voiceDirection": "Warm, friendly delivery that emphasizes positivity and connection."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Joy, comfort, optimism, stress relief, feel-good emotions",
+      "engagementLevel": "moderate",
+      "demographicAppeal": ["families-young-children", "children-4-8", "tweens-9-12"]
+    },
+    "examples": [
+      {
+        "title": "Paddington",
+        "year": 2014,
+        "description": "Gentle, optimistic family film with positive messages and warm humor"
+      },
+      {
+        "title": "The Princess Bride",
+        "year": 1987,
+        "description": "Adventure story with lighthearted tone despite perilous situations"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 5,
+    "aiGenerationTags": [
+      { "tag": "cheerful" },
+      { "tag": "optimistic" },
+      { "tag": "uplifting" },
+      { "tag": "positive" },
+      { "tag": "feel-good" }
+    ]
+  },
+  {
+    "name": "Dark",
+    "slug": "dark",
+    "description": "A somber, pessimistic tone that explores difficult themes and the darker aspects of human nature or society.",
+    "category": "atmospheric",
+    "intensity": "intense",
+    "narrativeImpact": {
+      "dialogueStyle": "Heavy, meaningful dialogue that explores difficult truths. Characters face harsh realities.",
+      "pacingInfluence": "Deliberate pacing that allows dark themes to develop. Builds tension and dread.",
+      "characterBehavior": "Characters face moral ambiguity and difficult choices. Flawed, complex personalities.",
+      "conflictStyle": "Serious conflicts with real consequences. Not all problems have happy solutions."
+    },
+    "visualElements": {
+      "colorPalette": "Muted, desaturated colors. Grays, blacks, and dark tones dominate the palette.",
+      "lightingStyle": "Low-key lighting with deep shadows. Harsh contrasts between light and dark.",
+      "cameraWork": "May use unusual angles or close framing to create unease or claustrophobia.",
+      "editingStyle": "Pacing that builds tension and unease. May use jarring cuts or long, uncomfortable takes."
+    },
+    "audioElements": {
+      "musicStyle": "Minor keys, dissonant harmonies, or minimal music. Creates atmosphere of unease.",
+      "soundDesign": "May emphasize unsettling or harsh sounds. Silence used for dramatic effect.",
+      "voiceDirection": "Serious, sometimes whispered delivery. Emphasis on weight of words."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Unease, contemplation, emotional weight, cathartic release",
+      "engagementLevel": "intense",
+      "demographicAppeal": ["adults-25-44", "middle-aged-45-64", "film-enthusiasts"]
+    },
+    "examples": [
+      {
+        "title": "There Will Be Blood",
+        "year": 2007,
+        "description": "Dark exploration of greed and the corruption of the American dream"
+      },
+      {
+        "title": "No Country for Old Men",
+        "year": 2007,
+        "description": "Dark, nihilistic thriller exploring violence and moral decay"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 6,
+    "aiGenerationTags": [
+      { "tag": "somber" },
+      { "tag": "pessimistic" },
+      { "tag": "heavy" },
+      { "tag": "complex" },
+      { "tag": "challenging" }
+    ]
+  },
+  {
+    "name": "Inspirational",
+    "slug": "inspirational",
+    "description": "An uplifting tone that motivates and encourages audiences through stories of triumph, perseverance, and human potential.",
+    "category": "emotional",
+    "intensity": "strong",
+    "narrativeImpact": {
+      "dialogueStyle": "Motivational dialogue that emphasizes hope and possibility. Characters inspire each other.",
+      "pacingInfluence": "Builds toward triumphant moments. Pacing supports emotional crescendos.",
+      "characterBehavior": "Characters overcome obstacles through determination and growth. Positive role models.",
+      "conflictStyle": "Challenges that can be overcome through effort and perseverance. Uplifting resolutions."
+    },
+    "visualElements": {
+      "colorPalette": "Warm, golden tones that suggest hope and triumph. Bright colors for climactic moments.",
+      "lightingStyle": "Warm, uplifting lighting. Golden hour and bright, hopeful illumination.",
+      "cameraWork": "Soaring camera movements for triumphant moments. Upward angles suggest aspiration.",
+      "editingStyle": "Builds to emotional peaks. Montages that show progress and achievement."
+    },
+    "audioElements": {
+      "musicStyle": "Soaring orchestral music with triumphant themes. Major keys and uplifting melodies.",
+      "soundDesign": "Sounds that support triumph and achievement. Crowd cheers, applause, success sounds.",
+      "voiceDirection": "Passionate, heartfelt delivery that conveys determination and hope."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Motivation, hope, triumph, emotional uplift, inspiration to action",
+      "engagementLevel": "intense",
+      "demographicAppeal": ["young-adults-18-24", "adults-25-44", "families-young-children"]
+    },
+    "examples": [
+      {
+        "title": "Rocky",
+        "year": 1976,
+        "description": "Classic underdog story that inspires through perseverance and determination"
+      },
+      {
+        "title": "The Pursuit of Happyness",
+        "year": 2006,
+        "description": "Inspirational story of overcoming adversity through determination"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 7,
+    "aiGenerationTags": [
+      { "tag": "uplifting" },
+      { "tag": "motivational" },
+      { "tag": "triumphant" },
+      { "tag": "hopeful" },
+      { "tag": "encouraging" }
+    ]
+  },
+  {
+    "name": "Suspenseful",
+    "slug": "suspenseful",
+    "description": "A tense tone that keeps audiences on edge through uncertainty, anticipation, and carefully built tension.",
+    "category": "atmospheric",
+    "intensity": "strong",
+    "narrativeImpact": {
+      "dialogueStyle": "Dialogue that builds tension and reveals information gradually. Subtext and hidden meanings.",
+      "pacingInfluence": "Carefully controlled pacing that builds and releases tension. Strategic use of silence.",
+      "characterBehavior": "Characters face unknown threats or uncertain outcomes. Paranoia and caution.",
+      "conflictStyle": "Conflicts with uncertain outcomes. Tension maintained until resolution."
+    },
+    "visualElements": {
+      "colorPalette": "Colors that create unease - cool blues, stark contrasts, or desaturated tones.",
+      "lightingStyle": "Dramatic lighting with strong shadows. Backlighting and silhouettes for mystery.",
+      "cameraWork": "Careful framing that may hide information. Slow zooms and tracking shots build tension.",
+      "editingStyle": "Pacing that builds tension. Quick cuts for action, long takes for sustained unease."
+    },
+    "audioElements": {
+      "musicStyle": "Tension-building music with dissonant elements. Stingers and musical crescendos.",
+      "soundDesign": "Subtle sounds that create unease. Footsteps, creaking, unexpected noises.",
+      "voiceDirection": "Delivery that maintains tension. Whispers, urgent tones, careful speech."
+    },
+    "audienceResponse": {
+      "emotionalEffect": "Tension, anticipation, edge-of-seat engagement, relief at resolution",
+      "engagementLevel": "intense",
+      "demographicAppeal": ["teens-13-17", "young-adults-18-24", "adults-25-44"]
+    },
+    "examples": [
+      {
+        "title": "Rear Window",
+        "year": 1954,
+        "description": "Hitchcock masterclass in building and maintaining suspense"
+      },
+      {
+        "title": "Zodiac",
+        "year": 2007,
+        "description": "Sustained tension through investigation and uncertainty"
+      }
+    ],
+    "isActive": true,
+    "sortOrder": 8,
+    "aiGenerationTags": [
+      { "tag": "tense" },
+      { "tag": "uncertain" },
+      { "tag": "edge-of-seat" },
+      { "tag": "anticipatory" },
+      { "tag": "thrilling" }
+    ]
+  }
+]
