@@ -22,7 +22,6 @@ interface FormData {
   movieFormat: string
   series: string
   movieStyle: string
-  status: string
 }
 
 interface FormErrors {
@@ -40,7 +39,6 @@ export default function CreateProjectPage() {
     movieFormat: '',
     series: '',
     movieStyle: '',
-    status: 'draft',
   })
   const [errors, setErrors] = useState<FormErrors>({})
   const [loading, setLoading] = useState(false)
@@ -190,13 +188,6 @@ export default function CreateProjectPage() {
     )
   }
 
-  const statusOptions = [
-    { value: 'draft', label: 'Draft' },
-    { value: 'in-progress', label: 'In Progress' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'archived', label: 'Archived' },
-  ]
-
   const movieFormatOptions = movieFormats.map((format) => ({
     value: format.id,
     label: format.name,
@@ -221,19 +212,24 @@ export default function CreateProjectPage() {
       {/* Full-width multi-column layout */}
       <div className="max-w-7xl mx-auto">
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Project Information Section */}
-          <div className="bg-white shadow-sm rounded-lg p-6">
+          {/* Required Fields Section - Highlighted */}
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 shadow-sm rounded-lg p-6">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Project Information</h3>
-              <p className="text-sm text-gray-500 mt-1">Basic details about your movie project</p>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <h3 className="text-lg font-semibold text-gray-900">Required Information</h3>
+              </div>
+              <p className="text-sm text-blue-700 mt-1">
+                Please fill in all required fields to create your project
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FormField
                 label="Project Name"
                 required
                 error={errors.name}
-                description="A unique identifier for your project (e.g., 'Adventure Story 1', 'Mystery Episode 3')"
+                description="A unique identifier for your project"
               >
                 <Input
                   type="text"
@@ -244,70 +240,6 @@ export default function CreateProjectPage() {
                 />
               </FormField>
 
-              <FormField
-                label="Project Title"
-                error={errors.projectTitle}
-                description="The actual title of the movie/episode (optional - can be auto-generated)"
-              >
-                <Input
-                  type="text"
-                  value={formData.projectTitle}
-                  onChange={(e) => handleInputChange('projectTitle', e.target.value)}
-                  placeholder="Enter project title"
-                  error={!!errors.projectTitle}
-                />
-              </FormField>
-            </div>
-          </div>
-
-          {/* Project Description Section */}
-          <div className="bg-white shadow-sm rounded-lg p-6">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Project Description</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Describe your project's story and concept
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <FormField
-                label="Short Description"
-                error={errors.shortDescription}
-                description="Brief summary of the project"
-              >
-                <Textarea
-                  value={formData.shortDescription}
-                  onChange={(e) => handleInputChange('shortDescription', e.target.value)}
-                  placeholder="Enter a brief description"
-                  rows={4}
-                  error={!!errors.shortDescription}
-                />
-              </FormField>
-
-              <FormField
-                label="Long Description"
-                error={errors.longDescription}
-                description="Detailed description or synopsis of the project"
-              >
-                <Textarea
-                  value={formData.longDescription}
-                  onChange={(e) => handleInputChange('longDescription', e.target.value)}
-                  placeholder="Enter detailed description"
-                  rows={4}
-                  error={!!errors.longDescription}
-                />
-              </FormField>
-            </div>
-          </div>
-
-          {/* Project Configuration Section */}
-          <div className="bg-white shadow-sm rounded-lg p-6">
-            <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Project Configuration</h3>
-              <p className="text-sm text-gray-500 mt-1">Technical settings and format options</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <FormField
                 label="Movie Format"
                 required
@@ -356,19 +288,62 @@ export default function CreateProjectPage() {
                   error={!!errors.movieStyle}
                 />
               </FormField>
+            </div>
+          </div>
 
+          {/* Optional Project Details Section */}
+          <div className="bg-white shadow-sm rounded-lg p-6">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Project Details</h3>
+              <p className="text-sm text-gray-500 mt-1">
+                Additional information about your project (optional)
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <FormField
-                label="Status"
-                error={errors.status}
-                description="Current status of the project"
+                label="Project Title"
+                error={errors.projectTitle}
+                description="The actual title of the movie/episode (can be auto-generated)"
               >
-                <Select
-                  value={formData.status}
-                  onChange={(e) => handleInputChange('status', e.target.value)}
-                  options={statusOptions}
-                  error={!!errors.status}
+                <Input
+                  type="text"
+                  value={formData.projectTitle}
+                  onChange={(e) => handleInputChange('projectTitle', e.target.value)}
+                  placeholder="Enter project title"
+                  error={!!errors.projectTitle}
                 />
               </FormField>
+
+              <FormField
+                label="Short Description"
+                error={errors.shortDescription}
+                description="Brief summary of the project"
+              >
+                <Textarea
+                  value={formData.shortDescription}
+                  onChange={(e) => handleInputChange('shortDescription', e.target.value)}
+                  placeholder="Enter a brief description"
+                  rows={3}
+                  error={!!errors.shortDescription}
+                />
+              </FormField>
+
+              <div className="lg:col-span-2">
+                <FormField
+                  label="Long Description"
+                  error={errors.longDescription}
+                  description="Detailed description or synopsis of the project"
+                >
+                  <Textarea
+                    value={formData.longDescription}
+                    onChange={(e) => handleInputChange('longDescription', e.target.value)}
+                    placeholder="Enter detailed description"
+                    rows={4}
+                    error={!!errors.longDescription}
+                  />
+                </FormField>
+              </div>
             </div>
           </div>
 
