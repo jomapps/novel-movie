@@ -91,3 +91,6 @@ create a script as follows that will take all the json data in /seed folder and 
 ```bash
 pnpm run payload seed
 ```
+
+## Payloadcms external scripts
+refer to https://payloadcms.com/docs/local-api/outside-nextjs

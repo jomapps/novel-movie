@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Cinematic Realism",
+    "slug": "cinematic-realism",
+    "description": "Photorealistic style that mimics traditional film cinematography with natural lighting, realistic proportions, and authentic human expressions. Ideal for dramatic narratives and character-driven stories."
+  },
+  {
+    "name": "Animation",
+    "slug": "animation",
+    "description": "Stylized animated aesthetic suitable for both 2D and 3D animation styles. Features vibrant colors, exaggerated expressions, and artistic interpretation over photorealism."
+  },
+  {
+    "name": "Film Noir",
+    "slug": "film-noir",
+    "description": "Classic black and white aesthetic with high contrast lighting, dramatic shadows, and moody atmosphere. Perfect for mystery, crime, and dramatic narratives."
+  },
+  {
+    "name": "Sci-Fi",
+    "slug": "sci-fi",
+    "description": "Futuristic aesthetic featuring advanced technology, sleek designs, neon lighting, and otherworldly environments. Ideal for science fiction narratives."
+  },
+  {
+    "name": "Fantasy",
+    "slug": "fantasy",
+    "description": "Magical and mythical aesthetic featuring enchanted environments, mystical creatures, and otherworldly elements. Perfect for fantasy and adventure narratives."
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Short Film",
+    "slug": "short-film",
+    "description": "A brief cinematic work, typically under 40 minutes. Perfect for focused storytelling, experimental concepts, and quick production cycles.",
+    "suggestedDuration": 5,
+    "durationUnit": "minutes",
+    "isActive": true
+  },
+  {
+    "name": "Feature Film",
+    "slug": "feature-film", 
+    "description": "A full-length movie, typically 90-180 minutes. Allows for complex narratives, character development, and comprehensive storytelling.",
+    "suggestedDuration": 120,
+    "durationUnit": "minutes",
+    "isActive": true
+  },
+  {
+    "name": "Series",
+    "slug": "series",
+    "description": "Episodic content designed to be part of a larger series. Each episode typically runs 20-60 minutes and contributes to an overarching narrative.",
+    "suggestedDuration": 30,
+    "durationUnit": "minutes", 
+    "isActive": true
+  },
+  {
+    "name": "Documentary",
+    "slug": "documentary",
+    "description": "Non-fiction content that explores real-world topics, events, or subjects. Can range from short-form to feature-length presentations.",
+    "suggestedDuration": 60,
+    "durationUnit": "minutes",
+    "isActive": true
+  },
+  {
+    "name": "Music Video",
+    "slug": "music-video",
+    "description": "Visual accompaniment to musical tracks. Typically short-form content focused on artistic expression and rhythm synchronization.",
+    "suggestedDuration": 4,
+    "durationUnit": "minutes",
+    "isActive": true
+  },
+  {
+    "name": "Commercial",
+    "slug": "commercial",
+    "description": "Promotional content designed for advertising purposes. Usually very short and focused on clear messaging and brand presentation.",
+    "suggestedDuration": 30,
+    "durationUnit": "seconds",
+    "isActive": true
+  },
+  {
+    "name": "Trailer",
+    "slug": "trailer",
+    "description": "Preview content designed to promote longer-form media. Focuses on highlights and key moments to generate interest.",
+    "suggestedDuration": 2,
+    "durationUnit": "minutes",
+    "isActive": true
+  }
+]
