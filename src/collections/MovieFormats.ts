@@ -4,7 +4,7 @@ export const MovieFormats: CollectionConfig = {
   slug: 'movie-formats',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'suggestedDuration', 'durationUnit', 'isActive'],
+    defaultColumns: ['name', 'suggestedDuration', 'isActive'],
     group: 'Configuration',
   },
   access: {
@@ -68,29 +68,7 @@ export const MovieFormats: CollectionConfig = {
         step: 1,
       },
     },
-    {
-      name: 'durationUnit',
-      type: 'select',
-      required: true,
-      defaultValue: 'minutes',
-      options: [
-        {
-          label: 'Seconds',
-          value: 'seconds',
-        },
-        {
-          label: 'Minutes',
-          value: 'minutes',
-        },
-        {
-          label: 'Hours',
-          value: 'hours',
-        },
-      ],
-      admin: {
-        description: 'Unit of measurement for the suggested duration',
-      },
-    },
+
     {
       name: 'isActive',
       type: 'checkbox',

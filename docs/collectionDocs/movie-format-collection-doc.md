@@ -33,14 +33,6 @@ The Movie Format collection defines different types of movie formats available f
 - **Description**: Suggested duration in minutes for this format
 - **Default**: `5` (for short film)
 
-### durationUnit
-- **Type**: `select`
-- **Required**: `true`
-- **Options**:
-  - `{ label: "Minutes", value: "minutes" }`
-  - `{ label: "Hours", value: "hours" }`
-- **Default**: `"minutes"`
-- **Description**: Unit of measurement for the suggested duration
 
 ### isActive
 - **Type**: `checkbox`

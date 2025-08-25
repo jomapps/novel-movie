@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { Sparkles } from 'lucide-react'
 import { MovieFormat, MovieStyle, Series } from '@/payload-types'
 import FormField from '@/components/forms/FormField'
 import Input from '@/components/forms/Input'
@@ -22,6 +23,7 @@ interface FormData {
   movieFormat: string
   series: string
   movieStyle: string
+  durationUnit: string
 }
 
 interface FormErrors {
@@ -39,6 +41,7 @@ export default function CreateProjectPage() {
     movieFormat: '',
     series: '',
     movieStyle: '',
+    durationUnit: '',
   })
   const [errors, setErrors] = useState<FormErrors>({})
   const [loading, setLoading] = useState(false)
@@ -110,6 +113,35 @@ export default function CreateProjectPage() {
     )
   }
 
+  // Check if all required fields are filled
+  const areRequiredFieldsFilled = () => {
+    const requiredFields = ['name', 'movieFormat', 'movieStyle', 'durationUnit']
+    const allBasicFieldsFilled = requiredFields.every((field) =>
+      formData[field as keyof FormData]?.trim(),
+    )
+
+    // If series field is shown, it must also be filled
+    if (showSeriesField) {
+      return allBasicFieldsFilled && formData.series?.trim()
+    }
+
+    return allBasicFieldsFilled
+  }
+
+  // Handle AI auto-fill (placeholder for your logic)
+  const handleAIAutoFill = () => {
+    // TODO: Add your AI logic here
+    console.log('AI Auto-fill triggered with required fields:', {
+      name: formData.name,
+      movieFormat: formData.movieFormat,
+      movieStyle: formData.movieStyle,
+      durationUnit: formData.durationUnit,
+      ...(showSeriesField && { series: formData.series }),
+    })
+    // Placeholder success message
+    success('AI Auto-fill', 'This feature will be implemented with your AI logic.')
+  }
+
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {}
 
@@ -123,6 +155,10 @@ export default function CreateProjectPage() {
 
     if (!formData.movieStyle) {
       newErrors.movieStyle = 'Movie style is required'
+    }
+
+    if (!formData.durationUnit) {
+      newErrors.durationUnit = 'Duration unit is required'
     }
 
     if (showSeriesField && !formData.series) {
@@ -288,16 +324,53 @@ export default function CreateProjectPage() {
                   error={!!errors.movieStyle}
                 />
               </FormField>
+
+              <FormField
+                label="Duration (Minutes)"
+                required
+                error={errors.durationUnit}
+                description="Suggested duration for this project in minutes"
+              >
+                <Input
+                  type="number"
+                  value={formData.durationUnit}
+                  onChange={(e) => handleInputChange('durationUnit', e.target.value)}
+                  placeholder="Enter duration in minutes"
+                  error={!!errors.durationUnit}
+                  min="1"
+                  step="1"
+                />
+              </FormField>
             </div>
           </div>
 
           {/* Optional Project Details Section */}
           <div className="bg-white shadow-sm rounded-lg p-6">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">Project Details</h3>
-              <p className="text-sm text-gray-500 mt-1">
-                Additional information about your project (optional)
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Project Details</h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Additional information about your project (optional)
+                  </p>
+                </div>
+
+                {/* AI Auto-fill Button - appears when required fields are filled */}
+                {areRequiredFieldsFilled() && (
+                  <div className="flex items-center">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleAIAutoFill}
+                      className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 text-purple-700 hover:from-purple-100 hover:to-pink-100 hover:border-purple-300"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      AI Auto-fill
+                    </Button>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

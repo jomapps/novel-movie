@@ -217,6 +217,10 @@ export interface Project {
    */
   status: 'draft' | 'in-progress' | 'completed' | 'archived';
   /**
+   * Unit of measurement for the suggested duration in minutes
+   */
+  durationUnit: number;
+  /**
    * Container for AI-generated content and assets
    */
   generatedContent?: {
@@ -292,10 +296,6 @@ export interface MovieFormat {
    * Suggested duration for this format
    */
   suggestedDuration: number;
-  /**
-   * Unit of measurement for the suggested duration
-   */
-  durationUnit: 'seconds' | 'minutes' | 'hours';
   /**
    * Whether this format is available for new projects
    */
@@ -471,6 +471,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   series?: T;
   movieStyle?: T;
   status?: T;
+  durationUnit?: T;
   generatedContent?:
     | T
     | {
@@ -498,7 +499,6 @@ export interface MovieFormatsSelect<T extends boolean = true> {
   slug?: T;
   description?: T;
   suggestedDuration?: T;
-  durationUnit?: T;
   isActive?: T;
   updatedAt?: T;
   createdAt?: T;
