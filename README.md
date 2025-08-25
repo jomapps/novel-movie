@@ -1,132 +1,88 @@
-# Movie Production app
+# Novel Movie
 
-## Technical stack
-- mongodb
-- nextjs 15.x
-- payloadcms 3.x
-- baml prompt engineering
-- data access via payloadcms local api
+> AI-powered movie production platform for in-house film creation
 
+## Overview
 
-## AI and Prompting
-We will use ai to fill a lot of data
-baml will be used at all stages
-openrouter will be the llm provider
-following keys will be avialabe in .env
-the million model will be used when the context window needs to be expanded. it will be fallback
+Novel Movie automates the entire movie production pipeline using AI, from script generation to final video assembly. Built for internal production use with step-by-step workflow automation.
 
-### OpenRouter (LLM operations)
-OPENROUTER_API_KEY
-OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+## Tech Stack
+
+- **Frontend**: Next.js 15.x + React 19.x
+- **Backend**: PayloadCMS 3.x + MongoDB
+- **AI**: OpenRouter (LLMs) + Fal.ai (Media Generation) + BAML (Prompts)
+- **Queue**: bee-queue + Redis
+- **Storage**: Cloudflare R2
+- **Processing**: Last Frame Service
+
+## Quick Start
+
+```bash
+# Install dependencies
+pnpm install
+
+# Setup environment
+cp .env.example .env
+# Configure your API keys in .env
+
+# Generate types and start
+pnpm run generate:types
+pnpm run dev
+```
+
+## Environment Variables
+
+```env
+# Core
+MONGODB_URI=mongodb://localhost:27017/novel-movie
+REDIS_URL=redis://localhost:6379
+
+# AI Services
+OPENROUTER_API_KEY=your_key
 OPENROUTER_DEFAULT_MODEL=anthropic/claude-sonnet-4
 OPENROUTER_MILLION_MODEL=google/gemini-2.5-pro
+FAL_KEY=your_fal_key
 
-### Fal.ai for LLM Media Generation
-FAL_KEY and models will be available to do llm media generation
-the api client will be used for llm media generation
-pattern is:
-```
-import { fal } from "@fal-ai/client";
-
-const result = await fal.subscribe("fal-ai/flux-pro/kontext/text-to-image", {
-  input: {
-    prompt: "Extreme close-up of a single tiger eye, direct frontal view. Detailed iris and pupil. Sharp focus on eye texture and color. Natural lighting to capture authentic eye shine and depth. The word \"FLUX\" is painted over it in big, white brush strokes with visible texture."
-  },
-  logs: true,
-  onQueueUpdate: (update) => {
-    if (update.status === "IN_PROGRESS") {
-      update.logs.map((log) => log.message).forEach(console.log);
-    }
-  },
-});
-console.log(result.data);
-console.log(result.requestId);
-```
-each llm will have its own requirement and documentation of the llm will be in /docs/aiModels
-
-## Centralized Functions and routes dictionary
-We will have a json file. this will be the single source of truth for all the functions and routes.
-here is the structure of the json file:
-```
-{
-  "name":{
-    type: "function", // can be file or route
-    file: "path/to/file", // required if type is file
-    route: "/api/function-name", // required if type is route
-    description: "Tells what it does", // short description of about 2 lines
-  }
-}
-```
-the aim of the file is the following:
-- For you to ensure that you are not created duplicate functions / files / routes
-
-## Critical rules
-- we will never limit the tokens on our end. when required, the prompts will be used to limit the llm output.
-- no fallbacks and no mockup data
-- all custom routes will be nested in /src/app/v1
-- ensure you use the imports correctly of the payload variable
-- ensure you await all params, searchParams
-- pages in nextjs are server side rendered. ensure you use the correct pattern to fetch data. create client side component if needed.
-- prefer server side components over api routes
-
-## GEtting the payload variable
-the payload variable is required to access the payload api.
-you have to use the following pattern to get it in api routes:
-```
-import configPromise from '@payload-config'
-import { getPayload } from 'payload'
-
-export const GET = async (request: Request) => {
-  const payload = await getPayload({
-    config: configPromise,
-  })
-
-  return Response.json({
-    message: 'This is an example of a custom route.',
-  })
-}
-```
-when using standalone scripts, you have to use the pattern to get the payload variable and also in the package.json file, you have to add the following:
-```
-[X]: "cross-env NODE_OPTIONS=--no-deprecation payload [script]",
-```
-where [X] stands for the name of the script. and [script] stands for the name of the script file in the scripts folder.
-
-## Collections
-
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
-Collections and baml structures will need to work together to create the app.
-
-## Users (Authentication)
-We will use payloads built in auth
-Users are auth-enabled collections that have access to the admin panel.
-
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
-
-## Media
-Media will always be uploaded to the R2 Cloudflare S3 compatible bucket via the automatic payloadcms media upload feature.
-
-## Webhooks
-Fal.ai supports webhooks to trigger the llm generation and get result.
-Last frame service supports webhooks to get the last frame of the video.
-Where possible, lets use lastframe webhooks to get the results.
-ensure you run ngrok to test the webhooks locally.
-
-## Local development setup
-We have a windows 11 machine
-pnpm, mongodb, redis and docker desktop are installed
-ngrok can be run using
-```
-ngrok http 3000 --domain=local.ft.tc
+# Storage
+CLOUDFLARE_R2_ACCESS_KEY=your_key
+CLOUDFLARE_R2_SECRET_KEY=your_secret
 ```
 
+## Development Commands
 
-## last frame service
-this service has a lot of utilities. read /docs/externalServices/lastFrame.md
-- length service to get the length of the video
-- last frame service to get the last frame of the video
-- video stitch service to stitch multiple videos
-- audio stitch service to stitch multiple audios
-- music track mixing service to mix videos with background music
-- video+audio assembly service to combine scene videos with master audio and generate 3 output files
+```bash
+# Development
+pnpm run dev          # Start dev server
+pnpm run devsafe      # Clean start (removes .next)
+
+# Production
+pnpm run build        # Build for production
+pnpm run start        # Start production server
+
+# Testing
+pnpm run test         # Run all tests
+pnpm run test:int     # Integration tests
+pnpm run test:e2e     # End-to-end tests
+
+# PayloadCMS
+pnpm run generate:types    # Generate TypeScript types
+pnpm run payload          # PayloadCMS CLI
+```
+
+## Documentation
+
+Detailed documentation is organized in `/docs/`:
+
+- **[Development Guidelines](docs/development-guidelines.md)** - Coding standards and patterns
+- **[PayloadCMS Integration](docs/payloadcms-integration.md)** - CMS setup and usage
+- **[AI Services Configuration](docs/ai-services-configuration.md)** - LLM and media generation setup
+- **[Queue Management](docs/queue-management.md)** - Background task processing
+- **[Media Processing](docs/media-processing.md)** - Video/audio processing workflows
+- **[Webhook Integration](docs/webhook-integration.md)** - External service webhooks
+- **[Movie Production Workflow](docs/movie-production-workflow.md)** - Step-by-step production process
+- **[Logging and Auditing](docs/logging-and-auditing.md)** - System monitoring and audit trails
+
+## License
+
+MIT
 
