@@ -1,67 +1,132 @@
-# Payload Blank Template
+# Movie Production app
 
-This template comes configured with the bare minimum to get started on anything you need.
+## Technical stack
+- mongodb
+- nextjs 15.x
+- payloadcms 3.x
+- baml prompt engineering
+- data access via payloadcms local api
 
-## Quick start
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+## AI and Prompting
+We will use ai to fill a lot of data
+baml will be used at all stages
+openrouter will be the llm provider
+following keys will be avialabe in .env
+the million model will be used when the context window needs to be expanded. it will be fallback
 
-## Quick Start - local setup
+### OpenRouter (LLM operations)
+OPENROUTER_API_KEY
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_DEFAULT_MODEL=anthropic/claude-sonnet-4
+OPENROUTER_MILLION_MODEL=google/gemini-2.5-pro
 
-To spin up this template locally, follow these steps:
+### Fal.ai for LLM Media Generation
+FAL_KEY and models will be available to do llm media generation
+the api client will be used for llm media generation
+pattern is:
+```
+import { fal } from "@fal-ai/client";
 
-### Clone
+const result = await fal.subscribe("fal-ai/flux-pro/kontext/text-to-image", {
+  input: {
+    prompt: "Extreme close-up of a single tiger eye, direct frontal view. Detailed iris and pupil. Sharp focus on eye texture and color. Natural lighting to capture authentic eye shine and depth. The word \"FLUX\" is painted over it in big, white brush strokes with visible texture."
+  },
+  logs: true,
+  onQueueUpdate: (update) => {
+    if (update.status === "IN_PROGRESS") {
+      update.logs.map((log) => log.message).forEach(console.log);
+    }
+  },
+});
+console.log(result.data);
+console.log(result.requestId);
+```
+each llm will have its own requirement and documentation of the llm will be in /docs/aiModels
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+## Centralized Functions and routes dictionary
+We will have a json file. this will be the single source of truth for all the functions and routes.
+here is the structure of the json file:
+```
+{
+  "name":{
+    type: "function", // can be file or route
+    file: "path/to/file", // required if type is file
+    route: "/api/function-name", // required if type is route
+    description: "Tells what it does", // short description of about 2 lines
+  }
+}
+```
+the aim of the file is the following:
+- For you to ensure that you are not created duplicate functions / files / routes
 
-### Development
+## Critical rules
+- we will never limit the tokens on our end. when required, the prompts will be used to limit the llm output.
+- no fallbacks and no mockup data
+- all custom routes will be nested in /src/app/v1
+- ensure you use the imports correctly of the payload variable
+- ensure you await all params, searchParams
+- pages in nextjs are server side rendered. ensure you use the correct pattern to fetch data. create client side component if needed.
+- prefer server side components over api routes
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+## GEtting the payload variable
+the payload variable is required to access the payload api.
+you have to use the following pattern to get it in api routes:
+```
+import configPromise from '@payload-config'
+import { getPayload } from 'payload'
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+export const GET = async (request: Request) => {
+  const payload = await getPayload({
+    config: configPromise,
+  })
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+  return Response.json({
+    message: 'This is an example of a custom route.',
+  })
+}
+```
+when using standalone scripts, you have to use the pattern to get the payload variable and also in the package.json file, you have to add the following:
+```
+[X]: "cross-env NODE_OPTIONS=--no-deprecation payload [script]",
+```
+where [X] stands for the name of the script. and [script] stands for the name of the script file in the scripts folder.
 
-#### Docker (Optional)
-
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
-
-To do so, follow these steps:
-
-- Modify the `MONGODB_URI` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URI` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
-
-## How it works
-
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
-
-### Collections
+## Collections
 
 See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+Collections and baml structures will need to work together to create the app.
 
-- #### Users (Authentication)
-
-  Users are auth-enabled collections that have access to the admin panel.
+## Users (Authentication)
+We will use payloads built in auth
+Users are auth-enabled collections that have access to the admin panel.
 
   For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
 
-- #### Media
+## Media
+Media will always be uploaded to the R2 Cloudflare S3 compatible bucket via the automatic payloadcms media upload feature.
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+## Webhooks
+Fal.ai supports webhooks to trigger the llm generation and get result.
+Last frame service supports webhooks to get the last frame of the video.
+Where possible, lets use lastframe webhooks to get the results.
+ensure you run ngrok to test the webhooks locally.
 
-### Docker
+## Local development setup
+We have a windows 11 machine
+pnpm, mongodb, redis and docker desktop are installed
+ngrok can be run using
+```
+ngrok http 3000 --domain=local.ft.tc
+```
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+## last frame service
+this service has a lot of utilities. read /docs/externalServices/lastFrame.md
+- length service to get the length of the video
+- last frame service to get the last frame of the video
+- video stitch service to stitch multiple videos
+- audio stitch service to stitch multiple audios
+- music track mixing service to mix videos with background music
+- video+audio assembly service to combine scene videos with master audio and generate 3 output files
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
-
-## Questions
-
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
