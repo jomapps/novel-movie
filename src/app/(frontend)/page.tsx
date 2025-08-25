@@ -32,6 +32,7 @@ export default async function HomePage() {
       title="Dashboard"
       subtitle="Welcome to Novel Movie - AI-powered movie production platform"
       actions={headerActions}
+      showSearch={false}
     >
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

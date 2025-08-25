@@ -1,4 +1,5 @@
 import React from 'react'
+import ClientProviders from '@/components/providers/ClientProviders'
 import './styles.css'
 
 export const metadata = {
@@ -11,7 +12,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en">
-      <body className="bg-gray-50">{children}</body>
+      <body className="bg-gray-50">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   )
 }

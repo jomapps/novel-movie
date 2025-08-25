@@ -103,6 +103,7 @@ export default function ProjectDetailPage() {
         title="Project Not Found"
         subtitle="The requested project could not be found"
         actions={headerActions}
+        showSearch={false}
       >
         <div className="text-center py-12">
           <div className="text-red-500 mb-4">
@@ -139,6 +140,7 @@ export default function ProjectDetailPage() {
       title={project.projectTitle || project.name}
       subtitle={`Project: ${project.name}`}
       actions={headerActions}
+      showSearch={false}
     >
       <div className="max-w-4xl mx-auto">
         <div className="bg-white shadow-sm rounded-lg overflow-hidden">

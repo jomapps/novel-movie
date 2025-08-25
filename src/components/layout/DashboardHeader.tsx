@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Bell } from 'lucide-react'
+import { Bell, X } from 'lucide-react'
 import Button from '@/components/ui/Button'
+import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
 interface DashboardHeaderProps {
   title: string
@@ -20,6 +21,7 @@ export default function DashboardHeader({
   showSearch = true,
 }: DashboardHeaderProps) {
   const [searchQuery, setSearchQuery] = useState('')
+  const { selectedProject, deselectProject } = useSelectedProject()
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -42,8 +44,29 @@ export default function DashboardHeader({
               </svg>
             </button>
             <div className="ml-4 lg:ml-0">
-              <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-              {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+              <div className="flex items-center space-x-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
+                  {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
+                </div>
+                {selectedProject && (
+                  <div className="flex items-center bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span className="text-sm font-medium text-blue-900">
+                        {selectedProject.projectTitle || selectedProject.name}
+                      </span>
+                      <button
+                        onClick={deselectProject}
+                        className="ml-2 p-0.5 rounded-full hover:bg-blue-100 text-blue-600 hover:text-blue-800 transition-colors"
+                        title="Deselect project"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

@@ -1,12 +1,9 @@
 import Link from 'next/link'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { Project } from '@/payload-types'
-import ProjectCard from '@/components/projects/ProjectCard'
-import EmptyState from '@/components/projects/EmptyState'
+import ProjectsPageClient from '@/components/projects/ProjectsPageClient'
 import Button from '@/components/ui/Button'
 import DashboardLayout from '@/components/layout/DashboardLayout'
-import ProjectsPagination from '@/components/projects/ProjectsPagination'
 
 interface ProjectsPageProps {
   searchParams: Promise<{ page?: string }>
@@ -33,40 +30,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
       depth: 2, // Include related data like movieFormat and movieStyle
     })
 
-    if (projects.docs.length === 0) {
-      return (
-        <DashboardLayout
-          title="Projects"
-          subtitle="Manage your movie projects"
-          actions={headerActions}
-        >
-          <EmptyState />
-        </DashboardLayout>
-      )
-    }
-
-    return (
-      <DashboardLayout
-        title="Projects"
-        subtitle="Manage your movie projects"
-        actions={headerActions}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-          {projects.docs.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-
-        {projects.totalPages > 1 && (
-          <ProjectsPagination
-            currentPage={projects.page}
-            totalPages={projects.totalPages}
-            hasNextPage={projects.hasNextPage}
-            hasPrevPage={projects.hasPrevPage}
-          />
-        )}
-      </DashboardLayout>
-    )
+    return <ProjectsPageClient initialProjects={projects} />
   } catch (error) {
     console.error('Error fetching projects:', error)
     return (
