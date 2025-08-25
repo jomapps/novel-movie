@@ -8,12 +8,13 @@ Novel Movie automates the entire movie production pipeline using AI, from script
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15.x + React 19.x
+- **Frontend**: Next.js 15.x + React 19.x + Tailwind CSS 4.x
 - **Backend**: PayloadCMS 3.x + MongoDB
 - **AI**: OpenRouter (LLMs) + Fal.ai (Media Generation) + BAML (Prompts)
 - **Queue**: bee-queue + Redis
 - **Storage**: Cloudflare R2
 - **Processing**: Last Frame Service
+- **UI**: Modern dashboard interface with sidebar navigation
 
 ## Quick Start
 
@@ -68,6 +69,68 @@ pnpm run test:e2e     # End-to-end tests
 pnpm run generate:types    # Generate TypeScript types
 pnpm run payload          # PayloadCMS CLI
 ```
+
+## UI Architecture
+
+Novel Movie features a modern, full-width dashboard interface designed for professional movie production workflows.
+
+### Dashboard Layout
+
+- **Full-width design** - Maximizes screen real estate for content
+- **Collapsible sidebar** - Navigation with project management, media library, analytics
+- **Responsive design** - Mobile-first approach with adaptive layouts
+- **Multi-column layouts** - Efficient use of space with grid systems
+- **Modern interface** - Clean, professional design with Tailwind CSS 4.x
+
+### Key UI Components
+
+#### Layout Components
+- `DashboardLayout` - Main layout wrapper with sidebar and header
+- `Sidebar` - Collapsible navigation with user profile and menu items
+- `DashboardHeader` - Top header with search, notifications, and actions
+
+#### Dashboard Components
+- `StatsCard` - Metrics display with trend indicators
+- `DashboardCard` - Reusable content containers with headers and actions
+- `QuickActions` - Action buttons for common tasks
+
+#### Form Components
+- `FormField` - Consistent form field wrapper with labels and validation
+- `Input`, `Textarea`, `Select` - Styled form controls
+- `Button` - Multi-variant button component with loading states
+
+#### UI Components
+- `LoadingSpinner` - Loading indicators
+- `ErrorBoundary` - Graceful error handling
+- `Toast` system - User feedback notifications
+
+### Styling Approach
+
+- **Tailwind CSS 4.x** - Utility-first CSS framework with modern architecture
+- **Design tokens** - Consistent spacing, colors, and typography
+- **Component-based** - Reusable UI components with proper encapsulation
+- **Responsive breakpoints** - Mobile-first responsive design
+- **Dark mode ready** - Architecture supports theme switching
+
+### Navigation Structure
+
+```
+Dashboard (/)
+├── Projects (/projects)
+│   ├── Project Detail (/project/[id])
+│   └── Create Project (/project/create)
+├── Media Library (/media)
+├── Analytics (/analytics)
+└── Settings (/settings)
+```
+
+### Page Layouts
+
+All pages use the `DashboardLayout` component which provides:
+- Consistent sidebar navigation
+- Header with page title, subtitle, and actions
+- Full-width content area with proper spacing
+- Responsive behavior for mobile and desktop
 
 ## Documentation
 
