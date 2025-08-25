@@ -22,11 +22,6 @@ html, body {
   padding: 0;
 }
 
-/* Fix for sidebar layout alignment */
-@media (min-width: 1024px) {
-  .dashboard-main-content {
-    margin-left: 16rem; /* 256px / 16 = 16rem (w-64) */
-  }
-}
+/* Dashboard layout - sidebar spacing handled by Tailwind classes */
 
 

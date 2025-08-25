@@ -10,6 +10,7 @@ interface DashboardLayoutProps {
   title: string
   subtitle?: string
   actions?: ReactNode
+  showSearch?: boolean
 }
 
 export default function DashboardLayout({
@@ -17,6 +18,7 @@ export default function DashboardLayout({
   title,
   subtitle,
   actions,
+  showSearch = true,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -31,13 +33,14 @@ export default function DashboardLayout({
         <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
 
         {/* Main content */}
-        <div className="dashboard-main-content lg:pl-64">
+        <div className="lg:pl-64">
           {/* Header */}
           <DashboardHeader
             title={title}
             subtitle={subtitle}
             onMenuToggle={toggleSidebar}
             actions={actions}
+            showSearch={showSearch}
           />
 
           {/* Page content */}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Bell } from 'lucide-react'
 import Button from '@/components/ui/Button'
 
 interface DashboardHeaderProps {
@@ -8,9 +9,16 @@ interface DashboardHeaderProps {
   subtitle?: string
   onMenuToggle: () => void
   actions?: React.ReactNode
+  showSearch?: boolean
 }
 
-export default function DashboardHeader({ title, subtitle, onMenuToggle, actions }: DashboardHeaderProps) {
+export default function DashboardHeader({
+  title,
+  subtitle,
+  onMenuToggle,
+  actions,
+  showSearch = true,
+}: DashboardHeaderProps) {
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
@@ -25,65 +33,85 @@ export default function DashboardHeader({ title, subtitle, onMenuToggle, actions
             >
               <span className="sr-only">Open sidebar</span>
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </button>
             <div className="ml-4 lg:ml-0">
               <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
-              {subtitle && (
-                <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
-              )}
+              {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
             </div>
           </div>
 
           {/* Center - Search */}
-          <div className="hidden md:block flex-1 max-w-lg mx-8">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+          {showSearch && (
+            <div className="hidden md:block flex-1 max-w-lg mx-8">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    className="h-5 w-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search projects, media, or content..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
               </div>
-              <input
-                type="text"
-                placeholder="Search projects, media, or content..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              />
             </div>
-          </div>
+          )}
 
           {/* Right side - Actions and notifications */}
           <div className="flex items-center space-x-4">
             {/* Search button for mobile */}
-            <button className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
+            {showSearch && (
+              <button className="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            )}
 
             {/* Notifications */}
             <button className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 relative">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM10.07 2.82l3.12 3.12M7.05 5.84l3.12 3.12M4.03 8.86l3.12 3.12M1.01 11.88l3.12 3.12" />
-              </svg>
+              <Bell className="w-6 h-6" />
               <span className="absolute top-1 right-1 block h-2 w-2 rounded-full bg-red-400"></span>
             </button>
 
             {/* Actions */}
-            {actions && (
-              <div className="flex items-center space-x-2">
-                {actions}
-              </div>
-            )}
+            {actions && <div className="flex items-center space-x-2">{actions}</div>}
 
             {/* User menu */}
             <div className="relative">
               <button className="flex items-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100">
                 <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
                   <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                 </div>
               </button>
