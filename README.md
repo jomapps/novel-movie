@@ -86,3 +86,8 @@ Detailed documentation is organized in `/docs/`:
 
 MIT
 
+## Database initializing data
+create a script as follows that will take all the json data in /seed folder and seed the database
+```bash
+pnpm run payload seed
+```
