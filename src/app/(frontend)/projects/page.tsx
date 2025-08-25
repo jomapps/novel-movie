@@ -1,70 +1,20 @@
-'use client'
-
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import { Project } from '@/payload-types'
 import ProjectCard from '@/components/projects/ProjectCard'
 import EmptyState from '@/components/projects/EmptyState'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import Button from '@/components/ui/Button'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import ProjectsPagination from '@/components/projects/ProjectsPagination'
 
-interface ProjectsResponse {
-  success: boolean
-  data: {
-    docs: Project[]
-    totalDocs: number
-    limit: number
-    totalPages: number
-    page: number
-    pagingCounter: number
-    hasPrevPage: boolean
-    hasNextPage: boolean
-    prevPage: number | null
-    nextPage: number | null
-  }
-  error?: string
+interface ProjectsPageProps {
+  searchParams: Promise<{ page?: string }>
 }
 
-export default function ProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [hasNextPage, setHasNextPage] = useState(false)
-  const [hasPrevPage, setHasPrevPage] = useState(false)
-
-  const fetchProjects = async (page: number = 1) => {
-    try {
-      setLoading(true)
-      const response = await fetch(`/v1/projects?page=${page}&limit=12`)
-      const data: ProjectsResponse = await response.json()
-
-      if (data.success) {
-        setProjects(data.data.docs)
-        setTotalPages(data.data.totalPages)
-        setHasNextPage(data.data.hasNextPage)
-        setHasPrevPage(data.data.hasPrevPage)
-        setCurrentPage(data.data.page)
-      } else {
-        setError(data.error || 'Failed to fetch projects')
-      }
-    } catch (err) {
-      setError('Failed to fetch projects')
-      console.error('Error fetching projects:', err)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchProjects()
-  }, [])
-
-  const handlePageChange = (page: number) => {
-    fetchProjects(page)
-  }
+export default async function ProjectsPage({ searchParams }: ProjectsPageProps) {
+  const resolvedSearchParams = await searchParams
+  const currentPage = parseInt(resolvedSearchParams.page || '1')
 
   const headerActions = (
     <Link href="/project/create">
@@ -72,21 +22,53 @@ export default function ProjectsPage() {
     </Link>
   )
 
-  if (loading) {
+  try {
+    const payload = await getPayload({ config })
+
+    const projects = await payload.find({
+      collection: 'projects',
+      page: currentPage,
+      limit: 12,
+      sort: '-updatedAt',
+      depth: 2, // Include related data like movieFormat and movieStyle
+    })
+
+    if (projects.docs.length === 0) {
+      return (
+        <DashboardLayout
+          title="Projects"
+          subtitle="Manage your movie projects"
+          actions={headerActions}
+        >
+          <EmptyState />
+        </DashboardLayout>
+      )
+    }
+
     return (
       <DashboardLayout
         title="Projects"
         subtitle="Manage your movie projects"
         actions={headerActions}
       >
-        <div className="flex justify-center items-center h-64">
-          <LoadingSpinner size="lg" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          {projects.docs.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
         </div>
+
+        {projects.totalPages > 1 && (
+          <ProjectsPagination
+            currentPage={projects.page}
+            totalPages={projects.totalPages}
+            hasNextPage={projects.hasNextPage}
+            hasPrevPage={projects.hasPrevPage}
+          />
+        )}
       </DashboardLayout>
     )
-  }
-
-  if (error) {
+  } catch (error) {
+    console.error('Error fetching projects:', error)
     return (
       <DashboardLayout
         title="Projects"
@@ -110,48 +92,12 @@ export default function ProjectsPage() {
             </svg>
           </div>
           <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading projects</h3>
-          <p className="text-gray-500 mb-4">{error}</p>
-          <Button onClick={() => fetchProjects(currentPage)}>Try Again</Button>
+          <p className="text-gray-500 mb-4">Failed to load projects. Please try again later.</p>
+          <Link href="/projects">
+            <Button>Refresh Page</Button>
+          </Link>
         </div>
       </DashboardLayout>
     )
   }
-
-  return (
-    <DashboardLayout title="Projects" subtitle="Manage your movie projects" actions={headerActions}>
-      {projects.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-            {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-
-          {totalPages > 1 && (
-            <div className="flex justify-center items-center space-x-4">
-              <Button
-                variant="outline"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={!hasPrevPage}
-              >
-                Previous
-              </Button>
-              <span className="text-sm text-gray-600">
-                Page {currentPage} of {totalPages}
-              </span>
-              <Button
-                variant="outline"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={!hasNextPage}
-              >
-                Next
-              </Button>
-            </div>
-          )}
-        </>
-      )}
-    </DashboardLayout>
-  )
 }

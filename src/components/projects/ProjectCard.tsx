@@ -22,11 +22,26 @@ export default function ProjectCard({ project }: ProjectCardProps) {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
+    // Use a consistent format that won't cause hydration mismatches
+    const date = new Date(dateString)
+    const year = date.getFullYear()
+    const monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ]
+    const month = monthNames[date.getMonth()]
+    const day = date.getDate()
+    return `${month} ${day}, ${year}`
   }
 
   const movieFormat = typeof project.movieFormat === 'object' ? project.movieFormat : null
@@ -41,7 +56,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           </h3>
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-              project.status
+              project.status,
             )}`}
           >
             {project.status.charAt(0).toUpperCase() + project.status.slice(1).replace('-', ' ')}
@@ -49,9 +64,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         </div>
 
         {project.shortDescription && (
-          <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-            {project.shortDescription}
-          </p>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-3">{project.shortDescription}</p>
         )}
 
         <div className="space-y-2 mb-4">
