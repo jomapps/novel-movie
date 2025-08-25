@@ -15,6 +15,10 @@ This document outlines the comprehensive implementation plan for establishing a 
 - Implemented bidirectional one-to-one relationship with InitialConcepts
 - Added workflow status tracking with current step and completion history
 - Added automatic last activity timestamp updates
+- **CRITICAL**: Changed `longDescription` from `richText` to `textarea` to prevent data corruption
+
+**⚠️ Important Field Type Note**:
+All text fields that will receive AI-generated content or programmatic data must use `textarea` instead of `richText`. The Lexical editor in PayloadCMS expects structured JSON data and will corrupt plain string content.
 
 **New Fields Added**:
 ```typescript
@@ -62,7 +66,36 @@ This document outlines the comprehensive implementation plan for establishing a 
 - Unique constraint ensures one concept per project
 - Hooks update project status when concept is created/updated
 
-### 1.3 TypeScript Definition Updates
+### 1.3 Field Type Best Practices ⚠️ CRITICAL
+
+**Documentation**: See `docs/payloadcms-field-types-guide.md` for complete guidelines
+
+**Key Rules**:
+- **NEVER use `richText`** for AI-generated or programmatically populated content
+- **Always use `textarea`** for long-form text that may come from external sources
+- **Use `text`** for short, single-line inputs
+- **Only use `richText`** when users create content directly in PayloadCMS admin
+
+**Field Type Checklist**:
+```typescript
+// ❌ DON'T - Will cause data corruption
+{
+  name: 'aiGeneratedContent',
+  type: 'richText',  // Lexical editor expects JSON, not strings
+}
+
+// ✅ DO - Safe for all content sources
+{
+  name: 'aiGeneratedContent',
+  type: 'textarea',  // Handles plain text safely
+  admin: {
+    rows: 6,
+    description: 'AI-generated or user-written content',
+  },
+}
+```
+
+### 1.4 TypeScript Definition Updates
 
 **Required Action**: Generate new types after database changes
 ```bash

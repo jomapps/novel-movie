@@ -82,7 +82,7 @@ export const InitialConcepts: CollectionConfig = {
     // Core Premise (Required)
     {
       name: 'corePremise',
-      type: 'richText',
+      type: 'textarea',
       required: true,
       admin: {
         description: 'The central story concept and main conflict (50-500 words)',
@@ -485,8 +485,8 @@ export const InitialConcepts: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeCreate: [
-      async ({ data, req }) => {
+    beforeValidate: [
+      async ({ data, req }: any) => {
         // Validate project exists and doesn't already have an initial concept
         if (data?.project) {
           const existingConcept = await req.payload.find({
@@ -504,10 +504,10 @@ export const InitialConcepts: CollectionConfig = {
         return data
       },
     ],
-    afterCreate: [
-      async ({ doc, req }) => {
+    afterChange: [
+      async ({ doc, req, operation }: any) => {
         // Update project status to indicate concept is ready
-        if (doc.project && typeof doc.project === 'string') {
+        if (operation === 'create' && doc.project && typeof doc.project === 'string') {
           await req.payload.update({
             collection: 'projects',
             id: doc.project,
@@ -516,23 +516,19 @@ export const InitialConcepts: CollectionConfig = {
             },
           })
         }
-      },
-    ],
-    beforeUpdate: [
-      async ({ data, originalDoc, req }) => {
+
         // Log changes for audit trail
-        if (data?.status !== originalDoc.status) {
-          console.log(
-            `Initial concept ${originalDoc.id} status changed from ${originalDoc.status} to ${data.status}`,
-          )
+        if (operation === 'update') {
+          console.log(`Initial concept ${doc.id} updated`)
         }
-        return data
-      },
-    ],
-    afterUpdate: [
-      async ({ doc, req }) => {
+
         // Trigger story generation if concept is marked as approved
-        if (doc.status === 'approved' && doc.project && typeof doc.project === 'string') {
+        if (
+          operation === 'update' &&
+          doc.status === 'approved' &&
+          doc.project &&
+          typeof doc.project === 'string'
+        ) {
           await req.payload.update({
             collection: 'projects',
             id: doc.project,
