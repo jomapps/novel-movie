@@ -4,6 +4,7 @@ import { useState, ReactNode } from 'react'
 import Sidebar from './Sidebar'
 import DashboardHeader from './DashboardHeader'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
+import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -21,6 +22,7 @@ export default function DashboardLayout({
   showSearch = true,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { selectedProject } = useSelectedProject()
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
@@ -29,11 +31,13 @@ export default function DashboardLayout({
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
-        {/* Sidebar */}
-        <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
+        {/* Sidebar - only show when project is selected */}
+        {selectedProject && (
+          <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} pageTitle={title} />
+        )}
 
         {/* Main content */}
-        <div className="lg:pl-64">
+        <div className={selectedProject ? 'lg:pl-64' : ''}>
           {/* Header */}
           <DashboardHeader
             title={title}

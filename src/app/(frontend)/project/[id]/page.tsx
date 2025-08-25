@@ -70,26 +70,9 @@ export default function ProjectDetailPage() {
     })
   }
 
-  const headerActions = project ? (
-    <div className="flex space-x-3">
-      <Link href="/projects">
-        <Button variant="outline">Back to Projects</Button>
-      </Link>
-      <Button onClick={() => router.push(`/project/${project.id}/edit`)}>Edit Project</Button>
-    </div>
-  ) : (
-    <Link href="/projects">
-      <Button variant="outline">Back to Projects</Button>
-    </Link>
-  )
-
   if (loading) {
     return (
-      <DashboardLayout
-        title="Loading..."
-        subtitle="Fetching project details"
-        actions={headerActions}
-      >
+      <DashboardLayout title="Loading..." subtitle="Fetching project details" showSearch={false}>
         <div className="flex justify-center items-center h-64">
           <LoadingSpinner size="lg" />
         </div>
@@ -102,7 +85,6 @@ export default function ProjectDetailPage() {
       <DashboardLayout
         title="Project Not Found"
         subtitle="The requested project could not be found"
-        actions={headerActions}
         showSearch={false}
       >
         <div className="text-center py-12">
@@ -139,7 +121,6 @@ export default function ProjectDetailPage() {
     <DashboardLayout
       title={project.projectTitle || project.name}
       subtitle={`Project: ${project.name}`}
-      actions={headerActions}
       showSearch={false}
     >
       <div className="max-w-4xl mx-auto">

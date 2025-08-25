@@ -3,7 +3,7 @@
 ## Overview
 **Model ID**: `fal-ai/flux-pro/kontext/max/multi`  
 **Purpose**: Multi-image reference generation for complex scenes with multiple characters/objects  
-**Use Case**: When microScenes contain multiple characters, vehicles, objects, or any combination requiring multiple reference images
+**Use Case**: When scenes contain multiple characters, vehicles, objects, or any combination requiring multiple reference images
 
 ## Key Capabilities
 - **Multi-Reference Input**: Accept multiple image URLs as reference
@@ -172,12 +172,12 @@ if (!imageUrls.every(url => isValidUrl(url))) {
 
 ## Integration Points
 
-### MicroScene Decision Logic
+### Scene Decision Logic
 ```javascript
-const shouldUseMultiModel = (microScene) => {
-  const characterCount = microScene.sceneContext?.characters?.length || 0;
-  const hasVehicles = microScene.digitalAssets?.vehicles?.length > 0;
-  const hasObjects = microScene.digitalAssets?.objects?.length > 0;
+const shouldUseMultiModel = (scene) => {
+  const characterCount = scene.sceneContext?.characters?.length || 0;
+  const hasVehicles = scene.digitalAssets?.vehicles?.length > 0;
+  const hasObjects = scene.digitalAssets?.objects?.length > 0;
   
   return characterCount >= 2 || 
          (characterCount >= 1 && (hasVehicles || hasObjects));

@@ -163,10 +163,10 @@ curl -X POST "https://fal.run/fal-ai/moondream2/visual-query" \
 
 ## Integration Notes
 
-### For MicroScene Continuity Analysis
-When using this model for microScene continuity decisions:
+### For Scene Continuity Analysis
+When using this model for scene continuity decisions:
 
-1. **Extract last frame** from previous microScene video
+1. **Extract last frame** from previous scene video
 2. **Generate detailed prompt** asking about visual elements relevant to continuity
 3. **Use comprehensive prompts** that capture:
    - Character appearance and positioning

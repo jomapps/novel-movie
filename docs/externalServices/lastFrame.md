@@ -1151,8 +1151,8 @@ For technical support or questions:
 ## Test URLs
 
 ### Videos (for testing assembly service)
-- Scene 1: https://media.ft.tc/microscenes/688f57e9d1c33e060586a7e8/ms_5bfee540_001_1754425085200/videos/1754425566822_microscene_ms_5bfee540_001_1754425085200_video.mp4 8s
-- Scene 2: https://media.ft.tc/microscenes/688f57e9d1c33e060586a7e8/ms_5bfee540_002_1754425085217/videos/1754425760102_microscene_ms_5bfee540_002_1754425085217_video.mp4 8s 
+- Scene 1: https://media.ft.tc/scenes/688f57e9d1c33e060586a7e8/ms_5bfee540_001_1754425085200/videos/1754425566822_scene_ms_5bfee540_001_1754425085200_video.mp4 8s
+- Scene 2: https://media.ft.tc/scenes/688f57e9d1c33e060586a7e8/ms_5bfee540_002_1754425085217/videos/1754425760102_scene_ms_5bfee540_002_1754425085217_video.mp4 8s 
 - Scene 3: https://v3.fal.media/files/tiger/v-mrd2zt5dWXFKP9_Yl4q_output.mp4 7s
 ### Audio (for testing assembly service)
 Custom voiceId ttv-voice-2025081113554425-GZsrWpm5
@@ -1169,13 +1169,13 @@ curl -X POST "http://last-frame.ft.tc:8000/api/v1/video/assemble-movie" \
     "scene_videos": [
       {
         "scene_id": "scene_001",
-        "video_url": "https://media.ft.tc/microscenes/688f57e9d1c33e060586a7e8/ms_5bfee540_001_1754425085200/videos/1754425566822_microscene_ms_5bfee540_001_1754425085200_video.mp4",
+        "video_url": "https://media.ft.tc/scenes/688f57e9d1c33e060586a7e8/ms_5bfee540_001_1754425085200/videos/1754425566822_scene_ms_5bfee540_001_1754425085200_video.mp4",
         "sequence_number": 1,
         "expected_duration": 8.0
       },
       {
         "scene_id": "scene_002",
-        "video_url": "https://media.ft.tc/microscenes/688f57e9d1c33e060586a7e8/ms_5bfee540_002_1754425085217/videos/1754425760102_microscene_ms_5bfee540_002_1754425085217_video.mp4",
+        "video_url": "https://media.ft.tc/scenes/688f57e9d1c33e060586a7e8/ms_5bfee540_002_1754425085217/videos/1754425760102_scene_ms_5bfee540_002_1754425085217_video.mp4",
         "sequence_number": 2,
         "expected_duration": 8.0
       },

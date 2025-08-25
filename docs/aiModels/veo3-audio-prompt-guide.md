@@ -120,7 +120,7 @@ Inside an abandoned art gallery, the camera pans across dimly lit hallways. Dust
 
 ### **Voice and Dialogue Integration**
 
-For character dialogue in microScenes:
+For character dialogue in scenes:
 - Embed speech naturally: "she whispers urgently, 'We need to leave now'"
 - Specify delivery style: "his voice cuts through the noise, clear and commanding"
 - Include emotional context: "her words tremble with fear as she speaks"
@@ -147,11 +147,11 @@ For character dialogue in microScenes:
 
 ---
 
-## Implementation in MicroScene System
+## Implementation in Scene System
 
 ### **JSON Prompt Structure Integration**
 
-When generating Veo3 JSON prompts for microScenes, audio should be integrated into:
+When generating Veo3 JSON prompts for scenes, audio should be integrated into:
 
 1. **Scene Setting**: Environmental and ambient sounds
 2. **Character Performance**: Dialogue delivery and vocal characteristics

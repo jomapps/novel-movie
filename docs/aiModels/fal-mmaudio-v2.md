@@ -159,7 +159,7 @@ async function generateMusicWithRetry(config, maxRetries = 3) {
 
 ### Pricing Structure
 - **Base Cost**: $0.001 per second of video
-- **Typical 8s microScene**: $0.008
+- **Typical 8s scene**: $0.008
 - **30s scene**: $0.030
 - **Processing Time**: 30-90 seconds average
 

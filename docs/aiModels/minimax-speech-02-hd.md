@@ -74,9 +74,9 @@ const response = await fetch('https://fal.run/fal-ai/minimax/speech-02-hd', {
 - **`file_size`** (number): File size in bytes
 - **`content_type`** (string): MIME type of the audio file
 
-## Integration with MicroScene System
+## Integration with Scene System
 
-### MicroScene Configuration
+### Scene Configuration
 ```javascript
 falTTSConfig: {
   model: process.env.FAL_TEXT_TO_SPEECH, // 'fal-ai/minimax/speech-02-hd'

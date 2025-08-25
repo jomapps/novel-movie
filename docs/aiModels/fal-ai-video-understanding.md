@@ -66,7 +66,7 @@ A video understanding model to analyze video content and answer questions about 
 - Best used for short video segments for faster processing
 - Can be combined with other models for comprehensive video analysis workflows
 
-## Use Cases for MicroScene Analysis
+## Use Cases for Scene Analysis
 
 - **Continuity Detection**: Analyze last frame to determine if next scene should continue or start fresh
 - **Scene Transition Analysis**: Understand visual changes between scenes

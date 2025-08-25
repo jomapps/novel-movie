@@ -21,17 +21,10 @@ export default async function HomePage() {
   const projectsCount = await payload.count({ collection: 'projects' })
   const mediaCount = await payload.count({ collection: 'media' })
 
-  const headerActions = (
-    <Link href="/project/create">
-      <Button>Create New Project</Button>
-    </Link>
-  )
-
   return (
     <DashboardLayout
       title="Dashboard"
       subtitle="Welcome to Novel Movie - AI-powered movie production platform"
-      actions={headerActions}
       showSearch={false}
     >
       {/* Stats Overview */}

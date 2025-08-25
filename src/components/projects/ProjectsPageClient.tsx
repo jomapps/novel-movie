@@ -37,12 +37,6 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
   })
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const headerActions = (
-    <Link href="/project/create">
-      <Button>Create New Project</Button>
-    </Link>
-  )
-
   const handleDeleteClick = (projectId: string) => {
     const project = projects.docs.find((p) => p.id === projectId)
     if (project) {
@@ -97,12 +91,7 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
 
   if (projects.docs.length === 0) {
     return (
-      <DashboardLayout
-        title="Projects"
-        subtitle="Manage your movie projects"
-        actions={headerActions}
-        showSearch={false}
-      >
+      <DashboardLayout title="Projects" subtitle="Manage your movie projects" showSearch={false}>
         <EmptyState />
       </DashboardLayout>
     )
@@ -110,12 +99,7 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
 
   return (
     <>
-      <DashboardLayout
-        title="Projects"
-        subtitle="Manage your movie projects"
-        actions={headerActions}
-        showSearch={false}
-      >
+      <DashboardLayout title="Projects" subtitle="Manage your movie projects" showSearch={false}>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
           {projects.docs.map((project) => (
             <ProjectCard key={project.id} project={project} onDelete={handleDeleteClick} />

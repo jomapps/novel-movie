@@ -1,7 +1,7 @@
 # FAL AI Avatar Implementation - Working Configuration
 
 ## Overview
-This document describes the working implementation of FAL AI Avatar video generation for microScenes.
+This document describes the working implementation of FAL AI Avatar video generation for scenes.
 
 ## Working Configuration
 
@@ -104,7 +104,7 @@ const modelEndpoint = videoConfig.characterCount > 1 ? 'fal-ai/ai-avatar/multi' 
 ### Database Integration
 ```javascript
 const updatedVideoGeneration = {
-  ...microScene.videoGeneration,
+  ...scene.videoGeneration,
   generatedVideo: {
     url: result.video.url,
     duration: videoConfig.duration,
@@ -119,7 +119,7 @@ const updatedVideoGeneration = {
 ## Testing Results
 
 ### Successful Test Case
-- **MicroScene ID**: ms_lidation_001_1754357098634
+- **Scene ID**: ms_lidation_001_1754357098634
 - **Image URL**: https://v3.fal.media/files/koala/Lif19PPLer9EpMKhS_7ss.jpeg
 - **Audio URL**: https://v3.fal.media/files/monkey/15P8XliuChvi75LaTGnJQ_output.wav
 - **Processing Time**: 263 seconds (4.4 minutes)
