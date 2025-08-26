@@ -66,8 +66,14 @@ export default function InitialConceptPage() {
         ) {
           setInitialConcept(conceptData.data.docs[0])
         } else {
-          // No existing initial concept found - this will trigger smart defaults
+          // No existing initial concept found - automatically start AI generation
           setInitialConcept(null)
+          // Automatically trigger AI generation for new projects
+          setTimeout(() => {
+            if (projectData.data) {
+              handleAutoAIGeneration(projectData.data)
+            }
+          }, 500) // Small delay to ensure UI is ready
         }
       } catch (err) {
         console.error('Error fetching data:', err)
@@ -81,6 +87,154 @@ export default function InitialConceptPage() {
       fetchData()
     }
   }, [params.id])
+
+  // Handle automatic AI generation for new projects (no existing initial concept)
+  const handleAutoAIGeneration = async (projectData: Project) => {
+    console.log('🚀 Starting automatic AI generation for new project')
+
+    setAiLoading(true)
+    try {
+      // First, get smart defaults to populate foundation fields
+      console.log('📋 Fetching smart defaults for foundation fields...')
+      const smartDefaultsResponse = await fetch('/v1/initial-concepts/smart-defaults')
+      const smartDefaultsData = await smartDefaultsResponse.json()
+
+      if (!smartDefaultsData.success) {
+        throw new Error('Failed to fetch smart defaults')
+      }
+
+      // Create form data with smart defaults as foundation
+      const freshFormData = {
+        status: 'ai-generated',
+        primaryGenres: smartDefaultsData.data.primaryGenres || [], // Use smart defaults
+        corePremise: '',
+        targetAudience: {
+          demographics: smartDefaultsData.data.demographics || [], // Use smart defaults
+          psychographics: '',
+          customDescription: '',
+        },
+        toneAndMood: {
+          tones: smartDefaultsData.data.tones || [], // Use smart defaults
+          moods: smartDefaultsData.data.moods || [], // Use smart defaults
+          emotionalArc: '',
+        },
+        visualStyle: {
+          cinematographyStyle: '',
+          colorPalette: {
+            dominance: '',
+            saturation: '',
+            symbolicColors: '',
+          },
+          lightingPreferences: '',
+          cameraMovement: '',
+        },
+        references: {
+          inspirationalMovies: [],
+          visualReferences: '',
+          narrativeReferences: '',
+        },
+        themes: {
+          centralThemes: smartDefaultsData.data.centralThemes || [], // Use smart defaults
+          moralQuestions: '',
+          messageTakeaway: '',
+        },
+      }
+
+      console.log('✅ Smart defaults applied:', {
+        primaryGenres: freshFormData.primaryGenres.length,
+        demographics: freshFormData.targetAudience.demographics.length,
+        tones: freshFormData.toneAndMood.tones.length,
+        moods: freshFormData.toneAndMood.moods.length,
+        centralThemes: freshFormData.themes.centralThemes.length,
+      })
+
+      // Prepare the request payload with project context
+      const payload = {
+        projectName: projectData.name,
+        projectDescription: projectData.description || '',
+        movieFormat:
+          typeof projectData.movieFormat === 'object'
+            ? projectData.movieFormat.slug
+            : projectData.movieFormat,
+        movieStyle:
+          typeof projectData.movieStyle === 'object'
+            ? projectData.movieStyle.slug
+            : projectData.movieStyle,
+        durationUnit: projectData.durationUnit,
+        series:
+          typeof projectData.series === 'object' ? projectData.series?.slug : projectData.series,
+        formData: freshFormData,
+      }
+
+      console.log('📤 Sending automatic AI generation request:', JSON.stringify(payload, null, 2))
+
+      const response = await fetch('/v1/initial-concepts/ai-autofill', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Update the initial concept with generated fields
+        const updatedConcept = { ...freshFormData }
+
+        // Apply generated fields to the concept
+        Object.entries(result.data.generatedFields).forEach(([fieldPath, value]) => {
+          const keys = fieldPath.split('.')
+          let current: any = updatedConcept
+
+          // Navigate to the parent object
+          for (let i = 0; i < keys.length - 1; i++) {
+            if (!current[keys[i]]) {
+              current[keys[i]] = {}
+            }
+            current = current[keys[i]]
+          }
+
+          // Set the value
+          current[keys[keys.length - 1]] = value
+        })
+
+        // Create a proper InitialConcept object
+        const newInitialConcept = {
+          ...updatedConcept,
+          id: '', // Will be set when saved
+          project: params.id,
+          projectName: null,
+          characterArchetypes: null,
+          setting: null,
+          pacing: null,
+          contentGuidelines: null,
+          updatedAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+        }
+
+        setInitialConcept(newInitialConcept as any)
+        success(
+          'AI Generation Complete',
+          `Successfully generated initial concept with ${result.data.summary.totalGenerated} field(s). Review and save when ready.`,
+        )
+      } else {
+        error('AI Generation Error', result.error || 'Failed to generate initial concept')
+        // Fall back to empty form if AI generation fails
+        setInitialConcept(null)
+      }
+    } catch (err) {
+      console.error('Automatic AI generation error:', err)
+      error(
+        'AI Generation Error',
+        'Failed to generate initial concept. You can fill out the form manually.',
+      )
+      // Fall back to empty form if AI generation fails
+      setInitialConcept(null)
+    } finally {
+      setAiLoading(false)
+    }
+  }
 
   // Handle AI auto-fill - completely regenerate all data from project context
   const handleAIAutoFill = async () => {
@@ -324,6 +478,75 @@ export default function InitialConceptPage() {
       <DashboardLayout title="Initial Concept" subtitle="Loading..." showSearch={false}>
         <div className="flex justify-center items-center py-12">
           <LoadingSpinner size="lg" />
+        </div>
+      </DashboardLayout>
+    )
+  }
+
+  // Show AI generation loading state when automatically generating for new projects
+  if (aiLoading && !initialConcept) {
+    return (
+      <DashboardLayout
+        title="Initial Concept"
+        subtitle={project ? `Project: ${project.name}` : 'Loading...'}
+        showSearch={false}
+      >
+        <div className="w-full max-w-none">
+          {/* AI Generation Loading Card */}
+          <div className="bg-white shadow-sm rounded-lg p-8 mb-8 border border-gray-200">
+            <div className="text-center">
+              <div className="flex justify-center items-center mb-6">
+                <div className="relative">
+                  <LoadingSpinner size="lg" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <svg
+                      className="w-8 h-8 text-purple-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Generating Initial Concept</h2>
+              <p className="text-lg text-gray-600 mb-4">
+                AI is creating a comprehensive creative foundation for your project...
+              </p>
+              <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                <div className="text-sm text-gray-700">
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                    <span>Analyzing project context</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2 mb-2">
+                    <div
+                      className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"
+                      style={{ animationDelay: '0.2s' }}
+                    ></div>
+                    <span>Generating core premise and themes</span>
+                  </div>
+                  <div className="flex items-center justify-center space-x-2">
+                    <div
+                      className="w-2 h-2 bg-green-500 rounded-full animate-pulse"
+                      style={{ animationDelay: '0.4s' }}
+                    ></div>
+                    <span>Creating visual and narrative elements</span>
+                  </div>
+                </div>
+              </div>
+              <p className="text-sm text-gray-500">
+                This usually takes 30-60 seconds. Once complete, you can review and edit the
+                generated content.
+              </p>
+            </div>
+          </div>
         </div>
       </DashboardLayout>
     )
