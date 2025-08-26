@@ -16,6 +16,7 @@ import Textarea from '@/components/forms/Textarea'
 import Select from '@/components/forms/Select'
 import MultiSelect from '@/components/forms/MultiSelect'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+// Removed problematic PayloadCMS client-side import
 
 interface InitialConceptFormData {
   status: string
@@ -61,6 +62,7 @@ interface InitialConceptFormProps {
   initialData?: InitialConcept | null
   onSubmit: (data: InitialConceptFormData) => Promise<void>
   loading?: boolean
+  onFormDataChange?: (data: InitialConceptFormData) => void // Expose form state changes
 }
 
 interface FormErrors {
@@ -71,10 +73,11 @@ export default function InitialConceptForm({
   initialData,
   onSubmit,
   loading = false,
+  onFormDataChange,
 }: InitialConceptFormProps) {
   const [formData, setFormData] = useState<InitialConceptFormData>({
     status: 'draft',
-    primaryGenres: [],
+    primaryGenres: [], // Will be populated by smart defaults
     corePremise: '',
     targetAudience: {
       demographics: [],
@@ -107,6 +110,63 @@ export default function InitialConceptForm({
       messageTakeaway: '',
     },
   })
+
+  // Apply smart defaults when no initial data is provided
+  useEffect(() => {
+    const applySmartDefaults = async () => {
+      if (!initialData) {
+        console.log('📝 No initial data provided, applying smart defaults...')
+        try {
+          const response = await fetch('/v1/initial-concepts/smart-defaults')
+          const data = await response.json()
+
+          if (data.success) {
+            const smartDefaults = data.data
+            const defaultFormData = {
+              status: 'draft',
+              primaryGenres: smartDefaults.primaryGenres || [],
+              corePremise: '',
+              targetAudience: {
+                demographics: smartDefaults.targetAudience?.demographics || [],
+                psychographics: '',
+                customDescription: '',
+              },
+              toneAndMood: {
+                tones: smartDefaults.toneAndMood?.tones || [],
+                moods: smartDefaults.toneAndMood?.moods || [],
+                emotionalArc: '',
+              },
+              visualStyle: {
+                cinematographyStyle: '',
+                colorPalette: {
+                  dominance: '',
+                  saturation: '',
+                  symbolicColors: '',
+                },
+                lightingPreferences: '',
+                cameraMovement: '',
+              },
+              references: {
+                inspirationalMovies: [],
+                visualReferences: '',
+                narrativeReferences: '',
+              },
+              themes: {
+                centralThemes: smartDefaults.themes?.centralThemes || [],
+                moralQuestions: '',
+                messageTakeaway: '',
+              },
+            }
+            setFormData(defaultFormData)
+          }
+        } catch (error) {
+          console.error('Failed to load smart defaults:', error)
+        }
+      }
+    }
+
+    applySmartDefaults()
+  }, [initialData])
 
   // Update form data when initialData changes (for AI auto-fill updates)
   useEffect(() => {
@@ -173,6 +233,11 @@ export default function InitialConceptForm({
       setFormData(formDataFromInitial)
     }
   }, [initialData])
+
+  // Notify parent of form data changes for sidebar
+  useEffect(() => {
+    onFormDataChange?.(formData)
+  }, [formData, onFormDataChange])
 
   const [errors, setErrors] = useState<FormErrors>({})
   const [lookupData, setLookupData] = useState({

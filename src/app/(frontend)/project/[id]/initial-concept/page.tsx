@@ -9,6 +9,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import Button from '@/components/ui/Button'
 import ToastContainer, { useToast } from '@/components/ui/ToastContainer'
 import InitialConceptForm from '@/components/forms/InitialConceptForm'
+// Removed problematic PayloadCMS client-side import
 
 interface InitialConceptResponse {
   success: boolean
@@ -33,6 +34,7 @@ export default function InitialConceptPage() {
   const [saving, setSaving] = useState(false)
   const [aiLoading, setAiLoading] = useState(false)
   const [pageError, setPageError] = useState<string | null>(null)
+  const [currentFormData, setCurrentFormData] = useState<any>(null) // Track form state for sidebar
 
   // Fetch project and initial concept data
   useEffect(() => {
@@ -53,10 +55,19 @@ export default function InitialConceptPage() {
 
         // Fetch existing initial concept for this project
         const conceptResponse = await fetch(`/v1/initial-concepts?project=${params.id}`)
-        const conceptData: InitialConceptResponse = await conceptResponse.json()
+        const conceptData = await conceptResponse.json()
 
-        if (conceptData.success && conceptData.data) {
-          setInitialConcept(conceptData.data)
+        // PayloadCMS returns paginated results, extract the first document if it exists
+        if (
+          conceptData.success &&
+          conceptData.data &&
+          conceptData.data.docs &&
+          conceptData.data.docs.length > 0
+        ) {
+          setInitialConcept(conceptData.data.docs[0])
+        } else {
+          // No existing initial concept found - this will trigger smart defaults
+          setInitialConcept(null)
         }
       } catch (err) {
         console.error('Error fetching data:', err)
@@ -71,16 +82,26 @@ export default function InitialConceptPage() {
     }
   }, [params.id])
 
-  // Handle AI auto-fill
+  // Handle AI auto-fill - completely regenerate all data from project context
   const handleAIAutoFill = async () => {
     if (!project) return
 
+    // Prevent multiple simultaneous calls
+    if (aiLoading) {
+      console.log('🚫 AI autofill already in progress, ignoring duplicate call')
+      return
+    }
+
+    const requestId = Math.random().toString(36).substr(2, 9)
+    console.log(`🚀 Starting AI autofill request ${requestId}`)
+
     setAiLoading(true)
     try {
-      // Get current form data from the form component
-      const currentFormData = initialConcept || {
-        status: 'draft',
-        primaryGenres: [],
+      // Create fresh form data structure for complete regeneration
+      // AI will populate all fields based purely on project context
+      const freshFormData = {
+        status: 'ai-generated',
+        primaryGenres: [], // AI will determine appropriate genres
         corePremise: '',
         targetAudience: {
           demographics: [],
@@ -103,7 +124,7 @@ export default function InitialConceptPage() {
           cameraMovement: '',
         },
         references: {
-          inspirationalMovies: [],
+          inspirationalMovies: [], // Will be populated by AI as array of {title, year, specificElements}
           visualReferences: '',
           narrativeReferences: '',
         },
@@ -114,15 +135,20 @@ export default function InitialConceptPage() {
         },
       }
 
-      // Prepare the request payload
+      // Prepare the request payload with project context only
       const payload = {
         projectName: project.name,
-        movieFormat: project.movieFormat,
-        movieStyle: project.movieStyle,
+        projectDescription: project.description || '', // Include project description if available
+        movieFormat:
+          typeof project.movieFormat === 'object' ? project.movieFormat.slug : project.movieFormat,
+        movieStyle:
+          typeof project.movieStyle === 'object' ? project.movieStyle.slug : project.movieStyle,
         durationUnit: project.durationUnit,
-        series: project.series,
-        formData: currentFormData,
+        series: typeof project.series === 'object' ? project.series?.slug : project.series,
+        formData: freshFormData, // Use fresh data structure for complete regeneration
       }
+
+      console.log(`📤 Sending AI autofill request ${requestId}:`, JSON.stringify(payload, null, 2))
 
       const response = await fetch('/v1/initial-concepts/ai-autofill', {
         method: 'POST',
@@ -136,7 +162,7 @@ export default function InitialConceptPage() {
 
       if (result.success) {
         // Update the initial concept with generated fields
-        const updatedConcept = { ...currentFormData }
+        const updatedConcept = { ...freshFormData }
 
         // Apply generated fields to the concept
         Object.entries(result.data.generatedFields).forEach(([fieldPath, value]) => {
@@ -335,7 +361,7 @@ export default function InitialConceptPage() {
       title="Initial Concept"
       subtitle={`Project: ${project.name}`}
       showSearch={false}
-      formData={initialConcept}
+      formData={currentFormData} // Use form state instead of database object
     >
       <div className="w-full max-w-none">
         {/* Header Section - Full Width Card */}
@@ -393,6 +419,7 @@ export default function InitialConceptPage() {
               initialData={initialConcept}
               onSubmit={handleFormSubmit}
               loading={saving}
+              onFormDataChange={setCurrentFormData} // Track form state changes
             />
           </div>
         </div>

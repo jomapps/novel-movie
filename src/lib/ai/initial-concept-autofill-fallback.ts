@@ -12,6 +12,7 @@ const openrouter = new OpenAI({
 
 export interface InitialConceptContext {
   projectName: string
+  projectDescription?: string // Optional project description for better context
   movieFormat: string
   movieStyle: string
   series?: string
@@ -156,7 +157,9 @@ Generate only the core premise content, no additional text or explanation.`
 /**
  * Generate target audience psychographics
  */
-async function generateTargetAudiencePsychographics(context: InitialConceptContext): Promise<string> {
+async function generateTargetAudiencePsychographics(
+  context: InitialConceptContext,
+): Promise<string> {
   const prompt = `You are a leading audience psychology expert with deep expertise in film marketing and consumer psychology.
 
 Project Context:
@@ -240,62 +243,63 @@ const GENERATION_SEQUENCE = [
 function hasFieldContent(formData: InitialConceptFormData, fieldPath: string): boolean {
   const keys = fieldPath.split('.')
   let current: any = formData
-  
+
   for (const key of keys) {
     if (current === null || current === undefined) return false
     current = current[key]
   }
-  
+
   if (Array.isArray(current)) {
     return current.length > 0
   }
-  
+
   return typeof current === 'string' ? current.trim().length > 0 : !!current
 }
 
 /**
  * Check if required fields are present for a generation step
  */
-function hasRequiredFields(formData: InitialConceptFormData, requiredFields: readonly string[]): boolean {
-  return requiredFields.every(field => hasFieldContent(formData, field))
+function hasRequiredFields(
+  formData: InitialConceptFormData,
+  requiredFields: readonly string[],
+): boolean {
+  return requiredFields.every((field) => hasFieldContent(formData, field))
 }
 
 /**
- * Generate all missing fields sequentially with progress tracking
+ * Generate all fields completely from scratch (complete regeneration)
  */
-export async function generateMissingFieldsSequentially(
+export async function generateAllFieldsFromScratch(
   context: InitialConceptContext,
-  onProgress?: (progress: FieldGenerationProgress) => void
+  onProgress?: (progress: FieldGenerationProgress) => void,
 ): Promise<GeneratedFields> {
   const generatedFields: GeneratedFields = {}
-  
-  // Process each field in sequence
+
+  // Process each field in sequence - generate ALL fields regardless of existing content
   for (const step of GENERATION_SEQUENCE) {
-    const { fieldName, fieldLabel, generator, required } = step
-    
-    // Skip if field already has content
-    if (hasFieldContent(context.formData, fieldName)) {
+    const { fieldName, fieldLabel, generator } = step
+
+    // Always generate - no content checking for complete regeneration
+    // Skip only if we can't generate due to missing dependencies
+    const canGenerate = step.required ? hasRequiredFields(context.formData, step.required) : true
+
+    if (!canGenerate) {
       continue
     }
-    
-    // Skip if required fields are missing
-    if (!hasRequiredFields(context.formData, required)) {
-      continue
-    }
-    
+
     // Notify progress start
     onProgress?.({
       fieldName,
       fieldLabel,
       status: 'generating',
     })
-    
+
     try {
       // Generate the field content
       const content = await generator(context)
-      
+
       generatedFields[fieldName as keyof GeneratedFields] = content
-      
+
       // Update context with generated content for next fields
       const keys = fieldName.split('.')
       let current: any = context.formData
@@ -303,7 +307,7 @@ export async function generateMissingFieldsSequentially(
         current = current[keys[i]]
       }
       current[keys[keys.length - 1]] = content
-      
+
       // Notify progress completion
       onProgress?.({
         fieldName,
@@ -311,10 +315,9 @@ export async function generateMissingFieldsSequentially(
         status: 'completed',
         content,
       })
-      
     } catch (error) {
       console.error(`Error generating ${fieldName}:`, error)
-      
+
       // Notify progress error
       onProgress?.({
         fieldName,
@@ -324,7 +327,74 @@ export async function generateMissingFieldsSequentially(
       })
     }
   }
-  
+
+  return generatedFields
+}
+
+/**
+ * Generate all missing fields sequentially with progress tracking (original function)
+ */
+export async function generateMissingFieldsSequentially(
+  context: InitialConceptContext,
+  onProgress?: (progress: FieldGenerationProgress) => void,
+): Promise<GeneratedFields> {
+  const generatedFields: GeneratedFields = {}
+
+  // Process each field in sequence
+  for (const step of GENERATION_SEQUENCE) {
+    const { fieldName, fieldLabel, generator, required } = step
+
+    // Skip if field already has content
+    if (hasFieldContent(context.formData, fieldName)) {
+      continue
+    }
+
+    // Skip if required fields are missing
+    if (!hasRequiredFields(context.formData, required)) {
+      continue
+    }
+
+    // Notify progress start
+    onProgress?.({
+      fieldName,
+      fieldLabel,
+      status: 'generating',
+    })
+
+    try {
+      // Generate the field content
+      const content = await generator(context)
+
+      generatedFields[fieldName as keyof GeneratedFields] = content
+
+      // Update context with generated content for next fields
+      const keys = fieldName.split('.')
+      let current: any = context.formData
+      for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]]
+      }
+      current[keys[keys.length - 1]] = content
+
+      // Notify progress completion
+      onProgress?.({
+        fieldName,
+        fieldLabel,
+        status: 'completed',
+        content,
+      })
+    } catch (error) {
+      console.error(`Error generating ${fieldName}:`, error)
+
+      // Notify progress error
+      onProgress?.({
+        fieldName,
+        fieldLabel,
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      })
+    }
+  }
+
   return generatedFields
 }
 
@@ -337,10 +407,12 @@ export function createInitialConceptContext(
   movieStyle: string,
   durationUnit: number,
   formData: InitialConceptFormData,
-  series?: string
+  series?: string,
+  projectDescription?: string,
 ): InitialConceptContext {
   return {
     projectName,
+    projectDescription,
     movieFormat,
     movieStyle,
     series,

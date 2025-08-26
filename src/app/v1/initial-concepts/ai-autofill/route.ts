@@ -1,23 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import {
-  generateMissingFieldsSequentially,
+  generateAllFieldsFromScratch,
   createInitialConceptContext,
   validateRequiredProjectFields,
   type InitialConceptFormData,
   type FieldGenerationProgress,
 } from '@/lib/ai/initial-concept-autofill-fallback'
+// Removed problematic collection manager import
 
 // Validation schema for the request
 const AutofillRequestSchema = z.object({
   // Project context
   projectName: z.string().min(1, 'Project name is required'),
+  projectDescription: z.string().optional().default(''), // Optional project description for better context
   movieFormat: z.string().min(1, 'Movie format is required'),
   movieStyle: z.string().min(1, 'Movie style is required'),
   durationUnit: z
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === 'string' ? parseInt(val) : val)),
-  series: z.string().optional(),
+  series: z.string().optional().nullable(),
 
   // Current form data
   formData: z.object({
@@ -69,6 +71,8 @@ const AutofillRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    console.log('🔍 Received request body:', JSON.stringify(body, null, 2))
+    console.log('🔍 FormData structure:', JSON.stringify(body.formData, null, 2))
 
     // Validate the request data
     const validatedData = AutofillRequestSchema.parse(body)
@@ -96,19 +100,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check if minimum required form fields are present for AI generation
+    // AI will generate all content from scratch based on project context
+    // No pre-existing form data validation needed since we're doing complete regeneration
     const { formData } = validatedData
-    if (formData.primaryGenres.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'At least one primary genre must be selected before using AI auto-fill.',
-        },
-        { status: 400 },
-      )
-    }
 
-    // Create context for AI generation
+    // Create context for AI generation with project description for complete regeneration
     const context = createInitialConceptContext(
       validatedData.projectName,
       validatedData.movieFormat,
@@ -116,17 +112,21 @@ export async function POST(request: NextRequest) {
       validatedData.durationUnit,
       validatedData.formData,
       validatedData.series,
+      validatedData.projectDescription,
     )
 
     // Track progress for potential streaming response
     const progressUpdates: FieldGenerationProgress[] = []
 
-    // Generate missing fields sequentially
-    const generatedFields = await generateMissingFieldsSequentially(context, (progress) => {
+    // Generate ALL fields from scratch for complete regeneration
+    console.log('🤖 Starting AI generation for all fields...')
+    const generatedFields = await generateAllFieldsFromScratch(context, (progress) => {
+      console.log(`📊 Field progress: ${progress.fieldName} - ${progress.status}`)
       progressUpdates.push(progress)
       // In a real implementation, you might want to stream these updates
       // For now, we'll collect them and return at the end
     })
+    console.log('✅ AI generation completed:', Object.keys(generatedFields))
 
     // Check if any fields were generated
     const hasGeneratedContent = Object.keys(generatedFields).length > 0
@@ -166,6 +166,7 @@ export async function POST(request: NextRequest) {
 
     // Handle validation errors
     if (error instanceof z.ZodError) {
+      console.error('🚨 Zod validation errors:', JSON.stringify(error.errors, null, 2))
       return NextResponse.json(
         {
           success: false,
