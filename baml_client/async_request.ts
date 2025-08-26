@@ -22,7 +22,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio, Pdf, Vi
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {ProjectFieldsResponse} from "./types"
+import type {ProjectFieldsResponse, ReferenceResponse, ThematicResponse, VisualStyleResponse} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -48,6 +48,56 @@ export class AsyncHttpRequest {
         "GenerateAllProjectFields",
         {
           "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingTitle": existingTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateCorePremise(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],existingPremise?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateCorePremise",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"existingPremise": existingPremise?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateEmotionalArc(
+      projectName: string,primaryGenres: string[],corePremise: string,tones: string[],moods: string[],existingEmotionalArc?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateEmotionalArc",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"tones": tones,"moods": moods,"existingEmotionalArc": existingEmotionalArc?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -110,6 +160,31 @@ export class AsyncHttpRequest {
     }
   }
   
+  async GenerateReferenceMaterials(
+      projectName: string,primaryGenres: string[],corePremise: string,visualStyle: string,themes: string[],existingVisualReferences?: string | null,existingNarrativeReferences?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateReferenceMaterials",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"visualStyle": visualStyle,"themes": themes,"existingVisualReferences": existingVisualReferences?? null,"existingNarrativeReferences": existingNarrativeReferences?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async GenerateShortDescription(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,projectTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -123,6 +198,106 @@ export class AsyncHttpRequest {
         "GenerateShortDescription",
         {
           "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"projectTitle": projectTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateTargetAudienceCustomDescription(
+      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],psychographics: string,existingCustomDescription?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateTargetAudienceCustomDescription",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"psychographics": psychographics,"existingCustomDescription": existingCustomDescription?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateTargetAudiencePsychographics(
+      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],existingPsychographics?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateTargetAudiencePsychographics",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"existingPsychographics": existingPsychographics?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateThematicElements(
+      projectName: string,primaryGenres: string[],corePremise: string,centralThemes: string[],existingMoralQuestions?: string | null,existingMessageTakeaway?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateThematicElements",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"centralThemes": centralThemes,"existingMoralQuestions": existingMoralQuestions?? null,"existingMessageTakeaway": existingMessageTakeaway?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateVisualStyleElements(
+      projectName: string,primaryGenres: string[],corePremise: string,cinematographyStyle: string,colorDominance: string,saturation: string,cameraMovement: string,existingSymbolicColors?: string | null,existingLightingPreferences?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateVisualStyleElements",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"cinematographyStyle": cinematographyStyle,"colorDominance": colorDominance,"saturation": saturation,"cameraMovement": cameraMovement,"existingSymbolicColors": existingSymbolicColors?? null,"existingLightingPreferences": existingLightingPreferences?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -166,6 +341,56 @@ export class AsyncHttpStreamRequest {
     }
   }
   
+  async GenerateCorePremise(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],existingPremise?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateCorePremise",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"existingPremise": existingPremise?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateEmotionalArc(
+      projectName: string,primaryGenres: string[],corePremise: string,tones: string[],moods: string[],existingEmotionalArc?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateEmotionalArc",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"tones": tones,"moods": moods,"existingEmotionalArc": existingEmotionalArc?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async GenerateLongDescription(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,projectTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -216,6 +441,31 @@ export class AsyncHttpStreamRequest {
     }
   }
   
+  async GenerateReferenceMaterials(
+      projectName: string,primaryGenres: string[],corePremise: string,visualStyle: string,themes: string[],existingVisualReferences?: string | null,existingNarrativeReferences?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateReferenceMaterials",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"visualStyle": visualStyle,"themes": themes,"existingVisualReferences": existingVisualReferences?? null,"existingNarrativeReferences": existingNarrativeReferences?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async GenerateShortDescription(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,projectTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -229,6 +479,106 @@ export class AsyncHttpStreamRequest {
         "GenerateShortDescription",
         {
           "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"projectTitle": projectTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateTargetAudienceCustomDescription(
+      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],psychographics: string,existingCustomDescription?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateTargetAudienceCustomDescription",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"psychographics": psychographics,"existingCustomDescription": existingCustomDescription?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateTargetAudiencePsychographics(
+      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],existingPsychographics?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateTargetAudiencePsychographics",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"existingPsychographics": existingPsychographics?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateThematicElements(
+      projectName: string,primaryGenres: string[],corePremise: string,centralThemes: string[],existingMoralQuestions?: string | null,existingMessageTakeaway?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateThematicElements",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"centralThemes": centralThemes,"existingMoralQuestions": existingMoralQuestions?? null,"existingMessageTakeaway": existingMessageTakeaway?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async GenerateVisualStyleElements(
+      projectName: string,primaryGenres: string[],corePremise: string,cinematographyStyle: string,colorDominance: string,saturation: string,cameraMovement: string,existingSymbolicColors?: string | null,existingLightingPreferences?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<HTTPRequest> {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return await this.runtime.buildRequest(
+        "GenerateVisualStyleElements",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"cinematographyStyle": cinematographyStyle,"colorDominance": colorDominance,"saturation": saturation,"cameraMovement": cameraMovement,"existingSymbolicColors": existingSymbolicColors?? null,"existingLightingPreferences": existingLightingPreferences?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

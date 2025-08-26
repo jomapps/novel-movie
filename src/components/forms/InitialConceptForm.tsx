@@ -108,6 +108,67 @@ export default function InitialConceptForm({
     },
   })
 
+  // Update form data when initialData changes (for AI auto-fill updates)
+  useEffect(() => {
+    if (initialData) {
+      // Convert InitialConcept to InitialConceptFormData
+      const formDataFromInitial: InitialConceptFormData = {
+        status: initialData.status || 'draft',
+        primaryGenres:
+          initialData.primaryGenres?.map((genre) =>
+            typeof genre === 'string' ? genre : genre.id,
+          ) || [],
+        corePremise: initialData.corePremise || '',
+        targetAudience: {
+          demographics:
+            initialData.targetAudience?.demographics?.map((demo) =>
+              typeof demo === 'string' ? demo : demo.id,
+            ) || [],
+          psychographics: initialData.targetAudience?.psychographics || '',
+          customDescription: initialData.targetAudience?.customDescription || '',
+        },
+        toneAndMood: {
+          tones:
+            initialData.toneAndMood?.tones?.map((tone) =>
+              typeof tone === 'string' ? tone : tone.id,
+            ) || [],
+          moods:
+            initialData.toneAndMood?.moods?.map((mood) =>
+              typeof mood === 'string' ? mood : mood.id,
+            ) || [],
+          emotionalArc: initialData.toneAndMood?.emotionalArc || '',
+        },
+        visualStyle: {
+          cinematographyStyle:
+            typeof initialData.visualStyle?.cinematographyStyle === 'string'
+              ? initialData.visualStyle.cinematographyStyle
+              : initialData.visualStyle?.cinematographyStyle?.id || '',
+          colorPalette: {
+            dominance: initialData.visualStyle?.colorPalette?.dominance || '',
+            saturation: initialData.visualStyle?.colorPalette?.saturation || '',
+            symbolicColors: initialData.visualStyle?.colorPalette?.symbolicColors || '',
+          },
+          lightingPreferences: initialData.visualStyle?.lightingPreferences || '',
+          cameraMovement: initialData.visualStyle?.cameraMovement || '',
+        },
+        references: {
+          inspirationalMovies: initialData.references?.inspirationalMovies || [],
+          visualReferences: initialData.references?.visualReferences || '',
+          narrativeReferences: initialData.references?.narrativeReferences || '',
+        },
+        themes: {
+          centralThemes:
+            initialData.themes?.centralThemes?.map((theme) =>
+              typeof theme === 'string' ? theme : theme.id,
+            ) || [],
+          moralQuestions: initialData.themes?.moralQuestions || '',
+          messageTakeaway: initialData.themes?.messageTakeaway || '',
+        },
+      }
+      setFormData(formDataFromInitial)
+    }
+  }, [initialData])
+
   const [errors, setErrors] = useState<FormErrors>({})
   const [lookupData, setLookupData] = useState({
     genres: [] as Genre[],

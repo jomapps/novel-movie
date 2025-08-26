@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, Trash2 } from 'lucide-react'
 import { Project, InitialConcept } from '@/payload-types'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -71,16 +71,185 @@ export default function InitialConceptPage() {
     }
   }, [params.id])
 
-  // Handle AI auto-fill (placeholder for now)
+  // Handle AI auto-fill
   const handleAIAutoFill = async () => {
+    if (!project) return
+
     setAiLoading(true)
     try {
-      // TODO: Implement AI auto-fill functionality
-      success('AI Auto-fill', 'AI functionality will be implemented in the next step')
+      // Get current form data from the form component
+      const currentFormData = initialConcept || {
+        status: 'draft',
+        primaryGenres: [],
+        corePremise: '',
+        targetAudience: {
+          demographics: [],
+          psychographics: '',
+          customDescription: '',
+        },
+        toneAndMood: {
+          tones: [],
+          moods: [],
+          emotionalArc: '',
+        },
+        visualStyle: {
+          cinematographyStyle: '',
+          colorPalette: {
+            dominance: '',
+            saturation: '',
+            symbolicColors: '',
+          },
+          lightingPreferences: '',
+          cameraMovement: '',
+        },
+        references: {
+          inspirationalMovies: [],
+          visualReferences: '',
+          narrativeReferences: '',
+        },
+        themes: {
+          centralThemes: [],
+          moralQuestions: '',
+          messageTakeaway: '',
+        },
+      }
+
+      // Prepare the request payload
+      const payload = {
+        projectName: project.name,
+        movieFormat: project.movieFormat,
+        movieStyle: project.movieStyle,
+        durationUnit: project.durationUnit,
+        series: project.series,
+        formData: currentFormData,
+      }
+
+      const response = await fetch('/v1/initial-concepts/ai-autofill', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        // Update the initial concept with generated fields
+        const updatedConcept = { ...currentFormData }
+
+        // Apply generated fields to the concept
+        Object.entries(result.data.generatedFields).forEach(([fieldPath, value]) => {
+          const keys = fieldPath.split('.')
+          let current: any = updatedConcept
+
+          // Navigate to the parent object
+          for (let i = 0; i < keys.length - 1; i++) {
+            if (!current[keys[i]]) {
+              current[keys[i]] = {}
+            }
+            current = current[keys[i]]
+          }
+
+          // Set the value
+          current[keys[keys.length - 1]] = value
+        })
+
+        // Update the state - preserve existing InitialConcept properties
+        const updatedInitialConcept = {
+          ...initialConcept,
+          ...updatedConcept,
+          id: initialConcept?.id || '',
+          project: initialConcept?.project || params.id,
+        }
+        setInitialConcept(updatedInitialConcept as any)
+
+        // Update status to indicate AI generation
+        if (updatedConcept.status === 'draft') {
+          updatedConcept.status = 'ai-generated'
+        }
+
+        success(
+          'AI Auto-fill Complete',
+          `Successfully generated ${result.data.summary.totalGenerated} field(s). Review and refine the content as needed.`,
+        )
+      } else {
+        error('AI Auto-fill Error', result.error || 'Failed to generate content')
+      }
     } catch (err) {
-      error('AI Auto-fill Error', 'Failed to generate content')
+      console.error('AI auto-fill error:', err)
+      error('AI Auto-fill Error', 'Failed to generate content. Please try again.')
     } finally {
       setAiLoading(false)
+    }
+  }
+
+  // Handle clear/reset all content
+  const handleClearContent = async () => {
+    if (
+      !confirm(
+        'Are you sure you want to clear all content from this form? This action cannot be undone.',
+      )
+    ) {
+      return
+    }
+
+    try {
+      // Reset to empty form data
+      const emptyFormData = {
+        status: 'draft',
+        primaryGenres: [],
+        corePremise: '',
+        targetAudience: {
+          demographics: [],
+          psychographics: '',
+          customDescription: '',
+        },
+        toneAndMood: {
+          tones: [],
+          moods: [],
+          emotionalArc: '',
+        },
+        visualStyle: {
+          cinematographyStyle: '',
+          colorPalette: {
+            dominance: '',
+            saturation: '',
+            symbolicColors: '',
+          },
+          lightingPreferences: '',
+          cameraMovement: '',
+        },
+        references: {
+          inspirationalMovies: [],
+          visualReferences: '',
+          narrativeReferences: '',
+        },
+        themes: {
+          centralThemes: [],
+          moralQuestions: '',
+          messageTakeaway: '',
+        },
+      }
+
+      // Create a proper InitialConcept object for clearing
+      const clearedConcept = {
+        ...emptyFormData,
+        id: initialConcept?.id || '',
+        project: initialConcept?.project || params.id,
+        projectName: initialConcept?.projectName || null,
+        characterArchetypes: null,
+        setting: null,
+        pacing: null,
+        contentGuidelines: null,
+        updatedAt: new Date().toISOString(),
+        createdAt: initialConcept?.createdAt || new Date().toISOString(),
+      }
+      setInitialConcept(clearedConcept as any)
+      success('Content Cleared', 'All form content has been cleared.')
+    } catch (err) {
+      console.error('Clear content error:', err)
+      error('Clear Error', 'Failed to clear content. Please try again.')
     }
   }
 
@@ -199,6 +368,19 @@ export default function InitialConceptPage() {
               >
                 <Sparkles className="w-4 h-4" />
                 {aiLoading ? 'Generating...' : 'AI Auto-fill'}
+              </Button>
+
+              {/* Clear Content Button */}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleClearContent}
+                disabled={aiLoading}
+                className="flex items-center gap-2 bg-red-50 border-red-200 text-red-700 hover:bg-red-100 hover:border-red-300"
+                title="Clear all form content"
+              >
+                <Trash2 className="w-4 h-4" />
               </Button>
             </div>
           </div>

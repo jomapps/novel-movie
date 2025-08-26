@@ -53,3 +53,21 @@ export interface ProjectFieldsResponse {
   longDescription?: string | null
   
 }
+
+export interface ReferenceResponse {
+  visualReferences?: string | null
+  narrativeReferences?: string | null
+  
+}
+
+export interface ThematicResponse {
+  moralQuestions?: string | null
+  messageTakeaway?: string | null
+  
+}
+
+export interface VisualStyleResponse {
+  symbolicColors?: string | null
+  lightingPreferences?: string | null
+  
+}
