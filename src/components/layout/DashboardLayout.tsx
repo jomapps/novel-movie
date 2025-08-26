@@ -2,9 +2,11 @@
 
 import { useState, ReactNode } from 'react'
 import Sidebar from './Sidebar'
+import FieldStatusSidebar from './FieldStatusSidebar'
 import DashboardHeader from './DashboardHeader'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
 import { useSelectedProject } from '@/contexts/SelectedProjectContext'
+import { usePathname } from 'next/navigation'
 
 interface DashboardLayoutProps {
   children: ReactNode
@@ -12,6 +14,7 @@ interface DashboardLayoutProps {
   subtitle?: string
   actions?: ReactNode
   showSearch?: boolean
+  formData?: any // For field status sidebar
 }
 
 export default function DashboardLayout({
@@ -20,20 +23,36 @@ export default function DashboardLayout({
   subtitle,
   actions,
   showSearch = true,
+  formData,
 }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const { selectedProject } = useSelectedProject()
+  const pathname = usePathname()
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen)
   }
 
+  // Check if we're on the Initial Concept page
+  const isInitialConceptPage = pathname.includes('/initial-concept')
+
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
-        {/* Sidebar - only show when project is selected */}
+        {/* Sidebar - conditionally show field status or navigation */}
         {selectedProject && (
-          <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} pageTitle={title} />
+          <>
+            {isInitialConceptPage && formData ? (
+              <FieldStatusSidebar
+                isOpen={sidebarOpen}
+                onToggle={toggleSidebar}
+                pageTitle={title}
+                formData={formData}
+              />
+            ) : (
+              <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} pageTitle={title} />
+            )}
+          </>
         )}
 
         {/* Main content */}

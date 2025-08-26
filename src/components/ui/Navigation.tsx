@@ -3,15 +3,39 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
 export default function Navigation() {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { selectedProject } = useSelectedProject()
 
-  const navItems = [
+  // Base navigation items
+  const baseNavItems = [
     { href: '/', label: 'Homepage' },
     { href: '/projects', label: 'Projects' },
   ]
+
+  // Add Initial Concept when a project is selected
+  const navItems = selectedProject
+    ? [
+        ...baseNavItems,
+        {
+          href: `/project/${selectedProject.id}/initial-concept`,
+          label: 'Initial Concept',
+          icon: (
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
+            </svg>
+          ),
+        },
+      ]
+    : baseNavItems
 
   const isActive = (href: string) => {
     if (href === '/') {
@@ -41,6 +65,7 @@ export default function Navigation() {
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
                 >
+                  {'icon' in item && item.icon}
                   {item.label}
                 </Link>
               ))}
@@ -106,13 +131,14 @@ export default function Navigation() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200 ${
+                className={`flex items-center pl-3 pr-4 py-2 border-l-4 text-base font-medium transition-colors duration-200 ${
                   isActive(item.href)
                     ? 'bg-blue-50 border-blue-500 text-blue-700'
                     : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
+                {'icon' in item && item.icon}
                 {item.label}
               </Link>
             ))}
