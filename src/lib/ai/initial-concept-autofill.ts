@@ -272,6 +272,75 @@ async function generateReferenceMaterials(context: InitialConceptContext): Promi
 }
 
 /**
+ * Generate character archetypes using BAML
+ */
+async function generateCharacterArchetypes(context: InitialConceptContext): Promise<{
+  protagonistType?: string
+  supportingRoles?: string
+  relationshipDynamics?: string
+}> {
+  try {
+    const result = await b.GenerateCharacterArchetypes(
+      context.projectName,
+      context.formData.primaryGenres,
+      context.formData.corePremise,
+      context.formData.themes.centralThemes,
+      `${context.formData.targetAudience.demographics.join(', ')} - ${context.formData.targetAudience.psychographics}`,
+      null, // existingProtagonistType
+      null, // existingSupportingRoles
+      null, // existingRelationshipDynamics
+    )
+
+    return {
+      protagonistType: result.protagonistType ? cleanAIResponse(result.protagonistType) : undefined,
+      supportingRoles: result.supportingRoles ? cleanAIResponse(result.supportingRoles) : undefined,
+      relationshipDynamics: result.relationshipDynamics
+        ? cleanAIResponse(result.relationshipDynamics)
+        : undefined,
+    }
+  } catch (error) {
+    console.error('Error generating character archetypes:', error)
+    throw new Error('Failed to generate character archetypes')
+  }
+}
+
+/**
+ * Generate setting elements using BAML
+ */
+async function generateSettingElements(context: InitialConceptContext): Promise<{
+  timePeriod?: string
+  geographicSetting?: string
+  socialContext?: string
+  scale?: string
+}> {
+  try {
+    const result = await b.GenerateSettingElements(
+      context.projectName,
+      context.formData.primaryGenres,
+      context.formData.corePremise,
+      context.formData.themes.centralThemes,
+      context.formData.visualStyle.cinematographyStyle,
+      null, // existingTimePeriod
+      null, // existingGeographicSetting
+      null, // existingSocialContext
+      null, // existingScale
+    )
+
+    return {
+      timePeriod: result.timePeriod ? cleanAIResponse(result.timePeriod) : undefined,
+      geographicSetting: result.geographicSetting
+        ? cleanAIResponse(result.geographicSetting)
+        : undefined,
+      socialContext: result.socialContext ? cleanAIResponse(result.socialContext) : undefined,
+      scale: result.scale ? cleanAIResponse(result.scale) : undefined,
+    }
+  } catch (error) {
+    console.error('Error generating setting elements:', error)
+    throw new Error('Failed to generate setting elements')
+  }
+}
+
+/**
  * Define the generation sequence with field metadata
  */
 const GENERATION_SEQUENCE = [

@@ -27,9 +27,17 @@ export { FieldType, EnumBuilder, ClassBuilder }
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
+    CharacterArchetypesResponse: ClassViewer<'CharacterArchetypesResponse', "protagonistType" | "supportingRoles" | "relationshipDynamics">;
+    
+    ContentGuidelinesResponse: ClassViewer<'ContentGuidelinesResponse', "contentRestrictions" | "culturalSensitivities" | "educationalValue">;
+    
+    PacingResponse: ClassViewer<'PacingResponse', "narrativeStructure" | "pacingStyle" | "climaxIntensity">;
+    
     ProjectFieldsResponse: ClassViewer<'ProjectFieldsResponse', "projectTitle" | "shortDescription" | "longDescription">;
     
     ReferenceResponse: ClassViewer<'ReferenceResponse', "visualReferences" | "narrativeReferences">;
+    
+    SettingResponse: ClassViewer<'SettingResponse', "timePeriod" | "geographicSetting" | "socialContext" | "scale">;
     
     ThematicResponse: ClassViewer<'ThematicResponse', "moralQuestions" | "messageTakeaway">;
     
@@ -40,7 +48,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "ProjectFieldsResponse","ReferenceResponse","ThematicResponse","VisualStyleResponse",
+            "CharacterArchetypesResponse","ContentGuidelinesResponse","PacingResponse","ProjectFieldsResponse","ReferenceResponse","SettingResponse","ThematicResponse","VisualStyleResponse",
           ]),
           enums: new Set([
             
@@ -48,12 +56,28 @@ export default class TypeBuilder {
           runtime: DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME
         });
         
+        this.CharacterArchetypesResponse = this.tb.classViewer("CharacterArchetypesResponse", [
+          "protagonistType","supportingRoles","relationshipDynamics",
+        ]);
+        
+        this.ContentGuidelinesResponse = this.tb.classViewer("ContentGuidelinesResponse", [
+          "contentRestrictions","culturalSensitivities","educationalValue",
+        ]);
+        
+        this.PacingResponse = this.tb.classViewer("PacingResponse", [
+          "narrativeStructure","pacingStyle","climaxIntensity",
+        ]);
+        
         this.ProjectFieldsResponse = this.tb.classViewer("ProjectFieldsResponse", [
           "projectTitle","shortDescription","longDescription",
         ]);
         
         this.ReferenceResponse = this.tb.classViewer("ReferenceResponse", [
           "visualReferences","narrativeReferences",
+        ]);
+        
+        this.SettingResponse = this.tb.classViewer("SettingResponse", [
+          "timePeriod","geographicSetting","socialContext","scale",
         ]);
         
         this.ThematicResponse = this.tb.classViewer("ThematicResponse", [

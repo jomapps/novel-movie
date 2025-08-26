@@ -152,7 +152,12 @@ export default function InitialConceptForm({
           cameraMovement: initialData.visualStyle?.cameraMovement || '',
         },
         references: {
-          inspirationalMovies: initialData.references?.inspirationalMovies || [],
+          inspirationalMovies:
+            initialData.references?.inspirationalMovies?.map((movie) => ({
+              title: movie.title,
+              year: movie.year ?? null,
+              specificElements: movie.specificElements,
+            })) || [],
           visualReferences: initialData.references?.visualReferences || '',
           narrativeReferences: initialData.references?.narrativeReferences || '',
         },

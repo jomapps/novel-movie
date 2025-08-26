@@ -20,7 +20,7 @@ $ pnpm add @boundaryml/baml
 
 import type { Image, Audio, Pdf, Video } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
-import type {  ProjectFieldsResponse,  ReferenceResponse,  ThematicResponse,  VisualStyleResponse } from "./types"
+import type {  CharacterArchetypesResponse,  ContentGuidelinesResponse,  PacingResponse,  ProjectFieldsResponse,  ReferenceResponse,  SettingResponse,  ThematicResponse,  VisualStyleResponse } from "./types"
 import type * as types from "./types"
 
 /******************************************************************************
@@ -36,6 +36,21 @@ export interface StreamState<T> {
 }
 
 export namespace partial_types {
+    export interface CharacterArchetypesResponse {
+      protagonistType?: string | null
+      supportingRoles?: string | null
+      relationshipDynamics?: string | null
+    }
+    export interface ContentGuidelinesResponse {
+      contentRestrictions?: string | null
+      culturalSensitivities?: string | null
+      educationalValue?: string | null
+    }
+    export interface PacingResponse {
+      narrativeStructure?: string | null
+      pacingStyle?: string | null
+      climaxIntensity?: string | null
+    }
     export interface ProjectFieldsResponse {
       projectTitle?: string | null
       shortDescription?: string | null
@@ -44,6 +59,12 @@ export namespace partial_types {
     export interface ReferenceResponse {
       visualReferences?: string | null
       narrativeReferences?: string | null
+    }
+    export interface SettingResponse {
+      timePeriod?: string | null
+      geographicSetting?: string | null
+      socialContext?: string | null
+      scale?: string | null
     }
     export interface ThematicResponse {
       moralQuestions?: string | null

@@ -47,6 +47,27 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
+export interface CharacterArchetypesResponse {
+  protagonistType?: string | null
+  supportingRoles?: string | null
+  relationshipDynamics?: string | null
+  
+}
+
+export interface ContentGuidelinesResponse {
+  contentRestrictions?: string | null
+  culturalSensitivities?: string | null
+  educationalValue?: string | null
+  
+}
+
+export interface PacingResponse {
+  narrativeStructure?: string | null
+  pacingStyle?: string | null
+  climaxIntensity?: string | null
+  
+}
+
 export interface ProjectFieldsResponse {
   projectTitle?: string | null
   shortDescription?: string | null
@@ -57,6 +78,14 @@ export interface ProjectFieldsResponse {
 export interface ReferenceResponse {
   visualReferences?: string | null
   narrativeReferences?: string | null
+  
+}
+
+export interface SettingResponse {
+  timePeriod?: string | null
+  geographicSetting?: string | null
+  socialContext?: string | null
+  scale?: string | null
   
 }
 

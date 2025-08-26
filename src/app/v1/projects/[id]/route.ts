@@ -2,10 +2,7 @@ import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@payload-config'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const payload = await getPayload({ config })
@@ -22,7 +19,7 @@ export async function GET(
           success: false,
           error: 'Project not found',
         },
-        { status: 404 }
+        { status: 404 },
       )
     }
 
@@ -37,15 +34,12 @@ export async function GET(
         success: false,
         error: 'Failed to fetch project',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const payload = await getPayload({ config })
@@ -68,19 +62,36 @@ export async function PUT(
         success: false,
         error: 'Failed to update project',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params
     const payload = await getPayload({ config })
 
+    // Check if project exists
+    const project = await payload.findByID({
+      collection: 'projects',
+      id,
+    })
+
+    if (!project) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Project not found',
+        },
+        { status: 404 },
+      )
+    }
+
+    // Delete the project
     await payload.delete({
       collection: 'projects',
       id,
@@ -97,7 +108,7 @@ export async function DELETE(
         success: false,
         error: 'Failed to delete project',
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }

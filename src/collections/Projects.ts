@@ -22,6 +22,111 @@ export const Projects: CollectionConfig = {
   },
   fields: [
     {
+      name: 'slug',
+      type: 'text',
+      maxLength: 6,
+      unique: true,
+      hooks: {
+        beforeValidate: [
+          async ({ value, data, req, operation }) => {
+            // Generate if slug is not provided or is empty
+            if (!value && data?.name) {
+              const generateSlug = (name: string): string => {
+                // Remove special characters and convert to lowercase
+                const cleaned = name
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]/g, '')
+                  .substring(0, 6)
+
+                // Pad with random lowercase letters if less than 6 characters
+                if (cleaned.length < 6) {
+                  const chars = 'abcdefghijklmnopqrstuvwxyz'
+                  let result = cleaned
+                  while (result.length < 6) {
+                    result += chars.charAt(Math.floor(Math.random() * chars.length))
+                  }
+                  return result
+                }
+
+                return cleaned
+              }
+
+              const checkUniqueness = async (slug: string): Promise<string> => {
+                // Build where clause - exclude current document if updating
+                const whereClause: any = { slug: { equals: slug } }
+                if (operation === 'update' && data.id) {
+                  whereClause.id = { not_equals: data.id }
+                }
+
+                const existing = await req.payload.find({
+                  collection: 'projects',
+                  where: whereClause,
+                  limit: 1,
+                })
+
+                if (existing.totalDocs === 0) {
+                  return slug
+                }
+
+                // If not unique, generate variations by replacing last character(s)
+                const chars = 'abcdefghijklmnopqrstuvwxyz'
+                for (let i = 0; i < 26; i++) {
+                  const newSlug = slug.substring(0, 5) + chars[i]
+                  const checkWhere: any = { slug: { equals: newSlug } }
+                  if (operation === 'update' && data.id) {
+                    checkWhere.id = { not_equals: data.id }
+                  }
+
+                  const check = await req.payload.find({
+                    collection: 'projects',
+                    where: checkWhere,
+                    limit: 1,
+                  })
+
+                  if (check.totalDocs === 0) {
+                    return newSlug
+                  }
+                }
+
+                // If still not unique, try replacing last 2 characters
+                for (let i = 0; i < 26; i++) {
+                  for (let j = 0; j < 26; j++) {
+                    const newSlug = slug.substring(0, 4) + chars[i] + chars[j]
+                    const checkWhere: any = { slug: { equals: newSlug } }
+                    if (operation === 'update' && data.id) {
+                      checkWhere.id = { not_equals: data.id }
+                    }
+
+                    const check = await req.payload.find({
+                      collection: 'projects',
+                      where: checkWhere,
+                      limit: 1,
+                    })
+
+                    if (check.totalDocs === 0) {
+                      return newSlug
+                    }
+                  }
+                }
+
+                // Fallback: generate completely random 6-character slug
+                let randomSlug = ''
+                for (let i = 0; i < 6; i++) {
+                  randomSlug += chars.charAt(Math.floor(Math.random() * chars.length))
+                }
+                return randomSlug
+              }
+
+              const baseSlug = generateSlug(data.name)
+              return await checkUniqueness(baseSlug)
+            }
+
+            return value
+          },
+        ],
+      },
+    },
+    {
       name: 'name',
       type: 'text',
       required: true,

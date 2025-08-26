@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { 
+import {
   generateMissingFieldsSequentially,
   createInitialConceptContext,
   validateRequiredProjectFields,
   type InitialConceptFormData,
-  type FieldGenerationProgress
-} from '@/lib/ai/initial-concept-autofill'
+  type FieldGenerationProgress,
+} from '@/lib/ai/initial-concept-autofill-fallback'
 
 // Validation schema for the request
 const AutofillRequestSchema = z.object({
@@ -14,49 +14,54 @@ const AutofillRequestSchema = z.object({
   projectName: z.string().min(1, 'Project name is required'),
   movieFormat: z.string().min(1, 'Movie format is required'),
   movieStyle: z.string().min(1, 'Movie style is required'),
-  durationUnit: z.union([z.string(), z.number()]).transform(val => 
-    typeof val === 'string' ? parseInt(val) : val
-  ),
+  durationUnit: z
+    .union([z.string(), z.number()])
+    .transform((val) => (typeof val === 'string' ? parseInt(val) : val)),
   series: z.string().optional(),
-  
+
   // Current form data
   formData: z.object({
     status: z.string(),
     primaryGenres: z.array(z.string()),
-    corePremise: z.string(),
+    corePremise: z.string().optional().default(''),
     targetAudience: z.object({
-      demographics: z.array(z.string()),
-      psychographics: z.string(),
-      customDescription: z.string(),
+      demographics: z.array(z.string()).optional().default([]),
+      psychographics: z.string().optional().default(''),
+      customDescription: z.string().optional().default(''),
     }),
     toneAndMood: z.object({
-      tones: z.array(z.string()),
-      moods: z.array(z.string()),
-      emotionalArc: z.string(),
+      tones: z.array(z.string()).optional().default([]),
+      moods: z.array(z.string()).optional().default([]),
+      emotionalArc: z.string().optional().default(''),
     }),
     visualStyle: z.object({
-      cinematographyStyle: z.string(),
+      cinematographyStyle: z.string().optional().default(''),
       colorPalette: z.object({
-        dominance: z.string(),
-        saturation: z.string(),
-        symbolicColors: z.string(),
+        dominance: z.string().optional().default(''),
+        saturation: z.string().optional().default(''),
+        symbolicColors: z.string().optional().default(''),
       }),
-      lightingPreferences: z.string(),
-      cameraMovement: z.string(),
+      lightingPreferences: z.string().optional().default(''),
+      cameraMovement: z.string().optional().default(''),
     }),
     references: z.object({
-      inspirationalMovies: z.array(z.object({
-        title: z.string(),
-        year: z.number().nullable(),
-        specificElements: z.string(),
-      })),
-      visualReferences: z.string(),
-      narrativeReferences: z.string(),
+      inspirationalMovies: z
+        .array(
+          z.object({
+            title: z.string(),
+            year: z.number().nullable(),
+            specificElements: z.string(),
+          }),
+        )
+        .optional()
+        .default([]),
+      visualReferences: z.string().optional().default(''),
+      narrativeReferences: z.string().optional().default(''),
     }),
     themes: z.object({
-      centralThemes: z.array(z.string()),
-      moralQuestions: z.string(),
-      messageTakeaway: z.string(),
+      centralThemes: z.array(z.string()).optional().default([]),
+      moralQuestions: z.string().optional().default(''),
+      messageTakeaway: z.string().optional().default(''),
     }),
   }),
 })
@@ -64,21 +69,22 @@ const AutofillRequestSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    
+
     // Validate the request data
     const validatedData = AutofillRequestSchema.parse(body)
-    
+
     // Check if all required project fields are present
     if (!validateRequiredProjectFields(validatedData)) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required project fields. Please ensure project name, format, style, and duration are provided.',
+          error:
+            'Missing required project fields. Please ensure project name, format, style, and duration are provided.',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     // Check if series is required but missing
     if (validatedData.movieFormat === 'series' && !validatedData.series) {
       return NextResponse.json(
@@ -86,10 +92,10 @@ export async function POST(request: NextRequest) {
           success: false,
           error: 'Series is required when movie format is "Series".',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     // Check if minimum required form fields are present for AI generation
     const { formData } = validatedData
     if (formData.primaryGenres.length === 0) {
@@ -98,10 +104,10 @@ export async function POST(request: NextRequest) {
           success: false,
           error: 'At least one primary genre must be selected before using AI auto-fill.',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     // Create context for AI generation
     const context = createInitialConceptContext(
       validatedData.projectName,
@@ -109,40 +115,39 @@ export async function POST(request: NextRequest) {
       validatedData.movieStyle,
       validatedData.durationUnit,
       validatedData.formData,
-      validatedData.series
+      validatedData.series,
     )
-    
+
     // Track progress for potential streaming response
     const progressUpdates: FieldGenerationProgress[] = []
-    
+
     // Generate missing fields sequentially
-    const generatedFields = await generateMissingFieldsSequentially(
-      context,
-      (progress) => {
-        progressUpdates.push(progress)
-        // In a real implementation, you might want to stream these updates
-        // For now, we'll collect them and return at the end
-      }
-    )
-    
+    const generatedFields = await generateMissingFieldsSequentially(context, (progress) => {
+      progressUpdates.push(progress)
+      // In a real implementation, you might want to stream these updates
+      // For now, we'll collect them and return at the end
+    })
+
     // Check if any fields were generated
     const hasGeneratedContent = Object.keys(generatedFields).length > 0
-    
+
     if (!hasGeneratedContent) {
       return NextResponse.json(
         {
           success: false,
-          error: 'All eligible fields are already filled or missing required dependencies. Nothing to generate.',
-          details: 'Make sure required fields like primary genres are selected and that there are empty fields to fill.',
+          error:
+            'All eligible fields are already filled or missing required dependencies. Nothing to generate.',
+          details:
+            'Make sure required fields like primary genres are selected and that there are empty fields to fill.',
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     // Count successful generations
-    const successfulGenerations = progressUpdates.filter(p => p.status === 'completed').length
-    const failedGenerations = progressUpdates.filter(p => p.status === 'error').length
-    
+    const successfulGenerations = progressUpdates.filter((p) => p.status === 'completed').length
+    const failedGenerations = progressUpdates.filter((p) => p.status === 'error').length
+
     return NextResponse.json({
       success: true,
       data: {
@@ -156,25 +161,24 @@ export async function POST(request: NextRequest) {
         message: `Successfully generated ${successfulGenerations} field(s)${failedGenerations > 0 ? ` (${failedGenerations} failed)` : ''}`,
       },
     })
-    
   } catch (error) {
     console.error('Initial Concept AI autofill error:', error)
-    
+
     // Handle validation errors
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         {
           success: false,
           error: 'Invalid request data',
-          details: error.errors.map(err => ({
+          details: error.errors.map((err) => ({
             field: err.path.join('.'),
             message: err.message,
           })),
         },
-        { status: 400 }
+        { status: 400 },
       )
     }
-    
+
     // Handle AI generation errors
     if (error instanceof Error && error.message.includes('Failed to generate')) {
       return NextResponse.json(
@@ -183,30 +187,36 @@ export async function POST(request: NextRequest) {
           error: 'AI generation failed. Please try again later.',
           details: error.message,
         },
-        { status: 503 }
+        { status: 503 },
       )
     }
-    
+
     // Handle timeout errors
     if (error instanceof Error && error.message.includes('timeout')) {
       return NextResponse.json(
         {
           success: false,
-          error: 'AI generation timed out. Please try again with fewer fields or check your connection.',
+          error:
+            'AI generation timed out. Please try again with fewer fields or check your connection.',
           details: error.message,
         },
-        { status: 504 }
+        { status: 504 },
       )
     }
-    
+
     // Handle other errors
     return NextResponse.json(
       {
         success: false,
         error: 'Internal server error occurred during AI generation.',
-        details: process.env.NODE_ENV === 'development' ? error instanceof Error ? error.message : 'Unknown error' : undefined,
+        details:
+          process.env.NODE_ENV === 'development'
+            ? error instanceof Error
+              ? error.message
+              : 'Unknown error'
+            : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     )
   }
 }
@@ -219,7 +229,7 @@ export async function GET() {
       error: 'Method not allowed. Use POST to generate AI content for Initial Concept.',
       supportedMethods: ['POST'],
     },
-    { status: 405 }
+    { status: 405 },
   )
 }
 
@@ -230,7 +240,7 @@ export async function PUT() {
       error: 'Method not allowed. Use POST to generate AI content for Initial Concept.',
       supportedMethods: ['POST'],
     },
-    { status: 405 }
+    { status: 405 },
   )
 }
 
@@ -241,7 +251,7 @@ export async function DELETE() {
       error: 'Method not allowed. Use POST to generate AI content for Initial Concept.',
       supportedMethods: ['POST'],
     },
-    { status: 405 }
+    { status: 405 },
   )
 }
 
@@ -252,6 +262,6 @@ export async function PATCH() {
       error: 'Method not allowed. Use POST to generate AI content for Initial Concept.',
       supportedMethods: ['POST'],
     },
-    { status: 405 }
+    { status: 405 },
   )
 }

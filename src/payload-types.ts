@@ -184,6 +184,7 @@ export interface Media {
  */
 export interface Project {
   id: string;
+  slug?: string | null;
   /**
    * Project identifier/name provided by user (e.g., "Adventure Story 1", "Mystery Episode 3")
    */
@@ -1292,6 +1293,7 @@ export interface MediaSelect<T extends boolean = true> {
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
+  slug?: T;
   name?: T;
   projectTitle?: T;
   shortDescription?: T;
