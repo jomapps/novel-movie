@@ -241,20 +241,19 @@ export async function generateMoods(context: any): Promise<string[]> {
 }
 
 export async function generateCinematographyStyle(context: any): Promise<string[]> {
-  // Generate cinematography style (single item)
+  // Generate cinematography style using seeded data (6 styles)
   const styleOptions = [
-    'Cinematic Realism',
-    'Documentary Style',
-    'Stylized Visuals',
-    'Classic Hollywood',
-    'Modern Cinematic',
-    'Indie Film Aesthetic',
-    'Epic Cinematography',
-    'Intimate Framing',
+    'Realistic', // Natural, lifelike cinematography
+    'Stylized', // Deliberately artificial cinematography
+    'Documentary', // Observational cinematography
+    'Experimental', // Avant-garde cinematography
+    'Vintage', // Period-appropriate cinematography
+    'Modern', // Contemporary cinematography
   ]
 
-  // Select one style
-  const selectedStyle = styleOptions[Math.floor(Math.random() * styleOptions.length)]
+  // Select one style based on project context for consistency
+  const index = (context.projectName.length + context.durationUnit) % styleOptions.length
+  const selectedStyle = styleOptions[index]
   return [selectedStyle]
 }
 

@@ -694,23 +694,16 @@ const GENERATION_SEQUENCE = [
     fieldName: 'visualStyle.cinematographyStyle',
     fieldLabel: 'Cinematography Style',
     generator: async (context: InitialConceptContext) => {
-      // Generate cinematography style as simple text field for 100% completion
-      const styles = [
-        'Cinematic Realism',
-        'Documentary Style',
-        'Stylized Visuals',
-        'Classic Hollywood',
-        'Modern Cinematic',
-        'Indie Film Aesthetic',
-        'Epic Cinematography',
-        'Intimate Framing',
-      ]
-
-      // Select based on project context for consistency
-      const index = (context.projectName.length + context.durationUnit) % styles.length
-      return styles[index]
+      // Generate cinematography style relationship field using seeded data
+      const result = await generateRelationshipField(
+        'visualStyle.cinematographyStyle',
+        context,
+        generateCinematographyStyle,
+      )
+      return result[0] // Single item, not array
     },
     required: ['primaryGenres'],
+    isRelationship: true,
   },
   {
     fieldName: 'themes.centralThemes',
