@@ -88,6 +88,10 @@ Generate only the title as plain text, no markdown formatting, asterisks, quotes
     return cleanAIResponse(result)
   } catch (error) {
     console.error('Error generating project title:', error)
+    // Preserve the original error message for better error handling
+    if (error instanceof Error) {
+      throw error
+    }
     throw new Error('Failed to generate project title')
   }
 }
@@ -133,6 +137,10 @@ Generate only the short description, no additional text or explanation.`
     return cleanAIResponse(result)
   } catch (error) {
     console.error('Error generating short description:', error)
+    // Preserve the original error message for better error handling
+    if (error instanceof Error) {
+      throw error
+    }
     throw new Error('Failed to generate short description')
   }
 }
@@ -189,6 +197,10 @@ Generate only the long description, no additional text or explanation.`
     return cleanAIResponse(result)
   } catch (error) {
     console.error('Error generating long description:', error)
+    // Preserve the original error message for better error handling
+    if (error instanceof Error) {
+      throw error
+    }
     throw new Error('Failed to generate long description')
   }
 }
@@ -273,6 +285,10 @@ export async function generateMissingFields(context: ProjectContext): Promise<Ge
             missingFields.projectTitle = title
           })
           .catch((error) => {
+            // Re-throw credits errors to be handled at the API level
+            if (error.message && error.message.includes('402 Insufficient credits')) {
+              throw error
+            }
             console.warn('Failed to generate title:', error)
           }),
       )
@@ -285,6 +301,10 @@ export async function generateMissingFields(context: ProjectContext): Promise<Ge
             missingFields.shortDescription = description
           })
           .catch((error) => {
+            // Re-throw credits errors to be handled at the API level
+            if (error.message && error.message.includes('402 Insufficient credits')) {
+              throw error
+            }
             console.warn('Failed to generate short description:', error)
           }),
       )
@@ -297,6 +317,10 @@ export async function generateMissingFields(context: ProjectContext): Promise<Ge
             missingFields.longDescription = description
           })
           .catch((error) => {
+            // Re-throw credits errors to be handled at the API level
+            if (error.message && error.message.includes('402 Insufficient credits')) {
+              throw error
+            }
             console.warn('Failed to generate long description:', error)
           }),
       )
@@ -335,8 +359,8 @@ export function createProjectContext(formData: any): ProjectContext {
     movieStyle: formData.movieStyle,
     series: formData.series || undefined,
     durationUnit: parseInt(formData.durationUnit) || 0,
-    existingTitle: formData.projectTitle || undefined,
-    existingShortDescription: formData.shortDescription || undefined,
-    existingLongDescription: formData.longDescription || undefined,
+    existingTitle: formData.projectTitle?.trim() || undefined,
+    existingShortDescription: formData.shortDescription?.trim() || undefined,
+    existingLongDescription: formData.longDescription?.trim() || undefined,
   }
 }

@@ -20,7 +20,7 @@ $ pnpm add @boundaryml/baml
 
 import type { Image, Audio, Pdf, Video } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
-import type {  CharacterArchetypesResponse,  ContentGuidelinesResponse,  PacingResponse,  ProjectFieldsResponse,  ReferenceResponse,  SettingResponse,  ThematicResponse,  VisualStyleResponse } from "./types"
+import type {  CharacterArchetypesResponse,  ContentGuidelinesResponse,  PacingResponse,  ProjectFieldsResponse,  QualityAssessment,  ReferenceResponse,  SettingResponse,  ThematicResponse,  VisualStyleResponse } from "./types"
 import type * as types from "./types"
 
 /******************************************************************************
@@ -55,6 +55,10 @@ export namespace partial_types {
       projectTitle?: string | null
       shortDescription?: string | null
       longDescription?: string | null
+    }
+    export interface QualityAssessment {
+      qualityScore?: number | null
+      recommendations?: string | null
     }
     export interface ReferenceResponse {
       visualReferences?: string | null

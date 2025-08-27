@@ -35,6 +35,8 @@ export default class TypeBuilder {
     
     ProjectFieldsResponse: ClassViewer<'ProjectFieldsResponse', "projectTitle" | "shortDescription" | "longDescription">;
     
+    QualityAssessment: ClassViewer<'QualityAssessment', "qualityScore" | "recommendations">;
+    
     ReferenceResponse: ClassViewer<'ReferenceResponse', "visualReferences" | "narrativeReferences">;
     
     SettingResponse: ClassViewer<'SettingResponse', "timePeriod" | "geographicSetting" | "socialContext" | "scale">;
@@ -48,7 +50,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "CharacterArchetypesResponse","ContentGuidelinesResponse","PacingResponse","ProjectFieldsResponse","ReferenceResponse","SettingResponse","ThematicResponse","VisualStyleResponse",
+            "CharacterArchetypesResponse","ContentGuidelinesResponse","PacingResponse","ProjectFieldsResponse","QualityAssessment","ReferenceResponse","SettingResponse","ThematicResponse","VisualStyleResponse",
           ]),
           enums: new Set([
             
@@ -70,6 +72,10 @@ export default class TypeBuilder {
         
         this.ProjectFieldsResponse = this.tb.classViewer("ProjectFieldsResponse", [
           "projectTitle","shortDescription","longDescription",
+        ]);
+        
+        this.QualityAssessment = this.tb.classViewer("QualityAssessment", [
+          "qualityScore","recommendations",
         ]);
         
         this.ReferenceResponse = this.tb.classViewer("ReferenceResponse", [

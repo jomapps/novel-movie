@@ -23,7 +23,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {CharacterArchetypesResponse, ContentGuidelinesResponse, PacingResponse, ProjectFieldsResponse, ReferenceResponse, SettingResponse, ThematicResponse, VisualStyleResponse} from "./types"
+import type {CharacterArchetypesResponse, ContentGuidelinesResponse, PacingResponse, ProjectFieldsResponse, QualityAssessment, ReferenceResponse, SettingResponse, ThematicResponse, VisualStyleResponse} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -86,6 +86,34 @@ export class BamlAsyncClient {
     return this.llmStreamParser
   }
 
+  
+  async AssessProjectQuality(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],corePremise: string,targetAudience: string,toneAndMood: string,visualStyle: string,themes: string,characterArchetypes: string,settingElements: string,pacingElements: string,references: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<types.QualityAssessment> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = await this.runtime.callFunction(
+        "AssessProjectQuality",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"toneAndMood": toneAndMood,"visualStyle": visualStyle,"themes": themes,"characterArchetypes": characterArchetypes,"settingElements": settingElements,"pacingElements": pacingElements,"references": references
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.QualityAssessment
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   async GenerateAllProjectFields(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
@@ -520,6 +548,40 @@ class BamlStreamClient {
     this.bamlOptions = bamlOptions || {}
   }
 
+  
+  AssessProjectQuality(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],corePremise: string,targetAudience: string,toneAndMood: string,visualStyle: string,themes: string,characterArchetypes: string,settingElements: string,pacingElements: string,references: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[], env?: Record<string, string | undefined> }
+  ): BamlStream<partial_types.QualityAssessment, types.QualityAssessment> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.streamFunction(
+        "AssessProjectQuality",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series ?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"toneAndMood": toneAndMood,"visualStyle": visualStyle,"themes": themes,"characterArchetypes": characterArchetypes,"settingElements": settingElements,"pacingElements": pacingElements,"references": references
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return new BamlStream<partial_types.QualityAssessment, types.QualityAssessment>(
+        raw,
+        (a): partial_types.QualityAssessment => a,
+        (a): types.QualityAssessment => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   GenerateAllProjectFields(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,

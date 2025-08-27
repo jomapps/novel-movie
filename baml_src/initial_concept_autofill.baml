@@ -659,3 +659,71 @@ class ContentGuidelinesResponse {
   culturalSensitivities string?
   educationalValue string?
 }
+
+class QualityAssessment {
+  qualityScore int
+  recommendations string
+}
+
+// Quality Assessment - Movie Producer/Director Expert
+function AssessProjectQuality(
+  projectName: string,
+  movieFormat: string,
+  movieStyle: string,
+  series: string?,
+  durationUnit: int,
+  primaryGenres: string[],
+  corePremise: string,
+  targetAudience: string,
+  toneAndMood: string,
+  visualStyle: string,
+  themes: string,
+  characterArchetypes: string,
+  settingElements: string,
+  pacingElements: string,
+  references: string
+) -> QualityAssessment {
+  client OpenRouterAdvanced
+  prompt #"
+    You are a seasoned movie producer and director with 35+ years of experience in the film industry. You have greenlit hundreds of successful projects and have an exceptional eye for identifying what makes a project commercially viable and artistically compelling. You understand market dynamics, audience psychology, and the technical requirements for successful film production.
+
+    Project Overview:
+    - Project Name: {{ projectName }}
+    - Format: {{ movieFormat }}
+    - Style: {{ movieStyle }}
+    {% if series %}
+    - Series: {{ series }}
+    {% endif %}
+    - Duration: {{ durationUnit }} minutes
+    - Primary Genres: {{ primaryGenres | join(", ") }}
+
+    Project Details:
+    - Core Premise: {{ corePremise }}
+    - Target Audience: {{ targetAudience }}
+    - Tone & Mood: {{ toneAndMood }}
+    - Visual Style: {{ visualStyle }}
+    - Themes: {{ themes }}
+    - Character Archetypes: {{ characterArchetypes }}
+    - Setting Elements: {{ settingElements }}
+    - Pacing Elements: {{ pacingElements }}
+    - References: {{ references }}
+
+    Your Task:
+    Evaluate this project holistically and answer the critical question: "Would this project harmonize from all aspects as a {{ movieFormat }} of {{ durationUnit }} minutes?"
+
+    Assessment Criteria:
+    1. **Market Viability** (20%): Commercial potential, target audience appeal, genre market trends
+    2. **Creative Coherence** (25%): How well all elements work together, thematic consistency, artistic vision
+    3. **Production Feasibility** (15%): Budget considerations, technical requirements, resource needs
+    4. **Audience Engagement** (20%): Emotional hooks, entertainment value, rewatchability
+    5. **Narrative Strength** (20%): Story structure, character development, conflict resolution
+
+    Provide your assessment in this exact JSON format:
+    {
+      "qualityScore": [Numerical score from 1-100],
+      "recommendations": "[Provide 3-5 specific, actionable recommendations for improving the project. Focus on the weakest areas and provide concrete suggestions for enhancement. Be constructive and specific about what changes would elevate the project's potential.]"
+    }
+
+    Be honest but constructive. Consider both the creative and commercial aspects of filmmaking.
+  "#
+}

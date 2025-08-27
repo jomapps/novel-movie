@@ -205,10 +205,33 @@ export default function CreateProjectPage() {
           `Successfully generated ${fieldCount} field${fieldCount > 1 ? 's' : ''}!`,
         )
       } else {
-        error(
-          'AI Auto-fill Failed',
-          result.error || 'Failed to generate content. Please try again.',
-        )
+        // Handle specific error types with user-friendly messages
+        let errorTitle = 'AI Auto-fill Failed'
+        let errorMessage = result.error || 'Failed to generate content. Please try again.'
+
+        if (result.errorType === 'INSUFFICIENT_CREDITS') {
+          errorTitle = 'AI Service Credits Exhausted'
+          errorMessage =
+            result.userMessage ||
+            'The AI service has run out of credits. Please contact support or try again later.'
+        } else if (result.errorType === 'SERVICE_UNAVAILABLE') {
+          errorTitle = 'AI Service Temporarily Unavailable'
+          errorMessage =
+            result.userMessage ||
+            'The AI content generation service is temporarily unavailable. Please try again later.'
+        } else if (
+          result.errorType === 'AI_SERVICE_ERROR' ||
+          result.errorType === 'AI_GENERATION_ERROR'
+        ) {
+          errorTitle = 'AI Service Error'
+          errorMessage =
+            result.userMessage ||
+            'There was an issue with the AI service. Please try again in a few moments.'
+        } else if (result.userMessage) {
+          errorMessage = result.userMessage
+        }
+
+        error(errorTitle, errorMessage)
       }
     } catch (err) {
       console.error('AI auto-fill error:', err)

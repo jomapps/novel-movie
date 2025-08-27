@@ -17,8 +17,38 @@ const nextConfig = {
       use: 'node-loader',
     })
 
+    // Handle BAML native modules - ignore missing optional dependencies
+    webpackConfig.ignoreWarnings = [
+      ...(webpackConfig.ignoreWarnings || []),
+      /Module not found.*@boundaryml\/baml-/,
+      /Module not found.*baml\..+\.node/,
+    ]
+
     // Externalize BAML native modules for server-side
-    if (!webpackConfig.isServer) {
+    if (webpackConfig.isServer) {
+      // Make BAML native bindings external to prevent bundling issues
+      webpackConfig.externals = webpackConfig.externals || []
+      if (Array.isArray(webpackConfig.externals)) {
+        webpackConfig.externals.push(
+          '@boundaryml/baml-win32-x64-msvc',
+          '@boundaryml/baml-win32-ia32-msvc',
+          '@boundaryml/baml-win32-arm64-msvc',
+          '@boundaryml/baml-darwin-x64',
+          '@boundaryml/baml-darwin-arm64',
+          '@boundaryml/baml-darwin-universal',
+          '@boundaryml/baml-linux-x64-gnu',
+          '@boundaryml/baml-linux-x64-musl',
+          '@boundaryml/baml-linux-arm64-gnu',
+          '@boundaryml/baml-linux-arm64-musl',
+          '@boundaryml/baml-linux-arm-gnueabihf',
+          '@boundaryml/baml-linux-arm-musleabihf',
+          '@boundaryml/baml-freebsd-x64',
+          '@boundaryml/baml-freebsd-arm64',
+          '@boundaryml/baml-android-arm64',
+          '@boundaryml/baml-android-arm-eabi',
+        )
+      }
+    } else {
       webpackConfig.resolve.fallback = {
         ...webpackConfig.resolve.fallback,
         fs: false,

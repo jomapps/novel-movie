@@ -454,7 +454,6 @@ packages:
   '@boundaryml/baml-win32-x64-msvc@0.205.0':
     resolution: {integrity: sha512-M7LrEadB1U6V32p4q+p8Hjju+TuHRyVo3nzlj49L/v06pDXotK/0OQYI0Ro/o6CswcWeuXU4q4sE64b7312SqA==}
     engines: {node: '>= 10'}
-    cpu: [x64]
     os: [win32]
 
   '@boundaryml/baml@0.205.0':

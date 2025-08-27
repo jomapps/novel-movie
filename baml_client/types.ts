@@ -75,6 +75,12 @@ export interface ProjectFieldsResponse {
   
 }
 
+export interface QualityAssessment {
+  qualityScore: number
+  recommendations: string
+  
+}
+
 export interface ReferenceResponse {
   visualReferences?: string | null
   narrativeReferences?: string | null

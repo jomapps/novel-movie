@@ -4,7 +4,6 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import {
   generateAndUpdateFieldsIndividually,
-  generateMissingFieldsSequentially,
   validateRequiredProjectFields,
   type InitialConceptContext,
   type InitialConceptFormData,
@@ -222,12 +221,47 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Handle AI service insufficient credits error
+    if (error instanceof Error && error.message.includes('402 Insufficient credits')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'AI service credits exhausted',
+          userMessage:
+            'The AI service has run out of credits. Please contact support or try again later.',
+          errorType: 'INSUFFICIENT_CREDITS',
+        },
+        { status: 402 },
+      )
+    }
+
+    // Handle BAML native binding errors
+    if (
+      error instanceof Error &&
+      (error.message.includes('BAML client not available') ||
+        error.message.includes('Failed to load native binding'))
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'AI service temporarily unavailable',
+          userMessage:
+            'The AI content generation service is temporarily unavailable. This is likely due to a system configuration issue. Please try again later or contact support.',
+          errorType: 'SERVICE_UNAVAILABLE',
+        },
+        { status: 503 },
+      )
+    }
+
     // Handle AI generation errors
     if (error instanceof Error && error.message.includes('Failed to generate')) {
       return NextResponse.json(
         {
           success: false,
           error: 'AI generation failed. Please try again later.',
+          userMessage:
+            'The AI content generation service encountered an error. Please try again in a few moments.',
+          errorType: 'AI_GENERATION_ERROR',
           details: error.message,
         },
         { status: 503 },
@@ -241,9 +275,28 @@ export async function POST(request: NextRequest) {
           success: false,
           error:
             'AI generation timed out. Please try again with fewer fields or check your connection.',
+          userMessage:
+            'The AI generation process took too long to complete. Please try again with fewer fields or check your internet connection.',
+          errorType: 'TIMEOUT_ERROR',
           details: error.message,
         },
         { status: 504 },
+      )
+    }
+
+    // Handle general AI service API errors
+    if (
+      error instanceof Error &&
+      (error.message.includes('OpenRouter') || error.message.includes('AI service'))
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'AI service error',
+          userMessage: 'There was an issue with the AI service. Please try again in a few moments.',
+          errorType: 'AI_SERVICE_ERROR',
+        },
+        { status: 503 },
       )
     }
 
@@ -252,6 +305,8 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: 'Internal server error occurred during AI generation.',
+        userMessage: 'An unexpected error occurred during AI generation. Please try again.',
+        errorType: 'UNKNOWN_ERROR',
         details:
           process.env.NODE_ENV === 'development'
             ? error instanceof Error

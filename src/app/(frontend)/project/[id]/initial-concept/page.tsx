@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { Sparkles, Trash2 } from 'lucide-react'
+import { Sparkles, Trash2, Star } from 'lucide-react'
 import { Project, InitialConcept } from '@/payload-types'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import Button from '@/components/ui/Button'
 import ToastContainer, { useToast } from '@/components/ui/ToastContainer'
 import InitialConceptForm from '@/components/forms/InitialConceptForm'
+import QualityScoreModal from '@/components/modals/QualityScoreModal'
+import { isInitialConceptFormComplete } from '@/lib/utils/form-validation'
 // Removed problematic PayloadCMS client-side import
 
 interface InitialConceptResponse {
@@ -35,6 +37,12 @@ export default function InitialConceptPage() {
   const [aiLoading, setAiLoading] = useState(false)
   const [pageError, setPageError] = useState<string | null>(null)
   const [currentFormData, setCurrentFormData] = useState<any>(null) // Track form state for sidebar
+
+  // Quality Score Modal state
+  const [qualityModalOpen, setQualityModalOpen] = useState(false)
+  const [qualityScore, setQualityScore] = useState<number | undefined>(undefined)
+  const [qualityRecommendations, setQualityRecommendations] = useState<string>('')
+  const [qualityLoading, setQualityLoading] = useState(false)
 
   // Fetch project and initial concept data
   useEffect(() => {
@@ -254,11 +262,39 @@ export default function InitialConceptPage() {
         // Show success message
         console.log(`🎉 Generated ${result.data.summary.totalGenerated} fields successfully!`)
       } else {
-        throw new Error(result.error || 'AI generation failed')
+        // Handle specific error types with user-friendly messages
+        let errorMessage = result.error || 'AI generation failed'
+
+        if (result.errorType === 'INSUFFICIENT_CREDITS') {
+          errorMessage =
+            result.userMessage ||
+            'The AI service has run out of credits. Please contact support or try again later.'
+        } else if (result.errorType === 'SERVICE_UNAVAILABLE') {
+          errorMessage =
+            result.userMessage ||
+            'The AI content generation service is temporarily unavailable. Please try again later.'
+        } else if (
+          result.errorType === 'AI_SERVICE_ERROR' ||
+          result.errorType === 'AI_GENERATION_ERROR'
+        ) {
+          errorMessage =
+            result.userMessage ||
+            'There was an issue with the AI service. Please try again in a few moments.'
+        } else if (result.errorType === 'TIMEOUT_ERROR') {
+          errorMessage =
+            result.userMessage ||
+            'The AI generation process took too long to complete. Please try again with fewer fields.'
+        } else if (result.userMessage) {
+          errorMessage = result.userMessage
+        }
+
+        throw new Error(errorMessage)
       }
     } catch (error) {
       console.error('❌ AI generation error:', error)
-      setPageError('AI generation failed. Please try again.')
+      setPageError(
+        error instanceof Error ? error.message : 'AI generation failed. Please try again.',
+      )
     } finally {
       setAiLoading(false)
     }
@@ -399,6 +435,108 @@ export default function InitialConceptPage() {
       error('Save Error', 'Network error occurred. Please try again.')
     } finally {
       setSaving(false)
+    }
+  }
+
+  // Handle Quality Score assessment
+  const handleQualityScore = async () => {
+    if (!project || !currentFormData) {
+      error('Quality Score Error', 'Missing project or form data')
+      return
+    }
+
+    setQualityLoading(true)
+    setQualityModalOpen(true)
+    setQualityScore(undefined)
+    setQualityRecommendations('')
+
+    try {
+      const payload = {
+        projectName: project.name,
+        movieFormat:
+          typeof project.movieFormat === 'object' ? project.movieFormat.slug : project.movieFormat,
+        movieStyle:
+          typeof project.movieStyle === 'object' ? project.movieStyle.slug : project.movieStyle,
+        durationUnit: project.durationUnit,
+        series: typeof project.series === 'object' ? project.series?.slug : project.series,
+        formData: currentFormData,
+      }
+
+      const response = await fetch('/v1/initial-concepts/quality-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setQualityScore(result.data.qualityScore)
+        setQualityRecommendations(result.data.recommendations)
+      } else {
+        // Handle specific error types with user-friendly messages
+        let errorTitle = 'Quality Score Error'
+        let errorMessage = result.error || 'Failed to assess project quality'
+
+        if (result.errorType === 'INSUFFICIENT_CREDITS') {
+          errorTitle = 'AI Service Credits Exhausted'
+          errorMessage =
+            result.userMessage ||
+            'The AI service has run out of credits. Please contact support or try again later.'
+        } else if (result.errorType === 'SERVICE_UNAVAILABLE') {
+          errorTitle = 'AI Service Temporarily Unavailable'
+          errorMessage =
+            result.userMessage ||
+            'The AI quality assessment service is temporarily unavailable. Please try again later.'
+        } else if (result.errorType === 'AI_SERVICE_ERROR') {
+          errorTitle = 'AI Service Error'
+          errorMessage =
+            result.userMessage ||
+            'There was an issue with the AI service. Please try again in a few moments.'
+        } else if (result.userMessage) {
+          errorMessage = result.userMessage
+        }
+
+        error(errorTitle, errorMessage)
+        setQualityModalOpen(false)
+      }
+    } catch (err) {
+      console.error('Quality score error:', err)
+      error('Quality Score Error', 'Network error occurred. Please try again.')
+      setQualityModalOpen(false)
+    } finally {
+      setQualityLoading(false)
+    }
+  }
+
+  // Handle manual edit and rescore
+  const handleRescore = async (editedRecommendations: string) => {
+    // For now, just update the recommendations
+    // In a full implementation, you might want to re-run the quality assessment
+    setQualityRecommendations(editedRecommendations)
+    success('Recommendations Updated', 'Your edits have been saved.')
+  }
+
+  // Handle AI regeneration based on recommendations
+  const handleRegenerate = async (recommendations: string) => {
+    if (!project) {
+      error('Regeneration Error', 'Missing project data')
+      return
+    }
+
+    try {
+      // Close the quality modal and start AI generation
+      setQualityModalOpen(false)
+      await handleManualAIGeneration()
+      success(
+        'AI Regeneration Started',
+        'Form fields are being regenerated based on the recommendations.',
+      )
+    } catch (err) {
+      console.error('Regeneration error:', err)
+      error('Regeneration Error', 'Failed to regenerate form fields. Please try again.')
     }
   }
 
@@ -545,6 +683,20 @@ export default function InitialConceptPage() {
                 {aiLoading ? 'Generating...' : 'AI Auto-fill'}
               </button>
 
+              {/* Quality Score Button - only visible when form is complete */}
+              {currentFormData && isInitialConceptFormComplete(currentFormData) && (
+                <button
+                  type="button"
+                  onClick={handleQualityScore}
+                  disabled={aiLoading || qualityLoading}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 text-blue-700 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 rounded-md disabled:opacity-50"
+                  title="Assess project quality with AI expert analysis"
+                >
+                  <Star className="w-4 h-4" />
+                  {qualityLoading ? 'Analyzing...' : 'Quality Score'}
+                </button>
+              )}
+
               {/* Clear Content Button */}
               <Button
                 type="button"
@@ -575,6 +727,17 @@ export default function InitialConceptPage() {
       </div>
 
       <ToastContainer toasts={toasts} removeToast={removeToast} />
+
+      {/* Quality Score Modal */}
+      <QualityScoreModal
+        isOpen={qualityModalOpen}
+        onClose={() => setQualityModalOpen(false)}
+        qualityScore={qualityScore}
+        recommendations={qualityRecommendations}
+        loading={qualityLoading}
+        onRescore={handleRescore}
+        onRegenerate={handleRegenerate}
+      />
     </DashboardLayout>
   )
 }

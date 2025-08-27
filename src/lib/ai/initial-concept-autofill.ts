@@ -1,4 +1,3 @@
-import OpenAI from 'openai'
 import {
   generateRelationshipField,
   generatePrimaryGenres,
@@ -9,19 +8,9 @@ import {
   generateCentralThemes,
 } from './relationship-field-handler'
 
-// Initialize OpenRouter client for fallback cases only
-const openrouter = new OpenAI({
-  baseURL: process.env.OPENROUTER_BASE_URL,
-  apiKey: process.env.OPENROUTER_API_KEY,
-  defaultHeaders: {
-    'HTTP-Referer': process.env.SITE_URL || 'https://localhost:3000',
-    'X-Title': 'Novel Movie',
-  },
-})
-
 // Lazy-load BAML to avoid compilation issues
 let bamlClient: any = null
-async function getBamlClient() {
+export async function getBamlClient() {
   if (!bamlClient) {
     try {
       const { b } = await import('baml_client')
@@ -1139,79 +1128,6 @@ function updateContextWithContent(
 }
 
 /**
- * Generate all missing fields sequentially with progress tracking (legacy bulk approach)
- */
-export async function generateMissingFieldsSequentially(
-  context: InitialConceptContext,
-  onProgress?: (progress: FieldGenerationProgress) => void,
-): Promise<GeneratedFields> {
-  const generatedFields: GeneratedFields = {}
-
-  // Process each field in sequence
-  for (const step of GENERATION_SEQUENCE) {
-    const { fieldName, fieldLabel, generator, required } = step
-
-    // Skip if field already has content
-    if (hasFieldContent(context.formData, fieldName)) {
-      continue
-    }
-
-    // Skip if required fields are missing
-    if (!hasRequiredFields(context.formData, required)) {
-      continue
-    }
-
-    // Notify progress start
-    onProgress?.({
-      fieldName,
-      fieldLabel,
-      status: 'generating',
-    })
-
-    try {
-      // Generate the field content
-      const content = await generator(context)
-
-      // Handle different content types
-      if (content !== undefined && content !== null) {
-        generatedFields[fieldName as keyof GeneratedFields] = content as any
-
-        // Update context with generated content for next fields
-        const keys = fieldName.split('.')
-        let current: any = context.formData
-        for (let i = 0; i < keys.length - 1; i++) {
-          if (!current[keys[i]]) {
-            current[keys[i]] = {}
-          }
-          current = current[keys[i]]
-        }
-        current[keys[keys.length - 1]] = content
-      }
-
-      // Notify progress completion
-      onProgress?.({
-        fieldName,
-        fieldLabel,
-        status: 'completed',
-        content: typeof content === 'string' ? content : JSON.stringify(content),
-      })
-    } catch (error) {
-      console.error(`Error generating ${fieldName}:`, error)
-
-      // Notify progress error
-      onProgress?.({
-        fieldName,
-        fieldLabel,
-        status: 'error',
-        error: error instanceof Error ? error.message : 'Unknown error',
-      })
-    }
-  }
-
-  return generatedFields
-}
-
-/**
  * Create context for AI generation
  */
 export function createInitialConceptContext(
@@ -1231,15 +1147,4 @@ export function createInitialConceptContext(
     durationUnit,
     formData,
   }
-}
-
-/**
- * Generate all fields from scratch (complete regeneration)
- */
-export async function generateAllFieldsFromScratch(
-  context: InitialConceptContext,
-  onProgress?: (progress: FieldGenerationProgress) => void,
-): Promise<GeneratedFields> {
-  // For complete regeneration, we use the same sequence but ignore existing content
-  return await generateMissingFieldsSequentially(context, onProgress)
 }
