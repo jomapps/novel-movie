@@ -226,9 +226,18 @@ export async function generateMoods(context: any): Promise<string[]> {
     'Epic',
   ]
 
-  // Select 2-3 moods
-  const shuffled = moodOptions.sort(() => 0.5 - Math.random())
-  return shuffled.slice(0, 2 + Math.floor(Math.random() * 2))
+  // Select 2-3 moods deterministically based on context
+  const projectLength = context.projectName?.length || 5
+  const baseIndex = projectLength % moodOptions.length
+  const count = 2 + (projectLength % 2) // Always 2 or 3 moods
+
+  const selectedMoods = []
+  for (let i = 0; i < count; i++) {
+    const index = (baseIndex + i * 3) % moodOptions.length
+    selectedMoods.push(moodOptions[index])
+  }
+
+  return selectedMoods
 }
 
 export async function generateCinematographyStyle(context: any): Promise<string[]> {
