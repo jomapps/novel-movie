@@ -1,17 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
+import { getPayload } from 'payload'
+import config from '@payload-config'
 import {
-  generateAllFieldsFromScratch,
-  createInitialConceptContext,
+  generateAndUpdateFieldsIndividually,
+  generateMissingFieldsSequentially,
   validateRequiredProjectFields,
+  type InitialConceptContext,
   type InitialConceptFormData,
   type FieldGenerationProgress,
-} from '@/lib/ai/initial-concept-autofill-fallback'
+} from '@/lib/ai/initial-concept-autofill'
 // Removed problematic collection manager import
 
 // Validation schema for the request
 const AutofillRequestSchema = z.object({
   // Project context
+  projectId: z.string().min(1, 'Project ID is required'), // Required for creating initial-concept record
   projectName: z.string().min(1, 'Project name is required'),
   projectDescription: z.string().optional().default(''), // Optional project description for better context
   movieFormat: z.string().min(1, 'Movie format is required'),
@@ -100,36 +104,71 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // AI will generate all content from scratch based on project context
-    // No pre-existing form data validation needed since we're doing complete regeneration
-    const { formData } = validatedData
+    // Step 1: Create or find the initial-concept record
+    console.log('🏗️ Creating or finding initial-concept record...')
+    const payload = await getPayload({ config })
 
-    // Create context for AI generation with project description for complete regeneration
-    const context = createInitialConceptContext(
-      validatedData.projectName,
-      validatedData.movieFormat,
-      validatedData.movieStyle,
-      validatedData.durationUnit,
-      validatedData.formData,
-      validatedData.series,
-      validatedData.projectDescription,
+    // Check if record already exists
+    const existingRecord = await payload.find({
+      collection: 'initial-concepts',
+      where: {
+        project: { equals: validatedData.projectId },
+      },
+      limit: 1,
+    })
+
+    let initialConceptRecord: any
+
+    if (existingRecord.totalDocs > 0) {
+      // Use existing record
+      initialConceptRecord = existingRecord.docs[0]
+      console.log('✅ Found existing initial-concept record:', initialConceptRecord.id)
+    } else {
+      // Create new record
+      initialConceptRecord = await payload.create({
+        collection: 'initial-concepts',
+        data: {
+          project: validatedData.projectId,
+          status: 'ai-generated',
+          // All other fields will be populated by AI generation
+        },
+      })
+      console.log('✅ Created new initial-concept record:', initialConceptRecord.id)
+    }
+
+    // Step 2: Generate each field individually and update the record
+    console.log('🤖 Starting individual field generation...')
+    const context: InitialConceptContext = {
+      projectName: validatedData.projectName,
+      movieFormat: validatedData.movieFormat,
+      movieStyle: validatedData.movieStyle,
+      durationUnit: validatedData.durationUnit,
+      formData: validatedData.formData,
+      series: validatedData.series || undefined,
+    }
+
+    // Track progress for response
+    const progressUpdates: FieldGenerationProgress[] = []
+    const generatedFields: string[] = []
+
+    // Generate and update each field individually
+    const updatedRecord = await generateAndUpdateFieldsIndividually(
+      payload,
+      initialConceptRecord.id,
+      context,
+      (progress) => {
+        console.log(`📊 Field progress: ${progress.fieldName} - ${progress.status}`)
+        progressUpdates.push(progress)
+        if (progress.status === 'completed') {
+          generatedFields.push(progress.fieldName)
+        }
+      },
     )
 
-    // Track progress for potential streaming response
-    const progressUpdates: FieldGenerationProgress[] = []
-
-    // Generate ALL fields from scratch for complete regeneration
-    console.log('🤖 Starting AI generation for all fields...')
-    const generatedFields = await generateAllFieldsFromScratch(context, (progress) => {
-      console.log(`📊 Field progress: ${progress.fieldName} - ${progress.status}`)
-      progressUpdates.push(progress)
-      // In a real implementation, you might want to stream these updates
-      // For now, we'll collect them and return at the end
-    })
-    console.log('✅ AI generation completed:', Object.keys(generatedFields))
+    console.log('✅ Individual field generation completed:', generatedFields)
 
     // Check if any fields were generated
-    const hasGeneratedContent = Object.keys(generatedFields).length > 0
+    const hasGeneratedContent = generatedFields.length > 0
 
     if (!hasGeneratedContent) {
       return NextResponse.json(
@@ -139,6 +178,7 @@ export async function POST(request: NextRequest) {
             'All eligible fields are already filled or missing required dependencies. Nothing to generate.',
           details:
             'Make sure required fields like primary genres are selected and that there are empty fields to fill.',
+          recordId: initialConceptRecord.id, // Return the created record ID even if no fields were generated
         },
         { status: 400 },
       )
@@ -151,14 +191,16 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: {
+        recordId: initialConceptRecord.id,
+        record: updatedRecord,
         generatedFields,
         progress: progressUpdates,
         summary: {
           totalGenerated: successfulGenerations,
           totalFailed: failedGenerations,
-          totalFields: Object.keys(generatedFields).length,
+          totalFields: generatedFields.length,
         },
-        message: `Successfully generated ${successfulGenerations} field(s)${failedGenerations > 0 ? ` (${failedGenerations} failed)` : ''}`,
+        message: `Successfully created initial-concept record and generated ${successfulGenerations} field(s)${failedGenerations > 0 ? ` (${failedGenerations} failed)` : ''}`,
       },
     })
   } catch (error) {

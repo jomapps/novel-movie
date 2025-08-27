@@ -14,6 +14,9 @@ importers:
       '@boundaryml/baml':
         specifier: ^0.205.0
         version: 0.205.0
+      '@boundaryml/baml-win32-x64-msvc':
+        specifier: ^0.205.0
+        version: 0.205.0
       '@payloadcms/db-mongodb':
         specifier: 3.53.0
         version: 3.53.0(@aws-sdk/credential-providers@3.873.0)(payload@3.53.0(graphql@16.11.0)(typescript@5.7.3))
@@ -5881,8 +5884,7 @@ snapshots:
   '@boundaryml/baml-linux-x64-musl@0.205.0':
     optional: true
 
-  '@boundaryml/baml-win32-x64-msvc@0.205.0':
-    optional: true
+  '@boundaryml/baml-win32-x64-msvc@0.205.0': {}
 
   '@boundaryml/baml@0.205.0':
     dependencies:

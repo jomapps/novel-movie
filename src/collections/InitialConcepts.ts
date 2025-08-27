@@ -51,7 +51,7 @@ export const InitialConcepts: CollectionConfig = {
     {
       name: 'status',
       type: 'select',
-      required: true,
+      required: false,
       defaultValue: 'draft',
       options: [
         { label: 'Draft', value: 'draft' },
@@ -72,7 +72,7 @@ export const InitialConcepts: CollectionConfig = {
       relationTo: 'genres',
       hasMany: true,
       maxRows: 3,
-      required: true,
+      required: false,
       admin: {
         description: 'Select up to 3 genres in order of importance',
         sortOptions: 'name',
@@ -83,7 +83,7 @@ export const InitialConcepts: CollectionConfig = {
     {
       name: 'corePremise',
       type: 'textarea',
-      required: true,
+      required: false,
       admin: {
         description: 'The central story concept and main conflict (50-500 words)',
       },
@@ -99,7 +99,7 @@ export const InitialConcepts: CollectionConfig = {
           type: 'relationship',
           relationTo: 'audience-demographics',
           hasMany: true,
-          required: true,
+          required: false,
           admin: {
             description: 'Primary demographic groups',
           },
@@ -131,7 +131,7 @@ export const InitialConcepts: CollectionConfig = {
           type: 'relationship',
           relationTo: 'tone-options',
           hasMany: true,
-          required: true,
+          required: false,
           admin: {
             description: 'Overall tone of the story',
           },
@@ -141,7 +141,7 @@ export const InitialConcepts: CollectionConfig = {
           type: 'relationship',
           relationTo: 'mood-descriptors',
           hasMany: true,
-          required: true,
+          required: false,
           admin: {
             description: 'Emotional atmosphere',
           },
@@ -149,7 +149,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'emotionalArc',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'How the emotional feeling should evolve throughout the story',
           },
@@ -166,7 +166,7 @@ export const InitialConcepts: CollectionConfig = {
           name: 'cinematographyStyle',
           type: 'relationship',
           relationTo: 'cinematography-styles',
-          required: true,
+          required: false,
           admin: {
             description: 'Overall visual approach',
           },
@@ -178,7 +178,7 @@ export const InitialConcepts: CollectionConfig = {
             {
               name: 'dominance',
               type: 'select',
-              required: true,
+              required: false,
               options: [
                 { label: 'Warm Dominant', value: 'warm' },
                 { label: 'Cool Dominant', value: 'cool' },
@@ -189,7 +189,7 @@ export const InitialConcepts: CollectionConfig = {
             {
               name: 'saturation',
               type: 'select',
-              required: true,
+              required: false,
               options: [
                 { label: 'High Saturation', value: 'high' },
                 { label: 'Medium Saturation', value: 'medium' },
@@ -209,7 +209,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'lightingPreferences',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Lighting approach and mood (free text for now)',
           },
@@ -217,7 +217,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'cameraMovement',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Camera movement and framing style (free text for now)',
           },
@@ -238,7 +238,7 @@ export const InitialConcepts: CollectionConfig = {
             {
               name: 'title',
               type: 'text',
-              required: true,
+              required: false,
             },
             {
               name: 'year',
@@ -249,7 +249,7 @@ export const InitialConcepts: CollectionConfig = {
             {
               name: 'specificElements',
               type: 'textarea',
-              required: true,
+              required: false,
               admin: {
                 description: 'What specific elements to emulate from this film',
               },
@@ -282,7 +282,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'protagonistType',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Primary character archetype for the main character (free text for now)',
           },
@@ -297,7 +297,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'relationshipDynamics',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'How characters interact and drive conflict',
           },
@@ -315,7 +315,7 @@ export const InitialConcepts: CollectionConfig = {
           type: 'relationship',
           relationTo: 'central-themes',
           hasMany: true,
-          required: true,
+          required: false,
           admin: {
             description: 'Primary themes explored in the story',
           },
@@ -330,7 +330,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'messageTakeaway',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'What should audiences feel or learn from this story?',
           },
@@ -346,7 +346,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'timePeriod',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'When the story takes place (free text for now)',
           },
@@ -354,7 +354,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'geographicSetting',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Where the story takes place (free text for now)',
           },
@@ -362,7 +362,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'socialContext',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Social, economic, and cultural background (free text for now)',
           },
@@ -370,7 +370,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'scale',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Scope and scale of the story (free text for now)',
           },
@@ -415,7 +415,7 @@ export const InitialConcepts: CollectionConfig = {
         {
           name: 'contentRestrictions',
           type: 'textarea',
-          required: true,
+          required: false,
           admin: {
             description: 'Content limitations and restrictions (free text for now)',
           },
@@ -486,9 +486,9 @@ export const InitialConcepts: CollectionConfig = {
   ],
   hooks: {
     beforeValidate: [
-      async ({ data, req }: any) => {
-        // Validate project exists and doesn't already have an initial concept
-        if (data?.project) {
+      async ({ data, req, operation }: any) => {
+        // Only validate on create operations, not updates
+        if (operation === 'create' && data?.project) {
           const existingConcept = await req.payload.find({
             collection: 'initial-concepts',
             where: {

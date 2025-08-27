@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@boundaryml/baml": "^0.205.0",
+    "@boundaryml/baml-win32-x64-msvc": "^0.205.0",
     "@payloadcms/db-mongodb": "3.53.0",
     "@payloadcms/next": "3.53.0",
     "@payloadcms/payload-cloud": "3.53.0",

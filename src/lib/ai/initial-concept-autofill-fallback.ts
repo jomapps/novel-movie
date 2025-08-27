@@ -83,7 +83,7 @@ export interface FieldGenerationProgress {
 }
 
 /**
- * Clean AI response by removing markdown formatting and extra whitespace
+ * Clean AI response by removing markdown formatting, quotes, and extra whitespace
  */
 function cleanAIResponse(response: string): string {
   return response
@@ -93,6 +93,8 @@ function cleanAIResponse(response: string): string {
     .replace(/#{1,6}\s/g, '') // Remove headers
     .replace(/^\s*[-*+]\s/gm, '') // Remove bullet points
     .replace(/^\s*\d+\.\s/gm, '') // Remove numbered lists
+    .replace(/^["']|["']$/g, '') // Remove leading/trailing quotes
+    .replace(/["']/g, '') // Remove all remaining quotes
     .trim()
 }
 
@@ -214,7 +216,7 @@ Generate only the emotional arc description, no additional text or explanation.`
 }
 
 /**
- * Define the generation sequence with field metadata
+ * Define the generation sequence with field metadata - expanded for complete generation
  */
 const GENERATION_SEQUENCE = [
   {
@@ -230,10 +232,52 @@ const GENERATION_SEQUENCE = [
     required: ['primaryGenres', 'corePremise', 'targetAudience.demographics'],
   },
   {
+    fieldName: 'targetAudience.customDescription',
+    fieldLabel: 'Custom Audience Description',
+    generator: generateTargetAudienceCustomDescription,
+    required: ['primaryGenres', 'corePremise'],
+  },
+  {
     fieldName: 'toneAndMood.emotionalArc',
     fieldLabel: 'Emotional Arc',
     generator: generateEmotionalArc,
     required: ['primaryGenres', 'corePremise', 'toneAndMood.tones', 'toneAndMood.moods'],
+  },
+  {
+    fieldName: 'visualStyle.colorPalette.symbolicColors',
+    fieldLabel: 'Symbolic Colors',
+    generator: generateSymbolicColors,
+    required: ['primaryGenres', 'corePremise'],
+  },
+  {
+    fieldName: 'visualStyle.lightingPreferences',
+    fieldLabel: 'Lighting Preferences',
+    generator: generateLightingPreferences,
+    required: ['primaryGenres', 'corePremise'],
+  },
+  {
+    fieldName: 'themes.moralQuestions',
+    fieldLabel: 'Moral Questions',
+    generator: generateMoralQuestions,
+    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
+  },
+  {
+    fieldName: 'themes.messageTakeaway',
+    fieldLabel: 'Message/Takeaway',
+    generator: generateMessageTakeaway,
+    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
+  },
+  {
+    fieldName: 'references.visualReferences',
+    fieldLabel: 'Visual References',
+    generator: generateVisualReferences,
+    required: ['primaryGenres', 'corePremise'],
+  },
+  {
+    fieldName: 'references.narrativeReferences',
+    fieldLabel: 'Narrative References',
+    generator: generateNarrativeReferences,
+    required: ['primaryGenres', 'corePremise'],
   },
 ] as const
 
@@ -398,38 +442,143 @@ export async function generateMissingFieldsSequentially(
   return generatedFields
 }
 
+// Function removed - now using the one from initial-concept-autofill.ts
+
+// Function removed - now using the one from initial-concept-autofill.ts
+
 /**
- * Create context from project and form data
+ * Generate custom audience description
  */
-export function createInitialConceptContext(
-  projectName: string,
-  movieFormat: string,
-  movieStyle: string,
-  durationUnit: number,
-  formData: InitialConceptFormData,
-  series?: string,
-  projectDescription?: string,
-): InitialConceptContext {
-  return {
-    projectName,
-    projectDescription,
-    movieFormat,
-    movieStyle,
-    series,
-    durationUnit,
-    formData,
-  }
+async function generateTargetAudienceCustomDescription(
+  context: InitialConceptContext,
+): Promise<string> {
+  const prompt = `You are an expert audience analyst with deep understanding of demographic and psychographic targeting.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+
+Create a comprehensive custom audience description that identifies the ideal viewer. Focus on specific characteristics, lifestyle patterns, interests, media consumption habits, values, and why this story will resonate with them specifically.
+
+Generate only the audience description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
 }
 
 /**
- * Validate that required project fields are present
+ * Generate symbolic colors description
  */
-export function validateRequiredProjectFields(data: any): boolean {
-  return !!(
-    data.projectName &&
-    data.movieFormat &&
-    data.movieStyle &&
-    data.durationUnit &&
-    (data.movieFormat !== 'series' || data.series)
-  )
+async function generateSymbolicColors(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a master color theorist and visual storyteller with expertise in psychological color impact.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+
+Design a color symbolism strategy that enhances narrative meaning. Include primary symbolic colors and their specific meanings, how colors evolve throughout the story, psychological impact on audience emotions, and cultural color associations.
+
+Generate only the symbolic colors description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
+}
+
+/**
+ * Generate lighting preferences description
+ */
+async function generateLightingPreferences(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a master cinematographer with deep understanding of lighting as emotional language.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+
+Design comprehensive lighting preferences that serve the story. Include overall lighting philosophy, key lighting techniques for different emotional beats, natural vs artificial light usage, shadow and contrast patterns, and how lighting evolves with character arcs.
+
+Generate only the lighting preferences description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
+}
+
+/**
+ * Generate moral questions
+ */
+async function generateMoralQuestions(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a moral philosopher and storytelling expert who understands how great stories explore ethical complexity.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+- Central Themes: ${context.formData.themes.centralThemes.join(', ')}
+
+Develop profound moral questions that the story explores. Include core ethical dilemmas characters face, questions that challenge audience assumptions, moral gray areas without easy answers, and contemporary relevance of these questions.
+
+Generate only the moral questions exploration without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
+}
+
+/**
+ * Generate message/takeaway
+ */
+async function generateMessageTakeaway(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a master storyteller who understands how great narratives leave lasting impact on audiences.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+- Central Themes: ${context.formData.themes.centralThemes.join(', ')}
+
+Craft a powerful message or takeaway that audiences will carry with them. Include the core insight or truth the story reveals, how this message emerges naturally from the narrative, personal transformation for viewers, and universal human truth with contemporary relevance.
+
+Generate only the message/takeaway description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
+}
+
+/**
+ * Generate visual references
+ */
+async function generateVisualReferences(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a visual culture expert with encyclopedic knowledge of film, photography, art, and design.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+
+Curate sophisticated visual references that inform the aesthetic. Include specific films, photographers, or artists that inspire the look, art movements or visual styles that align with themes, contemporary visual culture touchstones, and unique visual approaches that serve the story.
+
+Generate only the visual references description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
+}
+
+/**
+ * Generate narrative references
+ */
+async function generateNarrativeReferences(context: InitialConceptContext): Promise<string> {
+  const prompt = `You are a narrative scholar with deep knowledge of storytelling across all media and cultures.
+
+Project Context:
+- Project: ${context.projectName}
+- Genres: ${context.formData.primaryGenres.join(', ')}
+- Core Premise: ${context.formData.corePremise}
+
+Identify sophisticated narrative references that inform the storytelling. Include films, books, or stories with similar thematic depth, narrative structures or techniques to emulate, character archetypes or relationship dynamics, and storytelling traditions from various cultures.
+
+Generate only the narrative references description without quotes or additional formatting.`
+
+  const response = await generateWithOpenAI(prompt)
+  return cleanAIResponse(response)
 }

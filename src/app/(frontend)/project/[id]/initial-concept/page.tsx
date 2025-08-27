@@ -57,23 +57,26 @@ export default function InitialConceptPage() {
         const conceptResponse = await fetch(`/v1/initial-concepts?project=${params.id}`)
         const conceptData = await conceptResponse.json()
 
-        // PayloadCMS returns paginated results, extract the first document if it exists
-        if (
-          conceptData.success &&
-          conceptData.data &&
-          conceptData.data.docs &&
-          conceptData.data.docs.length > 0
-        ) {
-          setInitialConcept(conceptData.data.docs[0])
+        // Handle different API response formats
+        if (conceptData.success && conceptData.data) {
+          // Check if data is a single record (when record exists) or paginated results
+          if (conceptData.data.id) {
+            // Single record format - record exists
+            console.log('✅ Found existing initial-concept record:', conceptData.data.id)
+            setInitialConcept(conceptData.data)
+          } else if (conceptData.data.docs && conceptData.data.docs.length > 0) {
+            // Paginated format with records
+            console.log('✅ Found existing initial-concept record:', conceptData.data.docs[0].id)
+            setInitialConcept(conceptData.data.docs[0])
+          } else {
+            // No existing initial concept found - create it immediately
+            console.log('🏗️ No initial concept found, creating empty record...')
+            await createEmptyInitialConcept(projectData.data)
+          }
         } else {
-          // No existing initial concept found - automatically start AI generation
-          setInitialConcept(null)
-          // Automatically trigger AI generation for new projects
-          setTimeout(() => {
-            if (projectData.data) {
-              handleAutoAIGeneration(projectData.data)
-            }
-          }, 500) // Small delay to ensure UI is ready
+          // API error or no data
+          console.log('🏗️ No initial concept data, creating empty record...')
+          await createEmptyInitialConcept(projectData.data)
         }
       } catch (err) {
         console.error('Error fetching data:', err)
@@ -88,174 +91,63 @@ export default function InitialConceptPage() {
     }
   }, [params.id])
 
-  // Handle automatic AI generation for new projects (no existing initial concept)
-  const handleAutoAIGeneration = async (projectData: Project) => {
-    console.log('🚀 Starting automatic AI generation for new project')
-
-    setAiLoading(true)
+  // Create empty initial concept record immediately
+  const createEmptyInitialConcept = async (projectData: Project) => {
     try {
-      // First, get smart defaults to populate foundation fields
-      console.log('📋 Fetching smart defaults for foundation fields...')
-      const smartDefaultsResponse = await fetch('/v1/initial-concepts/smart-defaults')
-      const smartDefaultsData = await smartDefaultsResponse.json()
+      console.log('🏗️ Creating empty initial-concept record...')
 
-      if (!smartDefaultsData.success) {
-        throw new Error('Failed to fetch smart defaults')
-      }
-
-      // Create form data with smart defaults as foundation
-      const freshFormData = {
-        status: 'ai-generated',
-        primaryGenres: smartDefaultsData.data.primaryGenres || [], // Use smart defaults
-        corePremise: '',
-        targetAudience: {
-          demographics: smartDefaultsData.data.demographics || [], // Use smart defaults
-          psychographics: '',
-          customDescription: '',
-        },
-        toneAndMood: {
-          tones: smartDefaultsData.data.tones || [], // Use smart defaults
-          moods: smartDefaultsData.data.moods || [], // Use smart defaults
-          emotionalArc: '',
-        },
-        visualStyle: {
-          cinematographyStyle: '',
-          colorPalette: {
-            dominance: '',
-            saturation: '',
-            symbolicColors: '',
-          },
-          lightingPreferences: '',
-          cameraMovement: '',
-        },
-        references: {
-          inspirationalMovies: [],
-          visualReferences: '',
-          narrativeReferences: '',
-        },
-        themes: {
-          centralThemes: smartDefaultsData.data.centralThemes || [], // Use smart defaults
-          moralQuestions: '',
-          messageTakeaway: '',
-        },
-      }
-
-      console.log('✅ Smart defaults applied:', {
-        primaryGenres: freshFormData.primaryGenres.length,
-        demographics: freshFormData.targetAudience.demographics.length,
-        tones: freshFormData.toneAndMood.tones.length,
-        moods: freshFormData.toneAndMood.moods.length,
-        centralThemes: freshFormData.themes.centralThemes.length,
-      })
-
-      // Prepare the request payload with project context
-      const payload = {
-        projectName: projectData.name,
-        projectDescription: projectData.description || '',
-        movieFormat:
-          typeof projectData.movieFormat === 'object'
-            ? projectData.movieFormat.slug
-            : projectData.movieFormat,
-        movieStyle:
-          typeof projectData.movieStyle === 'object'
-            ? projectData.movieStyle.slug
-            : projectData.movieStyle,
-        durationUnit: projectData.durationUnit,
-        series:
-          typeof projectData.series === 'object' ? projectData.series?.slug : projectData.series,
-        formData: freshFormData,
-      }
-
-      console.log('📤 Sending automatic AI generation request:', JSON.stringify(payload, null, 2))
-
-      const response = await fetch('/v1/initial-concepts/ai-autofill', {
+      // Create empty record with just the project relationship
+      const response = await fetch('/v1/initial-concepts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          project: projectData.id,
+          status: 'draft', // Start as draft, will be updated to 'ai-generated' when AI fills it
+        }),
       })
 
       const result = await response.json()
 
-      if (result.success) {
-        // Update the initial concept with generated fields
-        const updatedConcept = { ...freshFormData }
-
-        // Apply generated fields to the concept
-        Object.entries(result.data.generatedFields).forEach(([fieldPath, value]) => {
-          const keys = fieldPath.split('.')
-          let current: any = updatedConcept
-
-          // Navigate to the parent object
-          for (let i = 0; i < keys.length - 1; i++) {
-            if (!current[keys[i]]) {
-              current[keys[i]] = {}
-            }
-            current = current[keys[i]]
-          }
-
-          // Set the value
-          current[keys[keys.length - 1]] = value
-        })
-
-        // Create a proper InitialConcept object
-        const newInitialConcept = {
-          ...updatedConcept,
-          id: '', // Will be set when saved
-          project: params.id,
-          projectName: null,
-          characterArchetypes: null,
-          setting: null,
-          pacing: null,
-          contentGuidelines: null,
-          updatedAt: new Date().toISOString(),
-          createdAt: new Date().toISOString(),
+      if (result.success && result.doc) {
+        console.log('✅ Created empty initial-concept record:', result.doc.id)
+        setInitialConcept(result.doc)
+      } else if (response.status === 409) {
+        // Record already exists - this shouldn't happen with our logic, but handle gracefully
+        console.log('⚠️ Initial concept already exists, fetching existing record...')
+        // Refetch the existing record
+        const conceptResponse = await fetch(`/v1/initial-concepts?project=${projectData.id}`)
+        const conceptData = await conceptResponse.json()
+        if (conceptData.success && conceptData.data && conceptData.data.id) {
+          setInitialConcept(conceptData.data)
+        } else {
+          throw new Error('Failed to fetch existing initial concept')
         }
-
-        setInitialConcept(newInitialConcept as any)
-        success(
-          'AI Generation Complete',
-          `Successfully generated initial concept with ${result.data.summary.totalGenerated} field(s). Review and save when ready.`,
-        )
       } else {
-        error('AI Generation Error', result.error || 'Failed to generate initial concept')
-        // Fall back to empty form if AI generation fails
-        setInitialConcept(null)
+        throw new Error(result.error || 'Failed to create initial concept')
       }
-    } catch (err) {
-      console.error('Automatic AI generation error:', err)
-      error(
-        'AI Generation Error',
-        'Failed to generate initial concept. You can fill out the form manually.',
-      )
-      // Fall back to empty form if AI generation fails
-      setInitialConcept(null)
-    } finally {
-      setAiLoading(false)
+    } catch (error) {
+      console.error('❌ Error creating empty initial concept:', error)
+      setPageError('Failed to create initial concept record')
     }
   }
 
-  // Handle AI auto-fill - completely regenerate all data from project context
-  const handleAIAutoFill = async () => {
-    if (!project) return
-
-    // Prevent multiple simultaneous calls
-    if (aiLoading) {
-      console.log('🚫 AI autofill already in progress, ignoring duplicate call')
+  // Handle manual AI generation (user-initiated)
+  const handleManualAIGeneration = async () => {
+    if (!project || !initialConcept) {
+      console.error('❌ Missing project or initial concept data')
       return
     }
 
-    const requestId = Math.random().toString(36).substr(2, 9)
-    console.log(`🚀 Starting AI autofill request ${requestId}`)
-
+    console.log('🚀 Starting manual AI generation...')
     setAiLoading(true)
+
     try {
-      // Create fresh form data structure for complete regeneration
-      // AI will populate all fields based purely on project context
-      const freshFormData = {
+      // Get current form data or create fresh structure
+      const currentFormData = initialConcept || {
         status: 'ai-generated',
-        primaryGenres: [], // AI will determine appropriate genres
+        primaryGenres: [],
         corePremise: '',
         targetAudience: {
           demographics: [],
@@ -278,7 +170,7 @@ export default function InitialConceptPage() {
           cameraMovement: '',
         },
         references: {
-          inspirationalMovies: [], // Will be populated by AI as array of {title, year, specificElements}
+          inspirationalMovies: [],
           visualReferences: '',
           narrativeReferences: '',
         },
@@ -289,20 +181,21 @@ export default function InitialConceptPage() {
         },
       }
 
-      // Prepare the request payload with project context only
+      // Prepare the request payload
       const payload = {
+        projectId: project.id,
         projectName: project.name,
-        projectDescription: project.description || '', // Include project description if available
+        projectDescription: project.description || '',
         movieFormat:
           typeof project.movieFormat === 'object' ? project.movieFormat.slug : project.movieFormat,
         movieStyle:
           typeof project.movieStyle === 'object' ? project.movieStyle.slug : project.movieStyle,
         durationUnit: project.durationUnit,
         series: typeof project.series === 'object' ? project.series?.slug : project.series,
-        formData: freshFormData, // Use fresh data structure for complete regeneration
+        formData: currentFormData,
       }
 
-      console.log(`📤 Sending AI autofill request ${requestId}:`, JSON.stringify(payload, null, 2))
+      console.log('📤 Sending manual AI generation request:', JSON.stringify(payload, null, 2))
 
       const response = await fetch('/v1/initial-concepts/ai-autofill', {
         method: 'POST',
@@ -315,53 +208,41 @@ export default function InitialConceptPage() {
       const result = await response.json()
 
       if (result.success) {
-        // Update the initial concept with generated fields
-        const updatedConcept = { ...freshFormData }
+        console.log('✅ AI generation completed successfully:', result.data)
 
-        // Apply generated fields to the concept
-        Object.entries(result.data.generatedFields).forEach(([fieldPath, value]) => {
-          const keys = fieldPath.split('.')
-          let current: any = updatedConcept
-
-          // Navigate to the parent object
-          for (let i = 0; i < keys.length - 1; i++) {
-            if (!current[keys[i]]) {
-              current[keys[i]] = {}
-            }
-            current = current[keys[i]]
-          }
-
-          // Set the value
-          current[keys[keys.length - 1]] = value
-        })
-
-        // Update the state - preserve existing InitialConcept properties
-        const updatedInitialConcept = {
-          ...initialConcept,
-          ...updatedConcept,
-          id: initialConcept?.id || '',
-          project: initialConcept?.project || params.id,
-        }
-        setInitialConcept(updatedInitialConcept as any)
-
-        // Update status to indicate AI generation
-        if (updatedConcept.status === 'draft') {
-          updatedConcept.status = 'ai-generated'
+        // Update the initial concept with the generated data
+        if (result.data.record) {
+          setInitialConcept(result.data.record)
         }
 
-        success(
-          'AI Auto-fill Complete',
-          `Successfully generated ${result.data.summary.totalGenerated} field(s). Review and refine the content as needed.`,
-        )
+        // Show success message
+        console.log(`🎉 Generated ${result.data.summary.totalGenerated} fields successfully!`)
       } else {
-        error('AI Auto-fill Error', result.error || 'Failed to generate content')
+        throw new Error(result.error || 'AI generation failed')
       }
-    } catch (err) {
-      console.error('AI auto-fill error:', err)
-      error('AI Auto-fill Error', 'Failed to generate content. Please try again.')
+    } catch (error) {
+      console.error('❌ AI generation error:', error)
+      setPageError('AI generation failed. Please try again.')
     } finally {
       setAiLoading(false)
     }
+  }
+
+  // Handle AI auto-fill - use the new manual generation approach
+  const handleAIAutoFill = async () => {
+    if (!project || !initialConcept) {
+      console.error('❌ Missing project or initial concept data')
+      return
+    }
+
+    // Prevent multiple simultaneous calls
+    if (aiLoading) {
+      console.log('🚫 AI autofill already in progress, ignoring duplicate call')
+      return
+    }
+
+    console.log('🚀 Starting manual AI generation from button click...')
+    await handleManualAIGeneration()
   }
 
   // Handle clear/reset all content

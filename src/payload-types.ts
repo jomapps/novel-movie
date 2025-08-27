@@ -402,20 +402,20 @@ export interface InitialConcept {
   /**
    * Current status of the concept development
    */
-  status: 'draft' | 'ai-generated' | 'user-refined' | 'ready' | 'approved';
+  status?: ('draft' | 'ai-generated' | 'user-refined' | 'ready' | 'approved') | null;
   /**
    * Select up to 3 genres in order of importance
    */
-  primaryGenres: (string | Genre)[];
+  primaryGenres?: (string | Genre)[] | null;
   /**
    * The central story concept and main conflict (50-500 words)
    */
-  corePremise: string;
-  targetAudience: {
+  corePremise?: string | null;
+  targetAudience?: {
     /**
      * Primary demographic groups
      */
-    demographics: (string | AudienceDemographic)[];
+    demographics?: (string | AudienceDemographic)[] | null;
     /**
      * Audience interests and values (free text for now)
      */
@@ -425,28 +425,28 @@ export interface InitialConcept {
      */
     customDescription?: string | null;
   };
-  toneAndMood: {
+  toneAndMood?: {
     /**
      * Overall tone of the story
      */
-    tones: (string | ToneOption)[];
+    tones?: (string | ToneOption)[] | null;
     /**
      * Emotional atmosphere
      */
-    moods: (string | MoodDescriptor)[];
+    moods?: (string | MoodDescriptor)[] | null;
     /**
      * How the emotional feeling should evolve throughout the story
      */
-    emotionalArc: string;
+    emotionalArc?: string | null;
   };
-  visualStyle: {
+  visualStyle?: {
     /**
      * Overall visual approach
      */
-    cinematographyStyle: string | CinematographyStyle;
-    colorPalette: {
-      dominance: 'warm' | 'cool' | 'balanced' | 'monochromatic';
-      saturation: 'high' | 'medium' | 'low' | 'desaturated';
+    cinematographyStyle?: (string | null) | CinematographyStyle;
+    colorPalette?: {
+      dominance?: ('warm' | 'cool' | 'balanced' | 'monochromatic') | null;
+      saturation?: ('high' | 'medium' | 'low' | 'desaturated') | null;
       /**
        * Specific colors and their symbolic meaning in the story
        */
@@ -455,21 +455,21 @@ export interface InitialConcept {
     /**
      * Lighting approach and mood (free text for now)
      */
-    lightingPreferences: string;
+    lightingPreferences?: string | null;
     /**
      * Camera movement and framing style (free text for now)
      */
-    cameraMovement: string;
+    cameraMovement?: string | null;
   };
   references?: {
     inspirationalMovies?:
       | {
-          title: string;
+          title?: string | null;
           year?: number | null;
           /**
            * What specific elements to emulate from this film
            */
-          specificElements: string;
+          specificElements?: string | null;
           id?: string | null;
         }[]
       | null;
@@ -482,11 +482,11 @@ export interface InitialConcept {
      */
     narrativeReferences?: string | null;
   };
-  characterArchetypes: {
+  characterArchetypes?: {
     /**
      * Primary character archetype for the main character (free text for now)
      */
-    protagonistType: string;
+    protagonistType?: string | null;
     /**
      * Key supporting character archetypes (free text for now)
      */
@@ -494,13 +494,13 @@ export interface InitialConcept {
     /**
      * How characters interact and drive conflict
      */
-    relationshipDynamics: string;
+    relationshipDynamics?: string | null;
   };
-  themes: {
+  themes?: {
     /**
      * Primary themes explored in the story
      */
-    centralThemes: (string | CentralTheme)[];
+    centralThemes?: (string | CentralTheme)[] | null;
     /**
      * Ethical dilemmas characters will face (free text for now)
      */
@@ -508,25 +508,25 @@ export interface InitialConcept {
     /**
      * What should audiences feel or learn from this story?
      */
-    messageTakeaway: string;
+    messageTakeaway?: string | null;
   };
-  setting: {
+  setting?: {
     /**
      * When the story takes place (free text for now)
      */
-    timePeriod: string;
+    timePeriod?: string | null;
     /**
      * Where the story takes place (free text for now)
      */
-    geographicSetting: string;
+    geographicSetting?: string | null;
     /**
      * Social, economic, and cultural background (free text for now)
      */
-    socialContext: string;
+    socialContext?: string | null;
     /**
      * Scope and scale of the story (free text for now)
      */
-    scale: string;
+    scale?: string | null;
   };
   pacing?: {
     /**
@@ -542,11 +542,11 @@ export interface InitialConcept {
      */
     climaxIntensity?: string | null;
   };
-  contentGuidelines: {
+  contentGuidelines?: {
     /**
      * Content limitations and restrictions (free text for now)
      */
-    contentRestrictions: string;
+    contentRestrictions?: string | null;
     /**
      * Cultural considerations and sensitivities (free text for now)
      */
