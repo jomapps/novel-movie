@@ -135,8 +135,8 @@ export default function InitialConceptPage() {
 
   // Handle manual AI generation (user-initiated)
   const handleManualAIGeneration = async () => {
-    if (!project || !initialConcept) {
-      console.error('❌ Missing project or initial concept data')
+    if (!project) {
+      console.error('❌ Missing project data')
       return
     }
 
@@ -144,42 +144,78 @@ export default function InitialConceptPage() {
     setAiLoading(true)
 
     try {
-      // Get current form data or create fresh structure
-      const currentFormData = initialConcept || {
-        status: 'ai-generated',
-        primaryGenres: [],
-        corePremise: '',
-        targetAudience: {
-          demographics: [],
-          psychographics: '',
-          customDescription: '',
-        },
-        toneAndMood: {
-          tones: [],
-          moods: [],
-          emotionalArc: '',
-        },
-        visualStyle: {
-          cinematographyStyle: '',
-          colorPalette: {
-            dominance: '',
-            saturation: '',
-            symbolicColors: '',
-          },
-          lightingPreferences: '',
-          cameraMovement: '',
-        },
-        references: {
-          inspirationalMovies: [],
-          visualReferences: '',
-          narrativeReferences: '',
-        },
-        themes: {
-          centralThemes: [],
-          moralQuestions: '',
-          messageTakeaway: '',
-        },
-      }
+      // Extract clean form data from initialConcept or create fresh structure
+      const currentFormData = initialConcept
+        ? {
+            status: initialConcept.status || 'ai-generated',
+            primaryGenres: initialConcept.primaryGenres || [],
+            corePremise: initialConcept.corePremise || '',
+            targetAudience: {
+              demographics: initialConcept.targetAudience?.demographics || [],
+              psychographics: initialConcept.targetAudience?.psychographics || '',
+              customDescription: initialConcept.targetAudience?.customDescription || '',
+            },
+            toneAndMood: {
+              tones: initialConcept.toneAndMood?.tones || [],
+              moods: initialConcept.toneAndMood?.moods || [],
+              emotionalArc: initialConcept.toneAndMood?.emotionalArc || '',
+            },
+            visualStyle: {
+              cinematographyStyle: initialConcept.visualStyle?.cinematographyStyle || '',
+              colorPalette: {
+                dominance: initialConcept.visualStyle?.colorPalette?.dominance || '',
+                saturation: initialConcept.visualStyle?.colorPalette?.saturation || '',
+                symbolicColors: initialConcept.visualStyle?.colorPalette?.symbolicColors || '',
+              },
+              lightingPreferences: initialConcept.visualStyle?.lightingPreferences || '',
+              cameraMovement: initialConcept.visualStyle?.cameraMovement || '',
+            },
+            references: {
+              inspirationalMovies: initialConcept.references?.inspirationalMovies || [],
+              visualReferences: initialConcept.references?.visualReferences || '',
+              narrativeReferences: initialConcept.references?.narrativeReferences || '',
+            },
+            themes: {
+              centralThemes: initialConcept.themes?.centralThemes || [],
+              moralQuestions: initialConcept.themes?.moralQuestions || '',
+              messageTakeaway: initialConcept.themes?.messageTakeaway || '',
+            },
+          }
+        : {
+            status: 'ai-generated',
+            primaryGenres: [],
+            corePremise: '',
+            targetAudience: {
+              demographics: [],
+              psychographics: '',
+              customDescription: '',
+            },
+            toneAndMood: {
+              tones: [],
+              moods: [],
+              emotionalArc: '',
+            },
+            visualStyle: {
+              cinematographyStyle: '',
+              colorPalette: {
+                dominance: '',
+                saturation: '',
+                symbolicColors: '',
+              },
+              lightingPreferences: '',
+              cameraMovement: '',
+            },
+            references: {
+              inspirationalMovies: [],
+              visualReferences: '',
+              narrativeReferences: '',
+            },
+            themes: {
+              centralThemes: [],
+              moralQuestions: '',
+              messageTakeaway: '',
+            },
+          }
 
       // Prepare the request payload
       const payload = {
@@ -230,19 +266,31 @@ export default function InitialConceptPage() {
 
   // Handle AI auto-fill - use the new manual generation approach
   const handleAIAutoFill = async () => {
-    if (!project || !initialConcept) {
-      console.error('❌ Missing project or initial concept data')
-      return
-    }
+    try {
+      console.log('🔘 AI Auto-fill button clicked!')
+      console.log('📊 Current state:', {
+        project: !!project,
+        initialConcept: !!initialConcept,
+        aiLoading,
+      })
 
-    // Prevent multiple simultaneous calls
-    if (aiLoading) {
-      console.log('🚫 AI autofill already in progress, ignoring duplicate call')
-      return
-    }
+      if (!project) {
+        console.error('❌ Missing project data')
+        return
+      }
 
-    console.log('🚀 Starting manual AI generation from button click...')
-    await handleManualAIGeneration()
+      // Prevent multiple simultaneous calls
+      if (aiLoading) {
+        console.log('🚫 AI autofill already in progress, ignoring duplicate call')
+        return
+      }
+
+      console.log('🚀 Starting manual AI generation from button click...')
+      await handleManualAIGeneration()
+    } catch (error) {
+      console.error('❌ Error in handleAIAutoFill:', error)
+      setPageError('AI generation failed. Please try again.')
+    }
   }
 
   // Handle clear/reset all content
@@ -487,18 +535,15 @@ export default function InitialConceptPage() {
 
             {/* AI Auto-fill Button - positioned prominently */}
             <div className="flex items-center gap-2">
-              <Button
+              <button
                 type="button"
-                variant="outline"
-                size="sm"
                 onClick={handleAIAutoFill}
-                loading={aiLoading}
                 disabled={aiLoading}
-                className="flex items-center gap-2 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 text-purple-700 hover:from-purple-100 hover:to-pink-100 hover:border-purple-300"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 text-purple-700 hover:from-purple-100 hover:to-pink-100 hover:border-purple-300 rounded-md disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4" />
                 {aiLoading ? 'Generating...' : 'AI Auto-fill'}
-              </Button>
+              </button>
 
               {/* Clear Content Button */}
               <Button
