@@ -89,25 +89,32 @@ export async function POST(request: NextRequest) {
 
     console.log('🚀 Calling BAML AssessProjectQuality function...')
 
-    // Call the BAML function directly
-    const b = await getBamlClient()
-    const result = await b.AssessProjectQuality(
-      projectName,
-      movieFormat,
-      movieStyle,
-      series,
-      durationUnit,
-      formData.primaryGenres,
-      formData.corePremise,
-      targetAudience,
-      toneAndMood,
-      visualStyle,
-      themes,
-      characterArchetypes,
-      settingElements,
-      pacingElements,
-      references,
-    )
+    // Call the BAML function directly with better error handling
+    let result
+    try {
+      const b = await getBamlClient()
+      result = await b.AssessProjectQuality(
+        projectName,
+        movieFormat,
+        movieStyle,
+        series,
+        durationUnit,
+        formData.primaryGenres,
+        formData.corePremise,
+        targetAudience,
+        toneAndMood,
+        visualStyle,
+        themes,
+        characterArchetypes,
+        settingElements,
+        pacingElements,
+        references,
+      )
+    } catch (bamlError) {
+      console.error('❌ BAML client error:', bamlError)
+      // Re-throw to be handled by the outer catch block
+      throw bamlError
+    }
 
     console.log('✅ Quality assessment completed:', result)
 

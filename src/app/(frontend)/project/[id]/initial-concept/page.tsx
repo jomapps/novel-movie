@@ -11,6 +11,10 @@ import ToastContainer, { useToast } from '@/components/ui/ToastContainer'
 import InitialConceptForm from '@/components/forms/InitialConceptForm'
 import QualityScoreModal from '@/components/modals/QualityScoreModal'
 import { isInitialConceptFormComplete } from '@/lib/utils/form-validation'
+import {
+  transformInitialConceptFormData,
+  transformProjectFields,
+} from '@/lib/utils/form-data-transformer'
 // Removed problematic PayloadCMS client-side import
 
 interface InitialConceptResponse {
@@ -226,17 +230,16 @@ export default function InitialConceptPage() {
           }
 
       // Prepare the request payload
+      const transformedProject = transformProjectFields(project)
       const payload = {
         projectId: project.id,
-        projectName: project.name,
-        projectDescription: project.description || '',
-        movieFormat:
-          typeof project.movieFormat === 'object' ? project.movieFormat.slug : project.movieFormat,
-        movieStyle:
-          typeof project.movieStyle === 'object' ? project.movieStyle.slug : project.movieStyle,
-        durationUnit: project.durationUnit,
-        series: typeof project.series === 'object' ? project.series?.slug : project.series,
-        formData: currentFormData,
+        projectName: transformedProject.name,
+        projectDescription: transformedProject.description || '',
+        movieFormat: transformedProject.movieFormat,
+        movieStyle: transformedProject.movieStyle,
+        durationUnit: transformedProject.durationUnit,
+        series: transformedProject.series,
+        formData: transformInitialConceptFormData(currentFormData),
       }
 
       console.log('📤 Sending manual AI generation request:', JSON.stringify(payload, null, 2))
@@ -451,15 +454,14 @@ export default function InitialConceptPage() {
     setQualityRecommendations('')
 
     try {
+      const transformedProject = transformProjectFields(project)
       const payload = {
-        projectName: project.name,
-        movieFormat:
-          typeof project.movieFormat === 'object' ? project.movieFormat.slug : project.movieFormat,
-        movieStyle:
-          typeof project.movieStyle === 'object' ? project.movieStyle.slug : project.movieStyle,
-        durationUnit: project.durationUnit,
-        series: typeof project.series === 'object' ? project.series?.slug : project.series,
-        formData: currentFormData,
+        projectName: transformedProject.name,
+        movieFormat: transformedProject.movieFormat,
+        movieStyle: transformedProject.movieStyle,
+        durationUnit: transformedProject.durationUnit,
+        series: transformedProject.series,
+        formData: transformInitialConceptFormData(currentFormData),
       }
 
       const response = await fetch('/v1/initial-concepts/quality-score', {
