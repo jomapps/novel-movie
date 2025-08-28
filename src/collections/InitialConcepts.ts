@@ -65,65 +65,166 @@ export const InitialConcepts: CollectionConfig = {
       },
     },
 
-    // Primary Genres (Required)
+    // === ESSENTIAL 4 FIELDS FOR STORY GENERATION ===
+
+    // 1. Primary Genres (Required)
     {
       name: 'primaryGenres',
       type: 'relationship',
       relationTo: 'genres',
       hasMany: true,
       maxRows: 3,
-      required: false,
+      required: true,
       admin: {
-        description: 'Select up to 3 genres in order of importance',
+        description:
+          'Select up to 3 genres in order of importance - drives story structure and style',
         sortOptions: 'name',
       },
     },
 
-    // Core Premise (Required)
+    // 2. Core Premise (Required)
     {
       name: 'corePremise',
       type: 'textarea',
-      required: false,
+      required: true,
       admin: {
-        description: 'The central story concept and main conflict (50-500 words)',
+        description:
+          'The central story concept and main conflict - what is this story about? (50-300 words)',
       },
     },
 
-    // Target Audience (Required)
+    // 3. Tone (Required)
+    {
+      name: 'tone',
+      type: 'relationship',
+      relationTo: 'tone-options',
+      hasMany: true,
+      maxRows: 2,
+      required: true,
+      admin: {
+        description: "Select 1-2 tones that define the story's emotional approach",
+        sortOptions: 'name',
+      },
+    },
+
+    // 4. Target Audience (Required)
     {
       name: 'targetAudience',
+      type: 'relationship',
+      relationTo: 'audience-demographics',
+      hasMany: true,
+      maxRows: 3,
+      required: true,
+      admin: {
+        description: 'Select primary demographic groups this story should appeal to',
+        sortOptions: 'name',
+      },
+    },
+
+    // AI Generation Metadata
+    {
+      name: 'aiMetadata',
       type: 'group',
+      admin: {
+        condition: (data) => data?.status === 'ai-generated' || data?.status === 'user-refined',
+      },
       fields: [
         {
-          name: 'demographics',
-          type: 'relationship',
-          relationTo: 'audience-demographics',
-          hasMany: true,
-          required: false,
+          name: 'generatedAt',
+          type: 'date',
           admin: {
-            description: 'Primary demographic groups',
+            readOnly: true,
           },
         },
         {
-          name: 'psychographics',
-          type: 'textarea',
+          name: 'generationModel',
+          type: 'text',
           admin: {
-            description: 'Audience interests and values (free text for now)',
+            readOnly: true,
           },
         },
         {
-          name: 'customDescription',
-          type: 'textarea',
-          admin: {
-            description: 'Additional audience details not covered by selections',
-          },
+          name: 'userModifications',
+          type: 'array',
+          fields: [
+            {
+              name: 'field',
+              type: 'text',
+            },
+            {
+              name: 'modifiedAt',
+              type: 'date',
+            },
+            {
+              name: 'originalValue',
+              type: 'textarea',
+            },
+            {
+              name: 'newValue',
+              type: 'textarea',
+            },
+          ],
         },
       ],
     },
+  ],
+  hooks: {
+    beforeValidate: [
+      async ({ data, req, operation }: any) => {
+        // Only validate on create operations, not updates
+        if (operation === 'create' && data?.project) {
+          const existingConcept = await req.payload.find({
+            collection: 'initial-concepts',
+            where: {
+              project: { equals: data.project },
+            },
+            limit: 1,
+          })
 
-    // Tone & Mood (Required)
-    {
-      name: 'toneAndMood',
+          if (existingConcept.totalDocs > 0) {
+            throw new Error('This project already has an initial concept')
+          }
+        }
+        return data
+      },
+    ],
+    afterChange: [
+      async ({ doc, req, operation }: any) => {
+        // Update project status to indicate concept is ready
+        if (operation === 'create' && doc.project && typeof doc.project === 'string') {
+          await req.payload.update({
+            collection: 'projects',
+            id: doc.project,
+            data: {
+              status: 'concept-created',
+            },
+          })
+        }
+
+        // Log changes for audit trail
+        if (operation === 'update') {
+          console.log(`Initial concept ${doc.id} updated`)
+        }
+
+        // Trigger story generation if concept is marked as approved
+        if (
+          operation === 'update' &&
+          doc.status === 'approved' &&
+          doc.project &&
+          typeof doc.project === 'string'
+        ) {
+          await req.payload.update({
+            collection: 'projects',
+            id: doc.project,
+            data: {
+              status: 'ready-for-story-generation',
+            },
+          })
+        }
+      },
+    ],
+  },
+}
       type: 'group',
       fields: [
         {

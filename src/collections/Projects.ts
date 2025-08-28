@@ -202,8 +202,24 @@ export const Projects: CollectionConfig = {
           value: 'draft',
         },
         {
-          label: 'In Progress',
-          value: 'in-progress',
+          label: 'Concept Created',
+          value: 'concept-created',
+        },
+        {
+          label: 'Ready for Story Generation',
+          value: 'ready-for-story-generation',
+        },
+        {
+          label: 'Story In Progress',
+          value: 'story-in-progress',
+        },
+        {
+          label: 'Story Completed',
+          value: 'story-completed',
+        },
+        {
+          label: 'In Production',
+          value: 'in-production',
         },
         {
           label: 'Completed',
@@ -215,7 +231,7 @@ export const Projects: CollectionConfig = {
         },
       ],
       admin: {
-        description: 'Current status of the project',
+        description: 'Current status of the project workflow',
       },
     },
     {
@@ -319,6 +335,36 @@ export const Projects: CollectionConfig = {
               }
             }
             return data?.initialConcept
+          },
+        ],
+      },
+    },
+    {
+      name: 'story',
+      type: 'relationship',
+      relationTo: 'stories',
+      admin: {
+        description: 'Associated story with iterative enhancements for this project',
+        readOnly: true,
+      },
+      hooks: {
+        beforeValidate: [
+          async ({ data, req }) => {
+            // Auto-populate the reverse relationship
+            if (data && req) {
+              const existingStory = await req.payload.find({
+                collection: 'stories',
+                where: {
+                  project: { equals: data.id },
+                },
+                limit: 1,
+              })
+
+              if (existingStory.totalDocs > 0) {
+                return existingStory.docs[0].id
+              }
+            }
+            return data?.story
           },
         ],
       },
