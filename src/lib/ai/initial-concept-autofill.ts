@@ -42,40 +42,8 @@ export interface InitialConceptFormData {
   status: string
   primaryGenres: string[]
   corePremise: string
-  targetAudience: {
-    demographics: string[]
-    psychographics: string
-    customDescription: string
-  }
-  toneAndMood: {
-    tones: string[]
-    moods: string[]
-    emotionalArc: string
-  }
-  visualStyle: {
-    cinematographyStyle: string
-    colorPalette: {
-      dominance: string
-      saturation: string
-      symbolicColors: string
-    }
-    lightingPreferences: string
-    cameraMovement: string
-  }
-  references: {
-    inspirationalMovies: Array<{
-      title: string
-      year: number | null
-      specificElements: string
-    }>
-    visualReferences: string
-    narrativeReferences: string
-  }
-  themes: {
-    centralThemes: string[]
-    moralQuestions: string
-    messageTakeaway: string
-  }
+  targetAudience: string[]
+  tone: string[]
   setting?: {
     timePeriod?: string
     geographicSetting?: string
@@ -639,7 +607,7 @@ async function generateInspirationalMovies(context: InitialConceptContext): Prom
 }
 
 /**
- * Define the generation sequence with field metadata
+ * Define the generation sequence with field metadata for simplified 4-field initial concept
  */
 const GENERATION_SEQUENCE = [
   // Step 1: Generate relationship fields first (they're dependencies for other fields)
@@ -652,53 +620,18 @@ const GENERATION_SEQUENCE = [
     isRelationship: true,
   },
   {
-    fieldName: 'targetAudience.demographics',
-    fieldLabel: 'Target Demographics',
+    fieldName: 'targetAudience',
+    fieldLabel: 'Target Audience',
     generator: async (context: InitialConceptContext) =>
-      await generateRelationshipField(
-        'targetAudience.demographics',
-        context,
-        generateTargetDemographics,
-      ),
+      await generateRelationshipField('targetAudience', context, generateTargetDemographics),
     required: ['primaryGenres'],
     isRelationship: true,
   },
   {
-    fieldName: 'toneAndMood.tones',
-    fieldLabel: 'Tone Options',
+    fieldName: 'tone',
+    fieldLabel: 'Tone',
     generator: async (context: InitialConceptContext) =>
-      await generateRelationshipField('toneAndMood.tones', context, generateTones),
-    required: ['primaryGenres'],
-    isRelationship: true,
-  },
-  {
-    fieldName: 'toneAndMood.moods',
-    fieldLabel: 'Mood Descriptors',
-    generator: async (context: InitialConceptContext) =>
-      await generateRelationshipField('toneAndMood.moods', context, generateMoods),
-    required: ['primaryGenres'],
-    isRelationship: true,
-  },
-  {
-    fieldName: 'visualStyle.cinematographyStyle',
-    fieldLabel: 'Cinematography Style',
-    generator: async (context: InitialConceptContext) => {
-      // Generate cinematography style relationship field using seeded data
-      const result = await generateRelationshipField(
-        'visualStyle.cinematographyStyle',
-        context,
-        generateCinematographyStyle,
-      )
-      return result[0] // Single item, not array
-    },
-    required: ['primaryGenres'],
-    isRelationship: true,
-  },
-  {
-    fieldName: 'themes.centralThemes',
-    fieldLabel: 'Central Themes',
-    generator: async (context: InitialConceptContext) =>
-      await generateRelationshipField('themes.centralThemes', context, generateCentralThemes),
+      await generateRelationshipField('tone', context, generateTones),
     required: ['primaryGenres'],
     isRelationship: true,
   },
@@ -710,272 +643,32 @@ const GENERATION_SEQUENCE = [
     generator: generateCorePremise,
     required: ['primaryGenres'],
   },
-
-  // Step 3: Generate visual style select fields
-  {
-    fieldName: 'visualStyle.colorPalette.dominance',
-    fieldLabel: 'Color Palette Dominance',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateVisualStyleSelects(context)
-      return result.dominance
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-  {
-    fieldName: 'visualStyle.colorPalette.saturation',
-    fieldLabel: 'Color Saturation',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateVisualStyleSelects(context)
-      return result.saturation
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-  {
-    fieldName: 'visualStyle.cameraMovement',
-    fieldLabel: 'Camera Movement',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateVisualStyleElements(context)
-      return result.cameraMovement
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-
-  // Step 4: Generate dependent text fields
-  {
-    fieldName: 'targetAudience.psychographics',
-    fieldLabel: 'Target Audience Psychographics',
-    generator: generateTargetAudiencePsychographics,
-    required: ['primaryGenres', 'corePremise', 'targetAudience.demographics'],
-  },
-  {
-    fieldName: 'targetAudience.customDescription',
-    fieldLabel: 'Target Audience Custom Description',
-    generator: generateTargetAudienceCustomDescription,
-    required: [
-      'primaryGenres',
-      'corePremise',
-      'targetAudience.demographics',
-      'targetAudience.psychographics',
-    ],
-  },
-  {
-    fieldName: 'toneAndMood.emotionalArc',
-    fieldLabel: 'Emotional Arc',
-    generator: generateEmotionalArc,
-    required: ['primaryGenres', 'corePremise', 'toneAndMood.tones', 'toneAndMood.moods'],
-  },
-
-  // Step 5: Generate thematic content
-  {
-    fieldName: 'themes.moralQuestions',
-    fieldLabel: 'Moral Questions',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateThematicElements(context)
-      return result.moralQuestions
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'themes.messageTakeaway',
-    fieldLabel: 'Message Takeaway',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateThematicElements(context)
-      return result.messageTakeaway
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-
-  // Step 6: Generate visual style elements
-  {
-    fieldName: 'visualStyle.colorPalette.symbolicColors',
-    fieldLabel: 'Symbolic Colors',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateVisualStyleElements(context)
-      return result.symbolicColors
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-  {
-    fieldName: 'visualStyle.lightingPreferences',
-    fieldLabel: 'Lighting Preferences',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateVisualStyleElements(context)
-      return result.lightingPreferences
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-
-  // Step 7: Generate reference materials
-  {
-    fieldName: 'references.inspirationalMovies',
-    fieldLabel: 'Inspirational Movies',
-    generator: generateInspirationalMovies,
-    required: ['primaryGenres', 'corePremise'],
-  },
-  {
-    fieldName: 'references.visualReferences',
-    fieldLabel: 'Visual References',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateReferenceMaterials(context)
-      return result.visualReferences
-    },
-    required: ['primaryGenres', 'corePremise'],
-  },
-  {
-    fieldName: 'references.narrativeReferences',
-    fieldLabel: 'Narrative References',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateReferenceMaterials(context)
-      return result.narrativeReferences
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-
-  // Step 8: Generate character archetypes
-  {
-    fieldName: 'characterArchetypes.protagonistType',
-    fieldLabel: 'Protagonist Type',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateCharacterArchetypes(context)
-      return result.protagonistType
-    },
-    required: [
-      'primaryGenres',
-      'corePremise',
-      'themes.centralThemes',
-      'targetAudience.demographics',
-    ],
-  },
-  {
-    fieldName: 'characterArchetypes.supportingRoles',
-    fieldLabel: 'Supporting Roles',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateCharacterArchetypes(context)
-      return result.supportingRoles
-    },
-    required: [
-      'primaryGenres',
-      'corePremise',
-      'themes.centralThemes',
-      'targetAudience.demographics',
-    ],
-  },
-  {
-    fieldName: 'characterArchetypes.relationshipDynamics',
-    fieldLabel: 'Relationship Dynamics',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateCharacterArchetypes(context)
-      return result.relationshipDynamics
-    },
-    required: [
-      'primaryGenres',
-      'corePremise',
-      'themes.centralThemes',
-      'targetAudience.demographics',
-    ],
-  },
-
-  // Step 9: Generate setting elements
-  {
-    fieldName: 'setting.timePeriod',
-    fieldLabel: 'Time Period',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateSettingElements(context)
-      return result.timePeriod
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'setting.geographicSetting',
-    fieldLabel: 'Geographic Setting',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateSettingElements(context)
-      return result.geographicSetting
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'setting.socialContext',
-    fieldLabel: 'Social Context',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateSettingElements(context)
-      return result.socialContext
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'setting.scale',
-    fieldLabel: 'Setting Scale',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateSettingElements(context)
-      return result.scale
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-
-  // Step 10: Generate pacing elements
-  {
-    fieldName: 'pacing.narrativeStructure',
-    fieldLabel: 'Narrative Structure',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generatePacingElements(context)
-      return result.narrativeStructure
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'pacing.pacingStyle',
-    fieldLabel: 'Pacing Style',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generatePacingElements(context)
-      return result.pacingStyle
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-  {
-    fieldName: 'pacing.climaxIntensity',
-    fieldLabel: 'Climax Intensity',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generatePacingElements(context)
-      return result.climaxIntensity
-    },
-    required: ['primaryGenres', 'corePremise', 'themes.centralThemes'],
-  },
-
-  // Step 11: Generate content guidelines
-  {
-    fieldName: 'contentGuidelines.contentRestrictions',
-    fieldLabel: 'Content Restrictions',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateContentGuidelines(context)
-      return result.contentRestrictions
-    },
-    required: ['primaryGenres', 'targetAudience.demographics', 'corePremise'],
-  },
-  {
-    fieldName: 'contentGuidelines.culturalSensitivities',
-    fieldLabel: 'Cultural Sensitivities',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateContentGuidelines(context)
-      return result.culturalSensitivities
-    },
-    required: ['primaryGenres', 'targetAudience.demographics', 'corePremise'],
-  },
-  {
-    fieldName: 'contentGuidelines.educationalValue',
-    fieldLabel: 'Educational Value',
-    generator: async (context: InitialConceptContext) => {
-      const result = await generateContentGuidelines(context)
-      return result.educationalValue
-    },
-    required: ['primaryGenres', 'targetAudience.demographics', 'corePremise'],
-  },
 ] as const
 
 /**
  * Check if a field has content
  */
-function hasFieldContent(formData: InitialConceptFormData, fieldPath: string): boolean {
+function hasFieldContent(formData: any, fieldPath: string): boolean {
+  // Handle simplified structure mapping
+  if (fieldPath === 'targetAudience') {
+    // Check if it's the old structure (targetAudience.demographics) or new structure (targetAudience array)
+    if (formData.targetAudience?.demographics) {
+      return (
+        Array.isArray(formData.targetAudience.demographics) &&
+        formData.targetAudience.demographics.length > 0
+      )
+    }
+    return Array.isArray(formData.targetAudience) && formData.targetAudience.length > 0
+  }
+
+  if (fieldPath === 'tone') {
+    // Check if it's the old structure (toneAndMood.tones) or new structure (tone array)
+    if (formData.toneAndMood?.tones) {
+      return Array.isArray(formData.toneAndMood.tones) && formData.toneAndMood.tones.length > 0
+    }
+    return Array.isArray(formData.tone) && formData.tone.length > 0
+  }
+
   const keys = fieldPath.split('.')
   let current: any = formData
 

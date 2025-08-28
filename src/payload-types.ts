@@ -74,6 +74,8 @@ export interface Config {
     'movie-styles': MovieStyle;
     series: Series;
     'initial-concepts': InitialConcept;
+    stories: Story;
+    'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
     'tone-options': ToneOption;
@@ -93,6 +95,8 @@ export interface Config {
     'movie-styles': MovieStylesSelect<false> | MovieStylesSelect<true>;
     series: SeriesSelect<false> | SeriesSelect<true>;
     'initial-concepts': InitialConceptsSelect<false> | InitialConceptsSelect<true>;
+    stories: StoriesSelect<false> | StoriesSelect<true>;
+    'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
     'tone-options': ToneOptionsSelect<false> | ToneOptionsSelect<true>;
@@ -214,9 +218,17 @@ export interface Project {
    */
   movieStyle: string | MovieStyle;
   /**
-   * Current status of the project
+   * Current status of the project workflow
    */
-  status: 'draft' | 'in-progress' | 'completed' | 'archived';
+  status:
+    | 'draft'
+    | 'concept-created'
+    | 'ready-for-story-generation'
+    | 'story-in-progress'
+    | 'story-completed'
+    | 'in-production'
+    | 'completed'
+    | 'archived';
   /**
    * Unit of measurement for the suggested duration in minutes
    */
@@ -276,6 +288,10 @@ export interface Project {
    * Associated initial concept for this project
    */
   initialConcept?: (string | null) | InitialConcept;
+  /**
+   * Associated story with iterative enhancements for this project
+   */
+  story?: (string | null) | Story;
   /**
    * Workflow progress tracking
    */
@@ -404,158 +420,21 @@ export interface InitialConcept {
    */
   status?: ('draft' | 'ai-generated' | 'user-refined' | 'ready' | 'approved') | null;
   /**
-   * Select up to 3 genres in order of importance
+   * Select up to 3 genres in order of importance - drives story structure and style
    */
-  primaryGenres?: (string | Genre)[] | null;
+  primaryGenres: (string | Genre)[];
   /**
-   * The central story concept and main conflict (50-500 words)
+   * The central story concept and main conflict - what is this story about? (50-300 words)
    */
-  corePremise?: string | null;
-  targetAudience?: {
-    /**
-     * Primary demographic groups
-     */
-    demographics?: (string | AudienceDemographic)[] | null;
-    /**
-     * Audience interests and values (free text for now)
-     */
-    psychographics?: string | null;
-    /**
-     * Additional audience details not covered by selections
-     */
-    customDescription?: string | null;
-  };
-  toneAndMood?: {
-    /**
-     * Overall tone of the story
-     */
-    tones?: (string | ToneOption)[] | null;
-    /**
-     * Emotional atmosphere
-     */
-    moods?: (string | MoodDescriptor)[] | null;
-    /**
-     * How the emotional feeling should evolve throughout the story
-     */
-    emotionalArc?: string | null;
-  };
-  visualStyle?: {
-    /**
-     * Overall visual approach
-     */
-    cinematographyStyle?: (string | null) | CinematographyStyle;
-    colorPalette?: {
-      dominance?: ('warm' | 'cool' | 'balanced' | 'monochromatic') | null;
-      saturation?: ('high' | 'medium' | 'low' | 'desaturated') | null;
-      /**
-       * Specific colors and their symbolic meaning in the story
-       */
-      symbolicColors?: string | null;
-    };
-    /**
-     * Lighting approach and mood (free text for now)
-     */
-    lightingPreferences?: string | null;
-    /**
-     * Camera movement and framing style (free text for now)
-     */
-    cameraMovement?: string | null;
-  };
-  references?: {
-    inspirationalMovies?:
-      | {
-          title?: string | null;
-          year?: number | null;
-          /**
-           * What specific elements to emulate from this film
-           */
-          specificElements?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * Art styles, photography, design movements that inspire the visual approach
-     */
-    visualReferences?: string | null;
-    /**
-     * Books, plays, real events that inspire the story structure or themes
-     */
-    narrativeReferences?: string | null;
-  };
-  characterArchetypes?: {
-    /**
-     * Primary character archetype for the main character (free text for now)
-     */
-    protagonistType?: string | null;
-    /**
-     * Key supporting character archetypes (free text for now)
-     */
-    supportingRoles?: string | null;
-    /**
-     * How characters interact and drive conflict
-     */
-    relationshipDynamics?: string | null;
-  };
-  themes?: {
-    /**
-     * Primary themes explored in the story
-     */
-    centralThemes?: (string | CentralTheme)[] | null;
-    /**
-     * Ethical dilemmas characters will face (free text for now)
-     */
-    moralQuestions?: string | null;
-    /**
-     * What should audiences feel or learn from this story?
-     */
-    messageTakeaway?: string | null;
-  };
-  setting?: {
-    /**
-     * When the story takes place (free text for now)
-     */
-    timePeriod?: string | null;
-    /**
-     * Where the story takes place (free text for now)
-     */
-    geographicSetting?: string | null;
-    /**
-     * Social, economic, and cultural background (free text for now)
-     */
-    socialContext?: string | null;
-    /**
-     * Scope and scale of the story (free text for now)
-     */
-    scale?: string | null;
-  };
-  pacing?: {
-    /**
-     * Story structure approach (free text for now)
-     */
-    narrativeStructure?: string | null;
-    /**
-     * Overall pacing approach (free text for now)
-     */
-    pacingStyle?: string | null;
-    /**
-     * Type of climax and resolution (free text for now)
-     */
-    climaxIntensity?: string | null;
-  };
-  contentGuidelines?: {
-    /**
-     * Content limitations and restrictions (free text for now)
-     */
-    contentRestrictions?: string | null;
-    /**
-     * Cultural considerations and sensitivities (free text for now)
-     */
-    culturalSensitivities?: string | null;
-    /**
-     * Educational aspects or informational content to include
-     */
-    educationalValue?: string | null;
-  };
+  corePremise: string;
+  /**
+   * Select 1-2 tones that define the story's emotional approach
+   */
+  tone: (string | ToneOption)[];
+  /**
+   * Select primary demographic groups this story should appeal to
+   */
+  targetAudience: (string | AudienceDemographic)[];
   aiMetadata?: {
     generatedAt?: string | null;
     generationModel?: string | null;
@@ -646,94 +525,6 @@ export interface Genre {
   sortOrder?: number | null;
   /**
    * Tags to help AI understand this genre for content generation
-   */
-  aiGenerationTags?:
-    | {
-        tag: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "audience-demographics".
- */
-export interface AudienceDemographic {
-  id: string;
-  /**
-   * Demographic group name (e.g., "Young Adults", "Families with Children")
-   */
-  name: string;
-  slug: string;
-  /**
-   * Description of this demographic group and their characteristics
-   */
-  description: string;
-  /**
-   * Type of demographic classification
-   */
-  category: 'age' | 'geographic' | 'cultural' | 'socioeconomic' | 'lifestyle';
-  ageRange?: {
-    minAge?: number | null;
-    maxAge?: number | null;
-    ratingGuideline?: ('G' | 'PG' | 'PG-13' | 'R' | 'NC-17') | null;
-  };
-  characteristics?: {
-    /**
-     * Common interests and hobbies of this demographic
-     */
-    interests?: string | null;
-    /**
-     * How this demographic typically consumes media
-     */
-    mediaConsumption?: string | null;
-    /**
-     * Core values and beliefs important to this group
-     */
-    values?: string | null;
-    /**
-     * Lifestyle patterns and behaviors
-     */
-    lifestyle?: string | null;
-  };
-  contentPreferences?: {
-    /**
-     * Genres that typically appeal to this demographic
-     */
-    preferredGenres?: (string | Genre)[] | null;
-    contentComplexity?: ('simple' | 'moderate' | 'complex' | 'variable') | null;
-    attentionSpan?: ('short' | 'medium' | 'long' | 'variable') | null;
-    /**
-     * Types of emotional content this demographic responds to
-     */
-    emotionalPreferences?: string | null;
-  };
-  marketingConsiderations?: {
-    /**
-     * Best marketing channels to reach this demographic
-     */
-    primaryChannels?: string | null;
-    /**
-     * Effective messaging tone and approach
-     */
-    messagingTone?: string | null;
-    /**
-     * Key influencers or opinion leaders for this group
-     */
-    influencers?: string | null;
-  };
-  /**
-   * Whether this demographic is available for selection
-   */
-  isActive?: boolean | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  sortOrder?: number | null;
-  /**
-   * Tags to help AI understand this demographic for content generation
    */
   aiGenerationTags?:
     | {
@@ -868,55 +659,83 @@ export interface ToneOption {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mood-descriptors".
+ * via the `definition` "audience-demographics".
  */
-export interface MoodDescriptor {
+export interface AudienceDemographic {
   id: string;
   /**
-   * Mood descriptor (e.g., "Optimistic", "Melancholic", "Tense")
+   * Demographic group name (e.g., "Young Adults", "Families with Children")
    */
   name: string;
   slug: string;
   /**
-   * Description of this mood and its emotional characteristics
+   * Description of this demographic group and their characteristics
    */
   description: string;
-  category: 'positive' | 'negative' | 'neutral' | 'complex';
-  intensity: 'subtle' | 'moderate' | 'strong' | 'overwhelming';
   /**
-   * How this mood affects audience emotional response
+   * Type of demographic classification
    */
-  emotionalImpact?: string | null;
-  visualElements?: {
-    /**
-     * Colors that evoke this mood
-     */
-    colorAssociations?: string | null;
-    /**
-     * Lighting techniques that create this mood
-     */
-    lightingStyle?: string | null;
-    /**
-     * Visual composition approaches for this mood
-     */
-    compositionStyle?: string | null;
+  category: 'age' | 'geographic' | 'cultural' | 'socioeconomic' | 'lifestyle';
+  ageRange?: {
+    minAge?: number | null;
+    maxAge?: number | null;
+    ratingGuideline?: ('G' | 'PG' | 'PG-13' | 'R' | 'NC-17') | null;
   };
-  audioElements?: {
+  characteristics?: {
     /**
-     * Musical styles that support this mood
+     * Common interests and hobbies of this demographic
      */
-    musicStyle?: string | null;
+    interests?: string | null;
     /**
-     * Sound design elements that enhance this mood
+     * How this demographic typically consumes media
      */
-    soundDesign?: string | null;
+    mediaConsumption?: string | null;
+    /**
+     * Core values and beliefs important to this group
+     */
+    values?: string | null;
+    /**
+     * Lifestyle patterns and behaviors
+     */
+    lifestyle?: string | null;
+  };
+  contentPreferences?: {
+    /**
+     * Genres that typically appeal to this demographic
+     */
+    preferredGenres?: (string | Genre)[] | null;
+    contentComplexity?: ('simple' | 'moderate' | 'complex' | 'variable') | null;
+    attentionSpan?: ('short' | 'medium' | 'long' | 'variable') | null;
+    /**
+     * Types of emotional content this demographic responds to
+     */
+    emotionalPreferences?: string | null;
+  };
+  marketingConsiderations?: {
+    /**
+     * Best marketing channels to reach this demographic
+     */
+    primaryChannels?: string | null;
+    /**
+     * Effective messaging tone and approach
+     */
+    messagingTone?: string | null;
+    /**
+     * Key influencers or opinion leaders for this group
+     */
+    influencers?: string | null;
   };
   /**
-   * Genres that commonly use this mood
+   * Whether this demographic is available for selection
    */
-  genreCompatibility?: (string | Genre)[] | null;
   isActive?: boolean | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
   sortOrder?: number | null;
+  /**
+   * Tags to help AI understand this demographic for content generation
+   */
   aiGenerationTags?:
     | {
         tag: string;
@@ -925,6 +744,363 @@ export interface MoodDescriptor {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stories".
+ */
+export interface Story {
+  id: string;
+  /**
+   * Associated project for this story
+   */
+  project: string | Project;
+  /**
+   * Auto-populated from project name
+   */
+  projectName?: string | null;
+  /**
+   * Current version of the story content
+   */
+  currentContent: string;
+  /**
+   * Current enhancement step (1-12)
+   */
+  currentStep: number;
+  /**
+   * Current status of story development
+   */
+  status: 'in-progress' | 'paused' | 'completed' | 'needs-review' | 'approved';
+  qualityMetrics?: {
+    /**
+     * Story structure quality (0-100)
+     */
+    structureScore?: number | null;
+    /**
+     * Character development quality (0-100)
+     */
+    characterDepth?: number | null;
+    /**
+     * Story coherence and logic (0-100)
+     */
+    coherenceScore?: number | null;
+    /**
+     * Dramatic tension and conflict (0-100)
+     */
+    conflictTension?: number | null;
+    /**
+     * Dialogue quality and character voice (0-100)
+     */
+    dialogueQuality?: number | null;
+    /**
+     * Genre-specific feature effectiveness (0-100)
+     */
+    genreAlignment?: number | null;
+    /**
+     * Target audience appropriateness (0-100)
+     */
+    audienceEngagement?: number | null;
+    /**
+     * Cinematic potential and visual descriptions (0-100)
+     */
+    visualStorytelling?: number | null;
+    /**
+     * Production viability and format compliance (0-100)
+     */
+    productionReadiness?: number | null;
+    /**
+     * Composite quality score (0-100)
+     */
+    overallQuality?: number | null;
+  };
+  /**
+   * History of all enhancement steps performed
+   */
+  enhancementHistory?:
+    | {
+        /**
+         * Enhancement step number (1-12)
+         */
+        stepNumber: number;
+        stepName:
+          | 'initial-generation'
+          | 'structure-enhancement'
+          | 'character-enhancement'
+          | 'coherence-enhancement'
+          | 'conflict-enhancement'
+          | 'dialogue-enhancement'
+          | 'genre-enhancement'
+          | 'audience-optimization'
+          | 'visual-enhancement'
+          | 'final-polish';
+        /**
+         * When this step started
+         */
+        startTime: string;
+        /**
+         * When this step completed
+         */
+        endTime?: string | null;
+        /**
+         * Processing time in seconds
+         */
+        processingTime?: number | null;
+        /**
+         * Story content before this enhancement
+         */
+        contentBefore?: string | null;
+        /**
+         * Story content after this enhancement
+         */
+        contentAfter?: string | null;
+        /**
+         * Quality metrics before enhancement
+         */
+        qualityBefore?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        /**
+         * Quality metrics after enhancement
+         */
+        qualityAfter?:
+          | {
+              [k: string]: unknown;
+            }
+          | unknown[]
+          | string
+          | number
+          | boolean
+          | null;
+        /**
+         * List of specific improvements made in this step
+         */
+        improvementsMade?:
+          | {
+              improvement: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Whether user approved this enhancement
+         */
+        userApproved?: boolean | null;
+        /**
+         * AI model used for this enhancement
+         */
+        aiModel?: string | null;
+        /**
+         * Summary of changes made in this step
+         */
+        changesSummary?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Genre-specific quality metrics (e.g., humor ratio for comedy)
+   */
+  genreSpecificMetrics?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  workflowSettings?: {
+    /**
+     * Workflow execution mode
+     */
+    mode?: ('auto' | 'manual' | 'custom') | null;
+    /**
+     * Stop enhancement when overall quality reaches this score
+     */
+    qualityThreshold?: number | null;
+    /**
+     * Maximum number of enhancement cycles
+     */
+    maxIterations?: number | null;
+    /**
+     * Steps to skip during enhancement
+     */
+    skipSteps?:
+      | {
+          stepNumber?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Steps to repeat if quality targets not met
+     */
+    repeatSteps?:
+      | {
+          stepNumber?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  progressTracking?: {
+    /**
+     * Estimated time remaining in seconds
+     */
+    estimatedTimeRemaining?: number | null;
+    /**
+     * Overall completion percentage
+     */
+    completionPercentage?: number | null;
+    /**
+     * Last successfully processed step
+     */
+    lastProcessedStep?: number | null;
+    /**
+     * Total processing time in seconds
+     */
+    totalProcessingTime?: number | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Extended story development data including themes, characters, settings, and references
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fundamental-data".
+ */
+export interface FundamentalDatum {
+  id: string;
+  /**
+   * The project this fundamental data belongs to
+   */
+  project: string | Project;
+  /**
+   * Auto-populated from project name
+   */
+  projectName?: string | null;
+  visualStyle?: {
+    /**
+     * Overall visual approach
+     */
+    cinematographyStyle?: (string | null) | CinematographyStyle;
+    colorPalette?: {
+      dominance?: ('warm' | 'cool' | 'balanced' | 'monochromatic') | null;
+      saturation?: ('high' | 'medium' | 'low' | 'desaturated') | null;
+      /**
+       * Specific colors and their symbolic meaning in the story
+       */
+      symbolicColors?: string | null;
+    };
+    /**
+     * Lighting approach and mood
+     */
+    lightingPreferences?: string | null;
+    /**
+     * Camera movement and framing style
+     */
+    cameraMovement?: string | null;
+  };
+  references?: {
+    inspirationalMovies?:
+      | {
+          title?: string | null;
+          year?: number | null;
+          /**
+           * What specific elements to emulate from this film
+           */
+          specificElements?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Art styles, photography, design movements that inspire the visual approach
+     */
+    visualReferences?: string | null;
+    /**
+     * Books, plays, real events that inspire the story structure or themes
+     */
+    narrativeReferences?: string | null;
+  };
+  characterArchetypes?: {
+    /**
+     * Primary character archetype for the main character
+     */
+    protagonistType?: string | null;
+    /**
+     * Key supporting character archetypes
+     */
+    supportingRoles?: string | null;
+    /**
+     * How characters interact and drive conflict
+     */
+    relationshipDynamics?: string | null;
+  };
+  themes?: {
+    /**
+     * Primary themes explored in the story
+     */
+    centralThemes?: (string | CentralTheme)[] | null;
+    /**
+     * Ethical dilemmas characters will face
+     */
+    moralQuestions?: string | null;
+    /**
+     * What should audiences feel or learn from this story?
+     */
+    messageTakeaway?: string | null;
+  };
+  setting?: {
+    /**
+     * When the story takes place
+     */
+    timePeriod?: string | null;
+    /**
+     * Where the story takes place
+     */
+    geographicSetting?: string | null;
+    /**
+     * Social, economic, and cultural background
+     */
+    socialContext?: string | null;
+    /**
+     * Scope and scale of the story
+     */
+    scale?: string | null;
+  };
+  pacing?: {
+    /**
+     * Story structure approach
+     */
+    narrativeStructure?: string | null;
+    /**
+     * Overall pacing approach
+     */
+    pacingStyle?: string | null;
+    /**
+     * Type of climax and resolution
+     */
+    climaxIntensity?: string | null;
+  };
+  contentGuidelines?: {
+    /**
+     * Content limitations and restrictions
+     */
+    contentRestrictions?: string | null;
+    /**
+     * Cultural considerations and sensitivities
+     */
+    culturalSensitivities?: string | null;
+    /**
+     * Educational aspects or informational content to include
+     */
+    educationalValue?: string | null;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1149,6 +1325,66 @@ export interface CentralTheme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mood-descriptors".
+ */
+export interface MoodDescriptor {
+  id: string;
+  /**
+   * Mood descriptor (e.g., "Optimistic", "Melancholic", "Tense")
+   */
+  name: string;
+  slug: string;
+  /**
+   * Description of this mood and its emotional characteristics
+   */
+  description: string;
+  category: 'positive' | 'negative' | 'neutral' | 'complex';
+  intensity: 'subtle' | 'moderate' | 'strong' | 'overwhelming';
+  /**
+   * How this mood affects audience emotional response
+   */
+  emotionalImpact?: string | null;
+  visualElements?: {
+    /**
+     * Colors that evoke this mood
+     */
+    colorAssociations?: string | null;
+    /**
+     * Lighting techniques that create this mood
+     */
+    lightingStyle?: string | null;
+    /**
+     * Visual composition approaches for this mood
+     */
+    compositionStyle?: string | null;
+  };
+  audioElements?: {
+    /**
+     * Musical styles that support this mood
+     */
+    musicStyle?: string | null;
+    /**
+     * Sound design elements that enhance this mood
+     */
+    soundDesign?: string | null;
+  };
+  /**
+   * Genres that commonly use this mood
+   */
+  genreCompatibility?: (string | Genre)[] | null;
+  isActive?: boolean | null;
+  sortOrder?: number | null;
+  aiGenerationTags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -1181,6 +1417,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'initial-concepts';
         value: string | InitialConcept;
+      } | null)
+    | ({
+        relationTo: 'stories';
+        value: string | Story;
+      } | null)
+    | ({
+        relationTo: 'fundamental-data';
+        value: string | FundamentalDatum;
       } | null)
     | ({
         relationTo: 'genres';
@@ -1319,6 +1563,7 @@ export interface ProjectsSelect<T extends boolean = true> {
         assets?: T;
       };
   initialConcept?: T;
+  story?: T;
   workflowStatus?:
     | T
     | {
@@ -1380,20 +1625,111 @@ export interface InitialConceptsSelect<T extends boolean = true> {
   status?: T;
   primaryGenres?: T;
   corePremise?: T;
-  targetAudience?:
+  tone?: T;
+  targetAudience?: T;
+  aiMetadata?:
     | T
     | {
-        demographics?: T;
-        psychographics?: T;
-        customDescription?: T;
+        generatedAt?: T;
+        generationModel?: T;
+        userModifications?:
+          | T
+          | {
+              field?: T;
+              modifiedAt?: T;
+              originalValue?: T;
+              newValue?: T;
+              id?: T;
+            };
       };
-  toneAndMood?:
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stories_select".
+ */
+export interface StoriesSelect<T extends boolean = true> {
+  project?: T;
+  projectName?: T;
+  currentContent?: T;
+  currentStep?: T;
+  status?: T;
+  qualityMetrics?:
     | T
     | {
-        tones?: T;
-        moods?: T;
-        emotionalArc?: T;
+        structureScore?: T;
+        characterDepth?: T;
+        coherenceScore?: T;
+        conflictTension?: T;
+        dialogueQuality?: T;
+        genreAlignment?: T;
+        audienceEngagement?: T;
+        visualStorytelling?: T;
+        productionReadiness?: T;
+        overallQuality?: T;
       };
+  enhancementHistory?:
+    | T
+    | {
+        stepNumber?: T;
+        stepName?: T;
+        startTime?: T;
+        endTime?: T;
+        processingTime?: T;
+        contentBefore?: T;
+        contentAfter?: T;
+        qualityBefore?: T;
+        qualityAfter?: T;
+        improvementsMade?:
+          | T
+          | {
+              improvement?: T;
+              id?: T;
+            };
+        userApproved?: T;
+        aiModel?: T;
+        changesSummary?: T;
+        id?: T;
+      };
+  genreSpecificMetrics?: T;
+  workflowSettings?:
+    | T
+    | {
+        mode?: T;
+        qualityThreshold?: T;
+        maxIterations?: T;
+        skipSteps?:
+          | T
+          | {
+              stepNumber?: T;
+              id?: T;
+            };
+        repeatSteps?:
+          | T
+          | {
+              stepNumber?: T;
+              id?: T;
+            };
+      };
+  progressTracking?:
+    | T
+    | {
+        estimatedTimeRemaining?: T;
+        completionPercentage?: T;
+        lastProcessedStep?: T;
+        totalProcessingTime?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "fundamental-data_select".
+ */
+export interface FundamentalDataSelect<T extends boolean = true> {
+  project?: T;
+  projectName?: T;
   visualStyle?:
     | T
     | {
@@ -1458,23 +1794,8 @@ export interface InitialConceptsSelect<T extends boolean = true> {
         culturalSensitivities?: T;
         educationalValue?: T;
       };
-  aiMetadata?:
-    | T
-    | {
-        generatedAt?: T;
-        generationModel?: T;
-        userModifications?:
-          | T
-          | {
-              field?: T;
-              modifiedAt?: T;
-              originalValue?: T;
-              newValue?: T;
-              id?: T;
-            };
-      };
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

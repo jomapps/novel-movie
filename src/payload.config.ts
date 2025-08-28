@@ -15,6 +15,7 @@ import { MovieStyles } from './collections/MovieStyles'
 import { Series } from './collections/Series'
 import { InitialConcepts } from './collections/InitialConcepts'
 import { Stories } from './collections/Stories'
+import { FundamentalData } from './collections/FundamentalData'
 import { Genres } from './collections/Genres'
 import { AudienceDemographics } from './collections/AudienceDemographics'
 import { ToneOptions } from './collections/ToneOptions'
@@ -41,6 +42,7 @@ export default buildConfig({
     Series,
     InitialConcepts,
     Stories,
+    FundamentalData,
     Genres,
     AudienceDemographics,
     ToneOptions,

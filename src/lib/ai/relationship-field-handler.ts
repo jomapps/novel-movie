@@ -26,7 +26,7 @@ export const RELATIONSHIP_FIELD_CONFIGS: Record<string, RelationshipFieldConfig>
     },
     maxItems: 3,
   },
-  'targetAudience.demographics': {
+  targetAudience: {
     collection: 'audience-demographics',
     searchFields: ['name', 'slug'],
     createFields: {
@@ -34,33 +34,13 @@ export const RELATIONSHIP_FIELD_CONFIGS: Record<string, RelationshipFieldConfig>
       isActive: true,
     },
   },
-  'toneAndMood.tones': {
+  tone: {
     collection: 'tone-options',
     searchFields: ['name', 'slug'],
     createFields: {
-      isActive: true,
-    },
-  },
-  'toneAndMood.moods': {
-    collection: 'mood-descriptors',
-    searchFields: ['name', 'slug'],
-    createFields: {
-      isActive: true,
-    },
-  },
-  'visualStyle.cinematographyStyle': {
-    collection: 'cinematography-styles',
-    searchFields: ['name', 'slug'],
-    createFields: {
-      isActive: true,
-    },
-    maxItems: 1,
-  },
-  'themes.centralThemes': {
-    collection: 'central-themes',
-    searchFields: ['name', 'slug'],
-    createFields: {
-      universality: 'universal',
+      category: 'atmospheric',
+      intensity: 'moderate',
+      description: 'AI-generated tone option',
       isActive: true,
     },
   },
