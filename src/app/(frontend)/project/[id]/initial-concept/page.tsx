@@ -122,9 +122,9 @@ export default function InitialConceptPage() {
 
       const result = await response.json()
 
-      if (result.success && result.doc) {
-        console.log('✅ Created empty initial-concept record:', result.doc.id)
-        setInitialConcept(result.doc)
+      if (result.success && result.data) {
+        console.log('✅ Created empty initial-concept record:', result.data.id)
+        setInitialConcept(result.data)
       } else if (response.status === 409) {
         // Record already exists - this shouldn't happen with our logic, but handle gracefully
         console.log('⚠️ Initial concept already exists, fetching existing record...')

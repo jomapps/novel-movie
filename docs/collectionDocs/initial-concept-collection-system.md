@@ -36,11 +36,6 @@ This document describes the comprehensive collection system created for the Init
 
 ## Field Structure
 
-### Core Required Fields
-1. **Primary Genres** (max 3, ordered by importance)
-2. **Core Premise** (rich text, 50-500 words)
-3. **Target Audience** (demographics + psychographics + custom description)
-4. **Tone & Mood** (tone options + mood descriptors + emotional arc)
 5. **Visual Style Direction** (cinematography + color palette + lighting + camera movement)
 
 ### Enhanced Creative Fields

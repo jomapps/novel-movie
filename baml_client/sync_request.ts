@@ -61,7 +61,7 @@ export class HttpRequest {
   }
   
   GenerateAllProjectFields(
-      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,primaryGenres?: string[] | null,corePremise?: string | null,targetAudience?: string[] | null,tone?: string[] | null,
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
@@ -72,7 +72,7 @@ export class HttpRequest {
       return this.runtime.buildRequestSync(
         "GenerateAllProjectFields",
         {
-          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingTitle": existingTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingTitle": existingTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null,"primaryGenres": primaryGenres?? null,"corePremise": corePremise?? null,"targetAudience": targetAudience?? null,"tone": tone?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -235,6 +235,31 @@ export class HttpRequest {
     }
   }
   
+  GeneratePrimaryGenres(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingGenres?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GeneratePrimaryGenres",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingGenres": existingGenres?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateProjectTitle(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -335,6 +360,56 @@ export class HttpRequest {
     }
   }
   
+  GenerateSimpleCorePremise(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],existingPremise?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateSimpleCorePremise",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"existingPremise": existingPremise?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GenerateTargetAudience(
+      projectName: string,primaryGenres: string[],corePremise: string,movieFormat: string,durationUnit: number,existingAudience?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateTargetAudience",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"movieFormat": movieFormat,"durationUnit": durationUnit,"existingAudience": existingAudience?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateTargetAudienceCustomDescription(
       projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],psychographics: string,existingCustomDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -398,6 +473,31 @@ export class HttpRequest {
         "GenerateThematicElements",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"centralThemes": centralThemes,"existingMoralQuestions": existingMoralQuestions?? null,"existingMessageTakeaway": existingMessageTakeaway?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GenerateTone(
+      projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string[],movieStyle: string,existingTone?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateTone",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -467,7 +567,7 @@ export class HttpStreamRequest {
   }
   
   GenerateAllProjectFields(
-      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,primaryGenres?: string[] | null,corePremise?: string | null,targetAudience?: string[] | null,tone?: string[] | null,
       __baml_options__?: BamlCallOptions
   ): HTTPRequest {
     try {
@@ -478,7 +578,7 @@ export class HttpStreamRequest {
       return this.runtime.buildRequestSync(
         "GenerateAllProjectFields",
         {
-          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingTitle": existingTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingTitle": existingTitle?? null,"existingShortDescription": existingShortDescription?? null,"existingLongDescription": existingLongDescription?? null,"primaryGenres": primaryGenres?? null,"corePremise": corePremise?? null,"targetAudience": targetAudience?? null,"tone": tone?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -641,6 +741,31 @@ export class HttpStreamRequest {
     }
   }
   
+  GeneratePrimaryGenres(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingGenres?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GeneratePrimaryGenres",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"existingGenres": existingGenres?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateProjectTitle(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -741,6 +866,56 @@ export class HttpStreamRequest {
     }
   }
   
+  GenerateSimpleCorePremise(
+      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],existingPremise?: string | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateSimpleCorePremise",
+        {
+          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"existingPremise": existingPremise?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GenerateTargetAudience(
+      projectName: string,primaryGenres: string[],corePremise: string,movieFormat: string,durationUnit: number,existingAudience?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateTargetAudience",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"movieFormat": movieFormat,"durationUnit": durationUnit,"existingAudience": existingAudience?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateTargetAudienceCustomDescription(
       projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],psychographics: string,existingCustomDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -804,6 +979,31 @@ export class HttpStreamRequest {
         "GenerateThematicElements",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"centralThemes": centralThemes,"existingMoralQuestions": existingMoralQuestions?? null,"existingMessageTakeaway": existingMessageTakeaway?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GenerateTone(
+      projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string[],movieStyle: string,existingTone?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "GenerateTone",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

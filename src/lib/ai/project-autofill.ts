@@ -19,6 +19,11 @@ export interface ProjectContext {
   existingTitle?: string
   existingShortDescription?: string
   existingLongDescription?: string
+  // Section 2 - Core Story Elements
+  primaryGenres?: string[]
+  corePremise?: string
+  targetAudience?: string[]
+  tone?: string[]
 }
 
 export interface GeneratedFields {
@@ -67,6 +72,28 @@ ${context.existingTitle ? `- Current Title: ${context.existingTitle}` : ''}
 ${context.existingShortDescription ? `- Short Description: ${context.existingShortDescription}` : ''}
 ${context.existingLongDescription ? `- Long Description: ${context.existingLongDescription}` : ''}
 
+Core Story Elements:${
+      context.primaryGenres
+        ? `
+- Genres: ${context.primaryGenres.join(', ')}`
+        : ''
+    }${
+      context.corePremise
+        ? `
+- Core Premise: ${context.corePremise}`
+        : ''
+    }${
+      context.targetAudience
+        ? `
+- Target Audience: ${context.targetAudience.join(', ')}`
+        : ''
+    }${
+      context.tone
+        ? `
+- Tone: ${context.tone.join(', ')}`
+        : ''
+    }
+
 Guidelines:
 - Create a title that captures the essence and tone of the project
 - Consider the movie format and style when crafting the title
@@ -113,6 +140,28 @@ ${context.series ? `- Series: ${context.series}` : ''}
 
 ${context.existingShortDescription ? `- Current Short Description: ${context.existingShortDescription}` : ''}
 ${context.existingLongDescription ? `- Long Description: ${context.existingLongDescription}` : ''}
+
+Core Story Elements:${
+      context.primaryGenres
+        ? `
+- Genres: ${context.primaryGenres.join(', ')}`
+        : ''
+    }${
+      context.corePremise
+        ? `
+- Core Premise: ${context.corePremise}`
+        : ''
+    }${
+      context.targetAudience
+        ? `
+- Target Audience: ${context.targetAudience.join(', ')}`
+        : ''
+    }${
+      context.tone
+        ? `
+- Tone: ${context.tone.join(', ')}`
+        : ''
+    }
 
 Guidelines:
 - Write a compelling, concise description that captures the essence in 1-3 sentences
@@ -162,6 +211,28 @@ ${context.series ? `- Series: ${context.series}` : ''}
 
 ${context.existingShortDescription ? `- Short Description: ${context.existingShortDescription}` : ''}
 ${context.existingLongDescription ? `- Current Long Description: ${context.existingLongDescription}` : ''}
+
+Core Story Elements:${
+      context.primaryGenres
+        ? `
+- Genres: ${context.primaryGenres.join(', ')}`
+        : ''
+    }${
+      context.corePremise
+        ? `
+- Core Premise: ${context.corePremise}`
+        : ''
+    }${
+      context.targetAudience
+        ? `
+- Target Audience: ${context.targetAudience.join(', ')}`
+        : ''
+    }${
+      context.tone
+        ? `
+- Tone: ${context.tone.join(', ')}`
+        : ''
+    }
 
 Guidelines:
 - Create a rich, comprehensive description that serves as a strong foundation for screenplay development
@@ -219,17 +290,39 @@ Project Context:
 ${context.series ? `- Series: ${context.series}` : ''}
 - Duration: ${context.durationUnit} minutes
 
+Core Story Elements:${
+      context.primaryGenres
+        ? `
+- Genres: ${context.primaryGenres.join(', ')}`
+        : ''
+    }${
+      context.corePremise
+        ? `
+- Core Premise: ${context.corePremise}`
+        : ''
+    }${
+      context.targetAudience
+        ? `
+- Target Audience: ${context.targetAudience.join(', ')}`
+        : ''
+    }${
+      context.tone
+        ? `
+- Tone: ${context.tone.join(', ')}`
+        : ''
+    }
+
 Existing Content:
 ${context.existingTitle ? `- Title: ${context.existingTitle}` : ''}
 ${context.existingShortDescription ? `- Short Description: ${context.existingShortDescription}` : ''}
 ${context.existingLongDescription ? `- Long Description: ${context.existingLongDescription}` : ''}
 
 Generate the missing fields with these roles:
-- Title: Creative writer creating memorable, marketable titles
-- Short Description: Marketing editor creating compelling 50-100 word promotional copy
-- Long Description: Screenwriter creating detailed 200-400 word story synopsis
+- Title: Creative writer creating memorable, marketable titles that reflect the core story elements
+- Short Description: Marketing editor creating compelling 50-100 word promotional copy that incorporates the genres, premise, and tone
+- Long Description: Screenwriter creating detailed 200-400 word story synopsis that builds upon the core premise and target audience
 
-Ensure all generated content is cohesive and consistent with each other and the project parameters.
+Ensure all generated content is cohesive and consistent with each other, the project parameters, and the core story elements provided.
 
 Return the response in JSON format with the following structure:
 {
@@ -362,5 +455,16 @@ export function createProjectContext(formData: any): ProjectContext {
     existingTitle: formData.projectTitle?.trim() || undefined,
     existingShortDescription: formData.shortDescription?.trim() || undefined,
     existingLongDescription: formData.longDescription?.trim() || undefined,
+    // Section 2 - Core Story Elements
+    primaryGenres:
+      formData.primaryGenres && formData.primaryGenres.length > 0
+        ? formData.primaryGenres
+        : undefined,
+    corePremise: formData.corePremise?.trim() || undefined,
+    targetAudience:
+      formData.targetAudience && formData.targetAudience.length > 0
+        ? formData.targetAudience
+        : undefined,
+    tone: formData.tone && formData.tone.length > 0 ? formData.tone : undefined,
   }
 }

@@ -163,7 +163,11 @@ function GenerateAllProjectFields(
   durationUnit: int,
   existingTitle: string?,
   existingShortDescription: string?,
-  existingLongDescription: string?
+  existingLongDescription: string?,
+  primaryGenres: string[]?,
+  corePremise: string?,
+  targetAudience: string[]?,
+  tone: string[]?
 ) -> ProjectFieldsResponse {
   client OpenRouterAdvanced
   prompt #"
@@ -177,6 +181,20 @@ function GenerateAllProjectFields(
     - Series: {{ series }}
     {% endif %}
     - Duration: {{ durationUnit }} minutes
+
+    Core Story Elements:
+    {% if primaryGenres %}
+    - Genres: {{ primaryGenres | join(", ") }}
+    {% endif %}
+    {% if corePremise %}
+    - Core Premise: {{ corePremise }}
+    {% endif %}
+    {% if targetAudience %}
+    - Target Audience: {{ targetAudience | join(", ") }}
+    {% endif %}
+    {% if tone %}
+    - Tone: {{ tone | join(", ") }}
+    {% endif %}
     
     Existing Content:
     {% if existingTitle %}

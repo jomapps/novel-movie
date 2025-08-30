@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import {
-  generateMissingFields,
-  createProjectContext,
-  validateRequiredFields,
-} from '@/lib/ai/project-autofill'
+import { generateCoreStoryElements } from '@/lib/ai/core-elements-autofill'
 
 // Validation schema for the request
-const AutofillRequestSchema = z.object({
+const CoreElementsAutofillRequestSchema = z.object({
   name: z.string().min(1, 'Project name is required'),
   movieFormat: z.string().min(1, 'Movie format is required'),
   movieStyle: z.string().min(1, 'Movie style is required'),
@@ -15,14 +11,11 @@ const AutofillRequestSchema = z.object({
     .union([z.string(), z.number()])
     .transform((val) => (typeof val === 'string' ? parseInt(val) : val)),
   series: z.string().optional(),
-  projectTitle: z.string().optional(),
-  shortDescription: z.string().optional(),
-  longDescription: z.string().optional(),
-  // Section 2 - Core Story Elements
-  primaryGenres: z.array(z.string()).optional(),
-  corePremise: z.string().optional(),
-  targetAudience: z.array(z.string()).optional(),
-  tone: z.array(z.string()).optional(),
+  // Current core elements values
+  primaryGenres: z.array(z.string()).optional().default([]),
+  corePremise: z.string().optional().default(''),
+  targetAudience: z.array(z.string()).optional().default([]),
+  tone: z.array(z.string()).optional().default([]),
 })
 
 export async function POST(request: NextRequest) {
@@ -30,15 +23,17 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate the request data
-    const validatedData = AutofillRequestSchema.parse(body)
+    const validatedData = CoreElementsAutofillRequestSchema.parse(body)
 
     // Check if all required fields are present
-    if (!validateRequiredFields(validatedData)) {
+    const requiredFields = ['name', 'movieFormat', 'movieStyle', 'durationUnit']
+    const missingFields = requiredFields.filter((field) => !validatedData[field as keyof typeof validatedData])
+
+    if (missingFields.length > 0) {
       return NextResponse.json(
         {
           success: false,
-          error:
-            'Missing required fields. Please fill in all required fields before using AI auto-fill.',
+          error: `Missing required fields: ${missingFields.join(', ')}`,
         },
         { status: 400 },
       )
@@ -55,11 +50,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create project context for AI generation
-    const context = createProjectContext(validatedData)
-
-    // Generate missing fields
-    const generatedFields = await generateMissingFields(context)
+    // Generate core story elements
+    const generatedFields = await generateCoreStoryElements({
+      projectName: validatedData.name,
+      movieFormat: validatedData.movieFormat,
+      movieStyle: validatedData.movieStyle,
+      series: validatedData.series,
+      durationUnit: validatedData.durationUnit,
+      currentValues: {
+        primaryGenres: validatedData.primaryGenres,
+        corePremise: validatedData.corePremise,
+        targetAudience: validatedData.targetAudience,
+        tone: validatedData.tone,
+      },
+    })
 
     // Check if any fields were generated
     const hasGeneratedContent = Object.keys(generatedFields).length > 0
@@ -68,7 +72,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'All optional fields are already filled. Nothing to generate.',
+          error: 'All core story elements are already filled. Nothing to generate.',
         },
         { status: 400 },
       )
@@ -78,11 +82,11 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         generatedFields,
-        message: `Successfully generated ${Object.keys(generatedFields).length} field(s)`,
+        message: `Successfully generated ${Object.keys(generatedFields).length} core story element(s)`,
       },
     })
   } catch (error) {
-    console.error('AI autofill error:', error)
+    console.error('Core elements autofill error:', error)
 
     // Handle validation errors
     if (error instanceof z.ZodError) {
@@ -99,7 +103,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Handle OpenRouter insufficient credits error
+    // Handle AI service insufficient credits error
     if (error instanceof Error && error.message.includes('402 Insufficient credits')) {
       return NextResponse.json(
         {
@@ -129,8 +133,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Handle general OpenRouter API errors
-    if (error instanceof Error && error.message.includes('OpenRouter')) {
+    // Handle general AI service API errors
+    if (
+      error instanceof Error &&
+      (error.message.includes('OpenRouter') || error.message.includes('AI service'))
+    ) {
       return NextResponse.json(
         {
           success: false,

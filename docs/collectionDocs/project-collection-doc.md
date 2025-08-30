@@ -101,3 +101,9 @@ The Project collection serves as the central hub that binds all related resource
 - PayloadCMS provides standard fields (id, createdAt, updatedAt, etc.)
 - Status field helps track production workflow
 - generatedContent group will store all AI-generated assets and content
+
+### Core Required Fields
+1. **Primary Genres** (max 3, ordered by importance)
+2. **Core Premise** (rich text, 50-500 words)
+3. **Target Audience** (demographics + psychographics + custom description)
+4. **Tone & Mood** (tone options + mood descriptors + emotional arc)

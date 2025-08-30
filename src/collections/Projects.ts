@@ -242,6 +242,65 @@ export const Projects: CollectionConfig = {
         description: 'Unit of measurement for the suggested duration in minutes',
       },
     },
+
+    // === CORE REQUIRED FIELDS FOR STORY GENERATION ===
+    // These fields were moved from initial-concept collection to project collection
+    // to be filled during project creation
+
+    // 1. Primary Genres (Essential for story generation)
+    {
+      name: 'primaryGenres',
+      type: 'relationship',
+      relationTo: 'genres',
+      hasMany: true,
+      maxRows: 3,
+      required: false, // Allow empty creation, will be filled by AI or user
+      admin: {
+        description:
+          'Select up to 3 genres in order of importance - drives story structure and style',
+        sortOptions: 'name',
+      },
+    },
+
+    // 2. Core Premise (Essential for story generation)
+    {
+      name: 'corePremise',
+      type: 'textarea',
+      required: false, // Allow empty creation, will be filled by AI or user
+      admin: {
+        description:
+          'The central story concept and main conflict - what is this story about? (50-500 words)',
+        rows: 4,
+      },
+    },
+
+    // 3. Target Audience (Essential for story generation)
+    {
+      name: 'targetAudience',
+      type: 'relationship',
+      relationTo: 'audience-demographics',
+      hasMany: true,
+      maxRows: 3,
+      required: false, // Allow empty creation, will be filled by AI or user
+      admin: {
+        description: 'Select primary demographic groups this story should appeal to',
+        sortOptions: 'name',
+      },
+    },
+
+    // 4. Tone & Mood (Essential for story generation)
+    {
+      name: 'tone',
+      type: 'relationship',
+      relationTo: 'tone-options',
+      hasMany: true,
+      maxRows: 2,
+      required: false, // Allow empty creation, will be filled by AI or user
+      admin: {
+        description: "Select 1-2 tones that define the story's emotional approach",
+        sortOptions: 'name',
+      },
+    },
     {
       name: 'generatedContent',
       type: 'group',

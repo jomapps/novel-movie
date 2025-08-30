@@ -14,7 +14,7 @@ export interface RelationshipFieldConfig {
 }
 
 /**
- * Configuration for all relationship fields in InitialConcept
+ * Configuration for all relationship fields in InitialConcept and Project collections
  */
 export const RELATIONSHIP_FIELD_CONFIGS: Record<string, RelationshipFieldConfig> = {
   primaryGenres: {

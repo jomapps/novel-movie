@@ -234,6 +234,22 @@ export interface Project {
    */
   durationUnit: number;
   /**
+   * Select up to 3 genres in order of importance - drives story structure and style
+   */
+  primaryGenres?: (string | Genre)[] | null;
+  /**
+   * The central story concept and main conflict - what is this story about? (50-500 words)
+   */
+  corePremise?: string | null;
+  /**
+   * Select primary demographic groups this story should appeal to
+   */
+  targetAudience?: (string | AudienceDemographic)[] | null;
+  /**
+   * Select 1-2 tones that define the story's emotional approach
+   */
+  tone?: (string | ToneOption)[] | null;
+  /**
    * Container for AI-generated content and assets
    */
   generatedContent?: {
@@ -403,56 +419,6 @@ export interface MovieStyle {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "initial-concepts".
- */
-export interface InitialConcept {
-  id: string;
-  /**
-   * Associated project for this concept
-   */
-  project: string | Project;
-  /**
-   * Auto-populated from project name
-   */
-  projectName?: string | null;
-  /**
-   * Current status of the concept development
-   */
-  status?: ('draft' | 'ai-generated' | 'user-refined' | 'ready' | 'approved') | null;
-  /**
-   * Select up to 3 genres in order of importance - drives story structure and style
-   */
-  primaryGenres: (string | Genre)[];
-  /**
-   * The central story concept and main conflict - what is this story about? (50-300 words)
-   */
-  corePremise: string;
-  /**
-   * Select 1-2 tones that define the story's emotional approach
-   */
-  tone: (string | ToneOption)[];
-  /**
-   * Select primary demographic groups this story should appeal to
-   */
-  targetAudience: (string | AudienceDemographic)[];
-  aiMetadata?: {
-    generatedAt?: string | null;
-    generationModel?: string | null;
-    userModifications?:
-      | {
-          field?: string | null;
-          modifiedAt?: string | null;
-          originalValue?: string | null;
-          newValue?: string | null;
-          id?: string | null;
-        }[]
-      | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "genres".
  */
 export interface Genre {
@@ -525,6 +491,94 @@ export interface Genre {
   sortOrder?: number | null;
   /**
    * Tags to help AI understand this genre for content generation
+   */
+  aiGenerationTags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "audience-demographics".
+ */
+export interface AudienceDemographic {
+  id: string;
+  /**
+   * Demographic group name (e.g., "Young Adults", "Families with Children")
+   */
+  name: string;
+  slug: string;
+  /**
+   * Description of this demographic group and their characteristics
+   */
+  description: string;
+  /**
+   * Type of demographic classification
+   */
+  category: 'age' | 'geographic' | 'cultural' | 'socioeconomic' | 'lifestyle';
+  ageRange?: {
+    minAge?: number | null;
+    maxAge?: number | null;
+    ratingGuideline?: ('G' | 'PG' | 'PG-13' | 'R' | 'NC-17') | null;
+  };
+  characteristics?: {
+    /**
+     * Common interests and hobbies of this demographic
+     */
+    interests?: string | null;
+    /**
+     * How this demographic typically consumes media
+     */
+    mediaConsumption?: string | null;
+    /**
+     * Core values and beliefs important to this group
+     */
+    values?: string | null;
+    /**
+     * Lifestyle patterns and behaviors
+     */
+    lifestyle?: string | null;
+  };
+  contentPreferences?: {
+    /**
+     * Genres that typically appeal to this demographic
+     */
+    preferredGenres?: (string | Genre)[] | null;
+    contentComplexity?: ('simple' | 'moderate' | 'complex' | 'variable') | null;
+    attentionSpan?: ('short' | 'medium' | 'long' | 'variable') | null;
+    /**
+     * Types of emotional content this demographic responds to
+     */
+    emotionalPreferences?: string | null;
+  };
+  marketingConsiderations?: {
+    /**
+     * Best marketing channels to reach this demographic
+     */
+    primaryChannels?: string | null;
+    /**
+     * Effective messaging tone and approach
+     */
+    messagingTone?: string | null;
+    /**
+     * Key influencers or opinion leaders for this group
+     */
+    influencers?: string | null;
+  };
+  /**
+   * Whether this demographic is available for selection
+   */
+  isActive?: boolean | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  sortOrder?: number | null;
+  /**
+   * Tags to help AI understand this demographic for content generation
    */
   aiGenerationTags?:
     | {
@@ -659,89 +713,35 @@ export interface ToneOption {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "audience-demographics".
+ * via the `definition` "initial-concepts".
  */
-export interface AudienceDemographic {
+export interface InitialConcept {
   id: string;
   /**
-   * Demographic group name (e.g., "Young Adults", "Families with Children")
+   * Associated project for this concept
    */
-  name: string;
-  slug: string;
+  project: string | Project;
   /**
-   * Description of this demographic group and their characteristics
+   * Auto-populated from project name
    */
-  description: string;
+  projectName?: string | null;
   /**
-   * Type of demographic classification
+   * Current status of the concept development
    */
-  category: 'age' | 'geographic' | 'cultural' | 'socioeconomic' | 'lifestyle';
-  ageRange?: {
-    minAge?: number | null;
-    maxAge?: number | null;
-    ratingGuideline?: ('G' | 'PG' | 'PG-13' | 'R' | 'NC-17') | null;
+  status?: ('draft' | 'ai-generated' | 'user-refined' | 'ready' | 'approved') | null;
+  aiMetadata?: {
+    generatedAt?: string | null;
+    generationModel?: string | null;
+    userModifications?:
+      | {
+          field?: string | null;
+          modifiedAt?: string | null;
+          originalValue?: string | null;
+          newValue?: string | null;
+          id?: string | null;
+        }[]
+      | null;
   };
-  characteristics?: {
-    /**
-     * Common interests and hobbies of this demographic
-     */
-    interests?: string | null;
-    /**
-     * How this demographic typically consumes media
-     */
-    mediaConsumption?: string | null;
-    /**
-     * Core values and beliefs important to this group
-     */
-    values?: string | null;
-    /**
-     * Lifestyle patterns and behaviors
-     */
-    lifestyle?: string | null;
-  };
-  contentPreferences?: {
-    /**
-     * Genres that typically appeal to this demographic
-     */
-    preferredGenres?: (string | Genre)[] | null;
-    contentComplexity?: ('simple' | 'moderate' | 'complex' | 'variable') | null;
-    attentionSpan?: ('short' | 'medium' | 'long' | 'variable') | null;
-    /**
-     * Types of emotional content this demographic responds to
-     */
-    emotionalPreferences?: string | null;
-  };
-  marketingConsiderations?: {
-    /**
-     * Best marketing channels to reach this demographic
-     */
-    primaryChannels?: string | null;
-    /**
-     * Effective messaging tone and approach
-     */
-    messagingTone?: string | null;
-    /**
-     * Key influencers or opinion leaders for this group
-     */
-    influencers?: string | null;
-  };
-  /**
-   * Whether this demographic is available for selection
-   */
-  isActive?: boolean | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  sortOrder?: number | null;
-  /**
-   * Tags to help AI understand this demographic for content generation
-   */
-  aiGenerationTags?:
-    | {
-        tag: string;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1547,6 +1547,10 @@ export interface ProjectsSelect<T extends boolean = true> {
   movieStyle?: T;
   status?: T;
   durationUnit?: T;
+  primaryGenres?: T;
+  corePremise?: T;
+  targetAudience?: T;
+  tone?: T;
   generatedContent?:
     | T
     | {
@@ -1623,10 +1627,6 @@ export interface InitialConceptsSelect<T extends boolean = true> {
   project?: T;
   projectName?: T;
   status?: T;
-  primaryGenres?: T;
-  corePremise?: T;
-  tone?: T;
-  targetAudience?: T;
   aiMetadata?:
     | T
     | {

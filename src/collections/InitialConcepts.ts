@@ -65,61 +65,9 @@ export const InitialConcepts: CollectionConfig = {
       },
     },
 
-    // === ESSENTIAL 4 FIELDS FOR STORY GENERATION ===
-
-    // 1. Primary Genres (Required)
-    {
-      name: 'primaryGenres',
-      type: 'relationship',
-      relationTo: 'genres',
-      hasMany: true,
-      maxRows: 3,
-      required: true,
-      admin: {
-        description:
-          'Select up to 3 genres in order of importance - drives story structure and style',
-        sortOptions: 'name',
-      },
-    },
-
-    // 2. Core Premise (Required)
-    {
-      name: 'corePremise',
-      type: 'textarea',
-      required: true,
-      admin: {
-        description:
-          'The central story concept and main conflict - what is this story about? (50-300 words)',
-      },
-    },
-
-    // 3. Tone (Required)
-    {
-      name: 'tone',
-      type: 'relationship',
-      relationTo: 'tone-options',
-      hasMany: true,
-      maxRows: 2,
-      required: true,
-      admin: {
-        description: "Select 1-2 tones that define the story's emotional approach",
-        sortOptions: 'name',
-      },
-    },
-
-    // 4. Target Audience (Required)
-    {
-      name: 'targetAudience',
-      type: 'relationship',
-      relationTo: 'audience-demographics',
-      hasMany: true,
-      maxRows: 3,
-      required: true,
-      admin: {
-        description: 'Select primary demographic groups this story should appeal to',
-        sortOptions: 'name',
-      },
-    },
+    // === FIELDS MOVED TO PROJECT COLLECTION ===
+    // The 4 essential fields (primaryGenres, corePremise, tone, targetAudience)
+    // have been moved to the project collection to be filled during project creation
 
     // AI Generation Metadata
     {
