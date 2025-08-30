@@ -1051,66 +1051,112 @@ export class WorkflowOrchestrator {
 
 ## Implementation Roadmap
 
-### Phase 1: Foundation Setup (Week 1)
+### Phase 1: PathRAG Integration & Local Testing (Week 1)
 
-#### Step 1: CrewAI Server Setup
-```bash
-# On Ubuntu production server
-git clone <your-novel-movie-repo>
-cd novel-movie
-
-# Create CrewAI server directory
-sudo mkdir -p /opt/crewai-server
-sudo chown $USER:$USER /opt/crewai-server
-
-# Setup Python environment
-python3 -m venv /opt/crewai-server/venv
-source /opt/crewai-server/venv/bin/activate
-
-# Install dependencies
-pip install crewai crewai-tools langchain openai aiohttp fastapi uvicorn python-arango
-```
-
-#### Step 2: Novel Movie Client Setup
+#### Step 1: PathRAG Service Integration
 ```bash
 # In your Novel Movie project
+# Test PathRAG connectivity first
+curl -X GET http://movie.ft.tc:5000/health
+
+# Create PathRAG service integration
+mkdir -p agents/services
+mkdir -p agents/core/tools
+```
+
+#### Step 2: Local Agent Development
+```bash
+# Install CrewAI client for local development
 npm install @ag-ui/crewai axios
 
 # Add environment variables to .env
-echo "CREWAI_SERVER_URL=http://your-ubuntu-server:8000" >> .env
-echo "CREWAI_API_KEY=your-secure-api-key" >> .env
+echo "PATHRAG_API_URL=http://movie.ft.tc:5000" >> .env
+echo "CREWAI_MODE=local" >> .env  # For local testing
 ```
 
 #### Step 3: Create Base Infrastructure
 ```bash
-# Create agent directories
+# Create agent directories in Novel Movie project
 mkdir -p agents/core/{tools,types}
 mkdir -p agents/phase-1-architect/{tasks,agents}
 mkdir -p agents/services
 
-# Create CrewAI server structure
-mkdir -p /opt/crewai-server/{crews,tools,services,config}
+# Test PathRAG integration locally first
 ```
 
-### Phase 2: Architect Agent Implementation (Week 2)
+### Phase 1.5: CrewAI Server Repository Setup (Parallel)
 
-#### Step 1: Implement CrewAI Server Components
-1. **Create FastAPI server** (`/opt/crewai-server/main.py`)
-2. **Implement Architect Crew** (`/opt/crewai-server/crews/architect_crew.py`)
-3. **Create PayloadCMS tool** (`/opt/crewai-server/tools/payload_tool.py`)
-4. **Create PathRAG tool** (`/opt/crewai-server/tools/pathrag_tool.py`)
+#### Step 1: Create Separate Repository
+```bash
+# Create new repository for CrewAI server
+# See docs/crewai-server-repo-structure.md for complete structure
 
-#### Step 2: Implement Novel Movie Client
-1. **Create CrewAI client** (`agents/core/crewai-client.ts`)
-2. **Update workflow orchestrator** (`agents/core/workflow-orchestrator.ts`)
-3. **Create API endpoint** (`src/app/v1/agents/architect/route.ts`)
-4. **Update queue processor** (`lib/queue/crew-orchestrator.ts`)
+git clone https://github.com/your-org/novel-movie-crewai-server.git
+cd novel-movie-crewai-server
 
-#### Step 3: PathRAG Integration
-1. **Verify PathRAG service** connectivity (`http://movie.ft.tc:5000`)
-2. **Create PathRAG service** (`agents/services/pathrag-service.ts`)
-3. **Implement knowledge graph operations** using PathRAG API
-4. **Test custom knowledge graph insertion** for story elements
+# Setup local development environment
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+#### Step 2: Local CrewAI Server Testing
+```bash
+# Test CrewAI server locally with Docker
+docker-compose up -d
+
+# Verify server is running
+curl -X GET http://localhost:8000/health
+```
+
+### Phase 2: Local Architect Agent Implementation (Week 2)
+
+#### Step 1: PathRAG Integration in Novel Movie
+1. **Create PathRAG service** (`agents/services/pathrag-service.ts`)
+2. **Implement PathRAG tool** (`agents/core/tools/pathrag-tool.ts`)
+3. **Test knowledge graph operations** using PathRAG API
+4. **Validate custom knowledge graph insertion** for story elements
+
+#### Step 2: Local Agent Testing
+1. **Create simple Architect agent** (embedded in Novel Movie)
+2. **Test story parsing** with PathRAG integration
+3. **Validate knowledge graph creation** and querying
+4. **Measure performance** and accuracy
+
+#### Step 3: CrewAI Server Implementation (Separate Repo)
+1. **Implement FastAPI server** (`novel-movie-crewai-server/main.py`)
+2. **Create Architect Crew** (`crews/architect_crew.py`)
+3. **Implement PathRAG tool** (`tools/pathrag_tool.py`)
+4. **Test server locally** with Docker Compose
+
+### Phase 2.5: Ubuntu Server Deployment (Week 2-3)
+
+#### Step 1: Server Setup
+```bash
+# On Ubuntu production server
+git clone https://github.com/your-org/novel-movie-crewai-server.git
+cd novel-movie-crewai-server
+
+# Run automated setup script
+chmod +x scripts/setup_server.sh
+./scripts/setup_server.sh
+```
+
+#### Step 2: Production Deployment
+```bash
+# Deploy CrewAI server
+chmod +x scripts/deploy.sh
+./scripts/deploy.sh
+
+# Verify deployment
+curl -X GET http://your-ubuntu-server:8000/health
+```
+
+#### Step 3: Integration Testing
+1. **Connect Novel Movie** to Ubuntu CrewAI server
+2. **Test end-to-end** story processing
+3. **Monitor performance** and logs
+4. **Validate PathRAG integration** works from server
 
 ### Phase 3: Testing & Validation (Week 3)
 
@@ -1210,17 +1256,36 @@ sudo systemctl start crewai-server
 
 ## Quick Start Guide
 
+### Recommended Implementation Order:
+
+#### Week 1: PathRAG Integration (Low Risk)
+1. **Test PathRAG connectivity**: `curl http://movie.ft.tc:5000/health`
+2. **Create PathRAG service**: Implement TypeScript client
+3. **Build simple agent**: Test story parsing locally
+4. **Validate approach**: Ensure PathRAG integration works
+
+#### Week 2: CrewAI Server Development (Parallel)
+1. **Create separate repository**: Use structure from `docs/crewai-server-repo-structure.md`
+2. **Develop locally**: Use Docker Compose for testing
+3. **Implement Architect crew**: With PathRAG integration
+4. **Test end-to-end**: Validate complete workflow
+
+#### Week 3: Ubuntu Deployment
+1. **Clone CrewAI server repo**: On Ubuntu production server
+2. **Run setup scripts**: Automated server configuration
+3. **Deploy and test**: Production deployment validation
+4. **Connect Novel Movie**: Switch from local to server agents
+
 ### For Development:
-1. **Clone repository** and setup environment
-2. **Start with embedded approach** for rapid prototyping
-3. **Use mock data** for initial testing
-4. **Implement one agent** at a time
+- **Start with PathRAG integration** in main Novel Movie project
+- **Use local testing** before server deployment
+- **Validate each component** before moving to next phase
 
 ### For Production:
-1. **Setup dedicated Ubuntu server** for CrewAI
-2. **Configure proper networking** and security
-3. **Implement comprehensive monitoring**
-4. **Plan for horizontal scaling**
+- **Separate CrewAI server repository** for clean deployment
+- **Ubuntu server with systemd service** for reliability
+- **Comprehensive monitoring** and logging
+- **Gradual rollout** from local to server-based agents
 
 ### Success Metrics:
 - **Story parsing accuracy**: >95% scene identification
