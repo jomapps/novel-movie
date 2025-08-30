@@ -117,6 +117,17 @@ export default function ProjectDetailPage() {
   const movieStyle = typeof project.movieStyle === 'object' ? project.movieStyle : null
   const series = typeof project.series === 'object' ? project.series : null
 
+  // Handle Section 2 fields (Core Story Elements)
+  const primaryGenres = Array.isArray(project.primaryGenres)
+    ? project.primaryGenres.filter((genre) => typeof genre === 'object' && genre !== null)
+    : []
+  const targetAudience = Array.isArray(project.targetAudience)
+    ? project.targetAudience.filter((audience) => typeof audience === 'object' && audience !== null)
+    : []
+  const tone = Array.isArray(project.tone)
+    ? project.tone.filter((t) => typeof t === 'object' && t !== null)
+    : []
+
   return (
     <DashboardLayout
       title={project.projectTitle || project.name}
@@ -157,6 +168,75 @@ export default function ProjectDetailPage() {
                 <div className="prose max-w-none text-gray-700">
                   {/* For now, display as plain text. In a real app, you'd render the rich text properly */}
                   <p>{project.longDescription}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Core Story Elements Section */}
+            {(primaryGenres.length > 0 ||
+              project.corePremise ||
+              targetAudience.length > 0 ||
+              tone.length > 0) && (
+              <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Core Story Elements</h2>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {primaryGenres.length > 0 && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500 mb-2">Primary Genres</dt>
+                      <dd className="flex flex-wrap gap-2">
+                        {primaryGenres.map((genre, index) => (
+                          <span
+                            key={genre.id || index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                          >
+                            {genre.name}
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
+
+                  {targetAudience.length > 0 && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500 mb-2">Target Audience</dt>
+                      <dd className="flex flex-wrap gap-2">
+                        {targetAudience.map((audience, index) => (
+                          <span
+                            key={audience.id || index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                          >
+                            {audience.name}
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
+
+                  {tone.length > 0 && (
+                    <div>
+                      <dt className="text-sm font-medium text-gray-500 mb-2">Tone & Mood</dt>
+                      <dd className="flex flex-wrap gap-2">
+                        {tone.map((t, index) => (
+                          <span
+                            key={t.id || index}
+                            className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                          >
+                            {t.name}
+                          </span>
+                        ))}
+                      </dd>
+                    </div>
+                  )}
+
+                  {project.corePremise && (
+                    <div className="md:col-span-2">
+                      <dt className="text-sm font-medium text-gray-500 mb-2">Core Premise</dt>
+                      <dd className="text-sm text-gray-900 bg-white p-4 rounded-md border">
+                        {project.corePremise}
+                      </dd>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
