@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button'
 import DashboardLayout from '@/components/layout/DashboardLayout'
 import ProjectsPagination from '@/components/projects/ProjectsPagination'
 import ConfirmDialog from '@/components/ui/ConfirmDialog'
+import ToastContainer, { useToast } from '@/components/ui/ToastContainer'
 import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
 interface ProjectsPageClientProps {
@@ -25,6 +26,7 @@ interface ProjectsPageClientProps {
 export default function ProjectsPageClient({ initialProjects }: ProjectsPageClientProps) {
   const router = useRouter()
   const { selectedProject, deselectProject } = useSelectedProject()
+  const { toasts, removeToast, success, error } = useToast()
   const [projects, setProjects] = useState(initialProjects)
   const [deleteDialog, setDeleteDialog] = useState<{
     isOpen: boolean
@@ -53,12 +55,13 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
 
     setIsDeleting(true)
     try {
-      const response = await fetch(`/api/projects/${deleteDialog.projectId}`, {
+      const response = await fetch(`/v1/projects/${deleteDialog.projectId}`, {
         method: 'DELETE',
       })
 
       if (!response.ok) {
-        throw new Error('Failed to delete project')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to delete project')
       }
 
       // Remove project from local state
@@ -75,11 +78,14 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
       // Close dialog
       setDeleteDialog({ isOpen: false, projectId: '', projectName: '' })
 
+      // Show success message
+      success('Project Deleted', `"${deleteDialog.projectName}" has been permanently deleted.`)
+
       // Refresh the page to get updated data
       router.refresh()
-    } catch (error) {
-      console.error('Error deleting project:', error)
-      // You could add a toast notification here
+    } catch (err) {
+      console.error('Error deleting project:', err)
+      error('Delete Failed', err instanceof Error ? err.message : 'Failed to delete project')
     } finally {
       setIsDeleting(false)
     }
@@ -133,6 +139,8 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
         confirmVariant="secondary"
         loading={isDeleting}
       />
+
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
     </>
   )
 }

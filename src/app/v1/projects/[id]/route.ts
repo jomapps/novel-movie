@@ -91,6 +91,36 @@ export async function DELETE(
       )
     }
 
+    // Find and delete related initial-concepts
+    const initialConcepts = await payload.find({
+      collection: 'initial-concepts',
+      where: {
+        project: { equals: id },
+      },
+    })
+
+    for (const concept of initialConcepts.docs) {
+      await payload.delete({
+        collection: 'initial-concepts',
+        id: concept.id,
+      })
+    }
+
+    // Find and delete related stories
+    const stories = await payload.find({
+      collection: 'stories',
+      where: {
+        project: { equals: id },
+      },
+    })
+
+    for (const story of stories.docs) {
+      await payload.delete({
+        collection: 'stories',
+        id: story.id,
+      })
+    }
+
     // Delete the project
     await payload.delete({
       collection: 'projects',
@@ -99,7 +129,12 @@ export async function DELETE(
 
     return NextResponse.json({
       success: true,
-      message: 'Project deleted successfully',
+      message: 'Project and all related data deleted successfully',
+      deletedItems: {
+        project: 1,
+        initialConcepts: initialConcepts.totalDocs,
+        stories: stories.totalDocs,
+      },
     })
   } catch (error) {
     console.error('Error deleting project:', error)

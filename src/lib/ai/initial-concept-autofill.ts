@@ -740,6 +740,8 @@ export async function generateAndUpdateFieldsIndividually(
         const updateData = buildUpdateData(fieldName, content)
 
         console.log(`💾 Updating record with field: ${fieldName}`)
+        console.log(`🔍 Update data:`, JSON.stringify(updateData, null, 2))
+
         await payload.update({
           collection: 'initial-concepts',
           id: recordId,
@@ -787,6 +789,18 @@ export async function generateAndUpdateFieldsIndividually(
  * Build update data object for a specific field path
  */
 function buildUpdateData(fieldPath: string, content: any): any {
+  // Handle simplified structure mapping for the 4-field initial concept
+  if (fieldPath === 'targetAudience') {
+    // Convert to simplified structure - direct array
+    return { targetAudience: content }
+  }
+
+  if (fieldPath === 'tone') {
+    // Convert to simplified structure - direct array
+    return { tone: content }
+  }
+
+  // Handle other fields with nested paths
   const keys = fieldPath.split('.')
   const updateData: any = {}
 
