@@ -13,7 +13,7 @@ import { Projects } from './collections/Projects'
 import { MovieFormats } from './collections/MovieFormats'
 import { MovieStyles } from './collections/MovieStyles'
 import { Series } from './collections/Series'
-import { InitialConcepts } from './collections/InitialConcepts'
+
 import { Stories } from './collections/Stories'
 import { FundamentalData } from './collections/FundamentalData'
 import { Genres } from './collections/Genres'
@@ -40,7 +40,7 @@ export default buildConfig({
     MovieFormats,
     MovieStyles,
     Series,
-    InitialConcepts,
+
     Stories,
     FundamentalData,
     Genres,

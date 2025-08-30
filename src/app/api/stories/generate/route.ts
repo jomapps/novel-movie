@@ -5,24 +5,21 @@ import config from '@payload-config'
 export async function POST(request: NextRequest) {
   try {
     const payload = await getPayload({ config })
-    const { projectId, initialConceptId } = await request.json()
+    const { projectId } = await request.json()
 
-    if (!projectId || !initialConceptId) {
-      return NextResponse.json(
-        { error: 'Project ID and Initial Concept ID are required' },
-        { status: 400 },
-      )
+    if (!projectId) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
     }
 
-    // Fetch the initial concept data
-    const initialConcept = await payload.findByID({
-      collection: 'initial-concepts',
-      id: initialConceptId,
+    // Fetch the project data
+    const project = await payload.findByID({
+      collection: 'projects',
+      id: projectId,
       depth: 2, // Include related data
     })
 
-    if (!initialConcept) {
-      return NextResponse.json({ error: 'Initial concept not found' }, { status: 404 })
+    if (!project) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
     // Check if story already exists for this project
@@ -40,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate initial story content using AI
-    const storyContent = await generateInitialStory(initialConcept)
+    const storyContent = await generateInitialStory(project)
 
     // Create the story record
     const story = await payload.create({
@@ -80,15 +77,14 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function generateInitialStory(initialConcept: any): Promise<string> {
+async function generateInitialStory(project: any): Promise<string> {
   // This is a placeholder for the actual AI story generation
   // In a real implementation, this would call your AI service (BAML, OpenAI, etc.)
 
-  const genres = initialConcept.primaryGenres?.map((g: any) => g.name || g).join(', ') || 'Unknown'
-  const premise = initialConcept.corePremise || 'A story waiting to be told'
-  const audience =
-    initialConcept.targetAudience?.map((d: any) => d.name || d).join(', ') || 'General audience'
-  const tones = initialConcept.tone?.map((t: any) => t.name || t).join(', ') || 'Balanced'
+  const genres = project.primaryGenres?.map((g: any) => g.name || g).join(', ') || 'Unknown'
+  const premise = project.corePremise || 'A story waiting to be told'
+  const audience = project.targetAudience || 'General audience'
+  const tones = 'Balanced' // Default tone since we removed tone fields
 
   // Generate a basic story structure
   const storyTemplate = `

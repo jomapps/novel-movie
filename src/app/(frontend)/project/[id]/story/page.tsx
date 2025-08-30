@@ -67,17 +67,16 @@ export default function StoryPage() {
     }
   }, [projectId])
 
-  // Check if initial concept has required data
-  const hasInitialConceptData = () => {
-    if (!initialConcept) return false
+  // Check if project has required data for story generation
+  const hasRequiredProjectData = () => {
+    if (!project) return false
 
-    // Check for essential 4 fields
-    const hasGenres = initialConcept.primaryGenres && initialConcept.primaryGenres.length > 0
-    const hasPremise = initialConcept.corePremise && initialConcept.corePremise.trim().length > 0
-    const hasAudience = initialConcept.targetAudience && initialConcept.targetAudience.length > 0
-    const hasTone = initialConcept.tone && initialConcept.tone.length > 0
+    // Check for essential fields in project
+    const hasGenres = project.primaryGenres && project.primaryGenres.length > 0
+    const hasPremise = project.corePremise && project.corePremise.trim().length > 0
+    const hasAudience = project.targetAudience && project.targetAudience.trim().length > 0
 
-    return hasGenres && hasPremise && hasAudience && hasTone
+    return hasGenres && hasPremise && hasAudience
   }
 
   if (loading) {
@@ -126,23 +125,23 @@ export default function StoryPage() {
     )
   }
 
-  // Show popup message if initial concept data is missing
-  if (!hasInitialConceptData()) {
+  // Show popup message if project data is missing
+  if (!hasRequiredProjectData()) {
     return (
       <DashboardLayout title="Story" subtitle={`Project: ${project.name}`} showSearch={false}>
         <div className="flex justify-center items-center h-64">
           <div className="max-w-md mx-auto text-center bg-yellow-50 border border-yellow-200 rounded-lg p-6">
             <AlertCircle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">Initial Concept Required</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">Project Data Required</h3>
             <p className="text-gray-600 mb-4">
-              Before you can view or generate stories, you need to complete the Initial Concept with
-              all 4 essential fields: genres, premise, target audience, and tone.
+              Before you can view or generate stories, you need to complete the project with all
+              essential fields: genres, premise, and target audience.
             </p>
             <a
-              href={`/project/${projectId}/initial-concept`}
+              href={`/projects`}
               className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
-              Complete Initial Concept
+              Edit Project
             </a>
           </div>
         </div>

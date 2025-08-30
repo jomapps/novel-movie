@@ -201,14 +201,7 @@ export const Projects: CollectionConfig = {
           label: 'Draft',
           value: 'draft',
         },
-        {
-          label: 'Concept Created',
-          value: 'concept-created',
-        },
-        {
-          label: 'Ready for Story Generation',
-          value: 'ready-for-story-generation',
-        },
+
         {
           label: 'Story In Progress',
           value: 'story-in-progress',
@@ -369,36 +362,6 @@ export const Projects: CollectionConfig = {
     },
     // Workflow Relationships
     {
-      name: 'initialConcept',
-      type: 'relationship',
-      relationTo: 'initial-concepts',
-      admin: {
-        description: 'Associated initial concept for this project',
-        readOnly: true,
-      },
-      hooks: {
-        beforeValidate: [
-          async ({ data, req }) => {
-            // Auto-populate the reverse relationship
-            if (data && req) {
-              const existingConcept = await req.payload.find({
-                collection: 'initial-concepts',
-                where: {
-                  project: { equals: data.id },
-                },
-                limit: 1,
-              })
-
-              if (existingConcept.totalDocs > 0) {
-                return existingConcept.docs[0].id
-              }
-            }
-            return data?.initialConcept
-          },
-        ],
-      },
-    },
-    {
       name: 'story',
       type: 'relationship',
       relationTo: 'stories',
@@ -441,7 +404,7 @@ export const Projects: CollectionConfig = {
           defaultValue: 'project-setup',
           options: [
             { label: 'Project Setup', value: 'project-setup' },
-            { label: 'Initial Concept', value: 'initial-concept' },
+
             { label: 'Story Generation', value: 'story-generation' },
             { label: 'Character Development', value: 'character-development' },
             { label: 'Scene Planning', value: 'scene-planning' },
