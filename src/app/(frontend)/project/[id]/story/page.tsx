@@ -7,6 +7,7 @@ import DashboardLayout from '@/components/layout/DashboardLayout'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import StoryStatusSidebar from '@/components/story/StoryStatusSidebar'
 import StoryContent from '@/components/story/StoryContent'
+import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 import { AlertCircle } from 'lucide-react'
 
 export default function StoryPage() {
@@ -17,6 +18,7 @@ export default function StoryPage() {
   const [story, setStory] = useState<Story | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { selectProject } = useSelectedProject()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +34,8 @@ export default function StoryPage() {
         const projectResult = await projectResponse.json()
         const projectData = projectResult.data || projectResult.doc || projectResult
         setProject(projectData)
+        // Set the project as selected in the context
+        selectProject(projectData)
 
         // Fetch story if it exists
         const storyResponse = await fetch(`/api/stories?where[project][equals]=${projectId}`)
@@ -191,22 +195,16 @@ export default function StoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Story Status Sidebar */}
-      <StoryStatusSidebar project={project} story={story} onStoryUpdate={setStory} />
+    <DashboardLayout title="Story" subtitle={`Project: ${project.name}`} showSearch={false}>
+      <div className="flex">
+        {/* Story Status Sidebar */}
+        <StoryStatusSidebar project={project} story={story} onStoryUpdate={setStory} />
 
-      {/* Main Content */}
-      <div className="ml-64">
-        {/* Header */}
-        <div className="bg-white shadow-sm border-b border-gray-200">
-          <div className="px-6 py-4">
-            <h1 className="text-2xl font-bold text-gray-900">Story</h1>
-            <p className="text-gray-600">{`Project: ${project.name}`}</p>
-          </div>
+        {/* Main Content */}
+        <div className="ml-64 flex-1">
+          <StoryContent project={project} story={story} onStoryUpdate={setStory} />
         </div>
-
-        <StoryContent project={project} story={story} onStoryUpdate={setStory} />
       </div>
-    </div>
+    </DashboardLayout>
   )
 }

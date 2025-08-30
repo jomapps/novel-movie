@@ -56,6 +56,16 @@ export default function DashboardHeader({
               >
                 Projects
               </Link>
+
+              {/* Story menu item - only visible when project is selected */}
+              {selectedProject && (
+                <Link
+                  href={`/project/${selectedProject.id}/story`}
+                  className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
+                >
+                  Story
+                </Link>
+              )}
             </nav>
           </div>
 
