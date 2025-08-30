@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { ChevronDown, ChevronRight, BarChart3, BookOpen, Sparkles, RefreshCw } from 'lucide-react'
-import { Project, InitialConcept, Story } from '@/payload-types'
+import { Project, Story } from '@/payload-types'
 import Button from '@/components/ui/Button'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 
@@ -55,38 +55,30 @@ function CollapsibleSection({
 
 interface StoryContentProps {
   project: Project
-  initialConcept: InitialConcept | null
   story: Story | null
   onStoryUpdate: (story: Story) => void
 }
 
-export default function StoryContent({
-  project,
-  initialConcept,
-  story,
-  onStoryUpdate,
-}: StoryContentProps) {
+export default function StoryContent({ project, story, onStoryUpdate }: StoryContentProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isEnhancing, setIsEnhancing] = useState(false)
 
   const handleGenerateStory = async () => {
-    if (!initialConcept) return
-
     setIsGenerating(true)
     try {
-      const response = await fetch('/api/stories/generate', {
+      const response = await fetch('/v1/stories/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           projectId: project.id,
-          initialConceptId: initialConcept.id,
         }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to generate story')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to generate story')
       }
 
       const newStory = await response.json()
@@ -133,8 +125,9 @@ export default function StoryContent({
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-900 mb-4">No Story Generated Yet</h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto">
-              Generate your first story based on the initial concept. The AI will create a complete
-              narrative that you can then enhance through multiple iterations.
+              Generate your first story based on your project data. The AI will create a complete
+              narrative using your genres, premise, target audience, and other project details that
+              you can then enhance through multiple iterations.
             </p>
             <Button
               onClick={handleGenerateStory}

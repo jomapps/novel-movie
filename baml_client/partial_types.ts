@@ -20,7 +20,7 @@ $ pnpm add @boundaryml/baml
 
 import type { Image, Audio, Pdf, Video } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
-import type {  CharacterArchetypesResponse,  ContentGuidelinesResponse,  PacingResponse,  ProjectFieldsResponse,  QualityAssessment,  ReferenceResponse,  SettingResponse,  ThematicResponse,  VisualStyleResponse } from "./types"
+import type {  InitialStoryResponse,  ProjectFieldsResponse,  QualityMetrics } from "./types"
 import type * as types from "./types"
 
 /******************************************************************************
@@ -36,46 +36,26 @@ export interface StreamState<T> {
 }
 
 export namespace partial_types {
-    export interface CharacterArchetypesResponse {
-      protagonistType?: string | null
-      supportingRoles?: string | null
-      relationshipDynamics?: string | null
-    }
-    export interface ContentGuidelinesResponse {
-      contentRestrictions?: string | null
-      culturalSensitivities?: string | null
-      educationalValue?: string | null
-    }
-    export interface PacingResponse {
-      narrativeStructure?: string | null
-      pacingStyle?: string | null
-      climaxIntensity?: string | null
+    export interface InitialStoryResponse {
+      storyContent?: string | null
+      qualityMetrics?: QualityMetrics | null
+      generationNotes?: string | null
     }
     export interface ProjectFieldsResponse {
       projectTitle?: string | null
       shortDescription?: string | null
       longDescription?: string | null
     }
-    export interface QualityAssessment {
-      qualityScore?: number | null
-      recommendations?: string | null
-    }
-    export interface ReferenceResponse {
-      visualReferences?: string | null
-      narrativeReferences?: string | null
-    }
-    export interface SettingResponse {
-      timePeriod?: string | null
-      geographicSetting?: string | null
-      socialContext?: string | null
-      scale?: string | null
-    }
-    export interface ThematicResponse {
-      moralQuestions?: string | null
-      messageTakeaway?: string | null
-    }
-    export interface VisualStyleResponse {
-      symbolicColors?: string | null
-      lightingPreferences?: string | null
+    export interface QualityMetrics {
+      overallQuality?: number | null
+      structureScore?: number | null
+      characterDepth?: number | null
+      coherenceScore?: number | null
+      conflictTension?: number | null
+      dialogueQuality?: number | null
+      genreAlignment?: number | null
+      audienceEngagement?: number | null
+      visualStorytelling?: number | null
+      productionReadiness?: number | null
     }
 }

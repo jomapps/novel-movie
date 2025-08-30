@@ -47,24 +47,10 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
-export interface CharacterArchetypesResponse {
-  protagonistType?: string | null
-  supportingRoles?: string | null
-  relationshipDynamics?: string | null
-  
-}
-
-export interface ContentGuidelinesResponse {
-  contentRestrictions?: string | null
-  culturalSensitivities?: string | null
-  educationalValue?: string | null
-  
-}
-
-export interface PacingResponse {
-  narrativeStructure?: string | null
-  pacingStyle?: string | null
-  climaxIntensity?: string | null
+export interface InitialStoryResponse {
+  storyContent: string
+  qualityMetrics: QualityMetrics
+  generationNotes: string
   
 }
 
@@ -75,34 +61,16 @@ export interface ProjectFieldsResponse {
   
 }
 
-export interface QualityAssessment {
-  qualityScore: number
-  recommendations: string
-  
-}
-
-export interface ReferenceResponse {
-  visualReferences?: string | null
-  narrativeReferences?: string | null
-  
-}
-
-export interface SettingResponse {
-  timePeriod?: string | null
-  geographicSetting?: string | null
-  socialContext?: string | null
-  scale?: string | null
-  
-}
-
-export interface ThematicResponse {
-  moralQuestions?: string | null
-  messageTakeaway?: string | null
-  
-}
-
-export interface VisualStyleResponse {
-  symbolicColors?: string | null
-  lightingPreferences?: string | null
+export interface QualityMetrics {
+  overallQuality: number
+  structureScore: number
+  characterDepth: number
+  coherenceScore: number
+  conflictTension: number
+  dialogueQuality: number
+  genreAlignment: number
+  audienceEngagement: number
+  visualStorytelling: number
+  productionReadiness: number
   
 }

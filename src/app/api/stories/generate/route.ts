@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import {
+  generateInitialStoryWithBAML,
+  extractProjectStoryData,
+  validateProjectForStoryGeneration,
+  generateFallbackStory,
+} from '@/lib/ai/story-generation'
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +28,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
+    // Validate project has minimum required data for story generation
+    const validation = validateProjectForStoryGeneration(project)
+    if (!validation.isValid) {
+      return NextResponse.json(
+        {
+          error: 'Project missing required fields for story generation',
+          missingFields: validation.missingFields,
+        },
+        { status: 400 },
+      )
+    }
+
     // Check if story already exists for this project
     const existingStory = await payload.find({
       collection: 'stories',
@@ -36,37 +54,61 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(existingStory.docs[0], { status: 200 })
     }
 
-    // Generate initial story content using AI
-    const storyContent = await generateInitialStory(project)
+    // Generate initial story content using BAML
+    const projectStoryData = extractProjectStoryData(project)
+    let storyResult
 
-    // Create the story record
+    try {
+      storyResult = await generateInitialStoryWithBAML(projectStoryData)
+    } catch (error) {
+      console.warn('BAML story generation failed, using fallback:', error)
+      storyResult = generateFallbackStory(projectStoryData)
+    }
+
+    // Create the story record with BAML-generated content and metrics
     const story = await payload.create({
       collection: 'stories',
       data: {
         project: projectId,
-        projectName: initialConcept.project?.name || 'Unknown Project',
-        currentContent: storyContent,
+        projectName: project.name || 'Unknown Project',
+        currentContent: storyResult.storyContent,
         currentStep: 3, // Initial generation is step 3
         status: 'in-progress',
-        qualityMetrics: {
-          overallQuality: 6, // Starting quality score
-          structureScore: 6,
-          characterDepth: 5,
-          coherenceScore: 7,
-          conflictTension: 5,
-          dialogueQuality: 5,
-          genreAlignment: 7,
-          audienceEngagement: 5,
-          visualStorytelling: 4,
-          productionReadiness: 3,
-        },
+        qualityMetrics: storyResult.qualityMetrics,
         generationParameters: {
-          model: 'gpt-4',
+          model: 'baml-openrouter-advanced',
           temperature: 0.8,
-          maxTokens: 2000,
-          prompt: 'initial-story-generation',
+          maxTokens: 4000,
+          prompt: 'initial-story-generation-comprehensive',
         },
-        enhancementHistory: [],
+        enhancementHistory: [
+          {
+            stepNumber: 3,
+            stepName: 'initial-generation',
+            startTime: new Date(),
+            endTime: new Date(),
+            processingTime: 0,
+            contentBefore: '',
+            contentAfter: storyResult.storyContent,
+            qualityBefore: {
+              overallQuality: 0,
+              structureScore: 0,
+              characterDepth: 0,
+              coherenceScore: 0,
+              conflictTension: 0,
+              dialogueQuality: 0,
+              genreAlignment: 0,
+              audienceEngagement: 0,
+              visualStorytelling: 0,
+              productionReadiness: 0,
+            },
+            qualityAfter: storyResult.qualityMetrics,
+            improvementsMade: [
+              { improvement: 'Initial story generation using comprehensive project data' },
+              { improvement: storyResult.generationNotes || 'Generated complete story structure' },
+            ],
+          },
+        ],
       },
     })
 
@@ -75,49 +117,4 @@ export async function POST(request: NextRequest) {
     console.error('Error generating story:', error)
     return NextResponse.json({ error: 'Failed to generate story' }, { status: 500 })
   }
-}
-
-async function generateInitialStory(project: any): Promise<string> {
-  // This is a placeholder for the actual AI story generation
-  // In a real implementation, this would call your AI service (BAML, OpenAI, etc.)
-
-  const genres = project.primaryGenres?.map((g: any) => g.name || g).join(', ') || 'Unknown'
-  const premise = project.corePremise || 'A story waiting to be told'
-  const audience = project.targetAudience || 'General audience'
-  const tones = 'Balanced' // Default tone since we removed tone fields
-
-  // Generate a basic story structure
-  const storyTemplate = `
-**Genre:** ${genres}
-**Tone:** ${tones}
-**Target Audience:** ${audience}
-
-**STORY OUTLINE:**
-
-**Act I - Setup**
-${premise}
-
-Our protagonist finds themselves in a world where the ordinary rules no longer apply. The initial conflict emerges from their desire to maintain normalcy while being thrust into extraordinary circumstances.
-
-**Act II - Confrontation**
-As the stakes rise, our protagonist must confront not only external challenges but also internal doubts and fears. The central conflict intensifies, forcing difficult choices that will define their character.
-
-**Act III - Resolution**
-Through courage, growth, and perhaps unexpected allies, our protagonist faces the final challenge. The resolution brings not just victory, but transformation - both for the character and their world.
-
-**CHARACTER ARCS:**
-- Protagonist: Begins reluctant, grows into a confident leader
-- Supporting characters: Each represents different aspects of the central theme
-- Antagonist: Embodies the opposite of what the protagonist must become
-
-**VISUAL ELEMENTS:**
-The story unfolds through carefully crafted scenes that balance dialogue with action, ensuring each moment serves both character development and plot advancement.
-
-**THEMATIC RESONANCE:**
-This narrative explores themes of growth, courage, and the power of choice, delivering a message that resonates with the ${audience} audience while maintaining the ${tones} tone throughout.
-
-*This is an initial story draft that will be enhanced through multiple iterations to improve character depth, dialogue quality, visual storytelling, and overall narrative coherence.*
-  `.trim()
-
-  return storyTemplate
 }

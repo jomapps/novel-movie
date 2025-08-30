@@ -46,9 +46,9 @@ The platform uses project-scoped routing for all workflow operations:
 
 ### Initial Concept System
 
-The Initial Concept step transforms basic project information into a comprehensive creative blueprint with:
+The project creation process includes comprehensive story development fields:
 
-- **12 Core Fields**: Genres, premise, audience, tone, visual style, references, characters, themes, setting, pacing, content guidelines, and production considerations
+- **Core Story Elements**: Genres, premise, target audience, tone, and visual style
 - **Professional Standards**: Industry terminology with accessible descriptions
 - **AI Integration**: Auto-population with user refinement capabilities
 - **Lookup Collections**: 8+ supporting collections with 100+ professional options

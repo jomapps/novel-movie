@@ -3,8 +3,8 @@
 ## Phase 1: Database and Backend Foundation (Week 1)
 
 ### Step 1.1: Update Collections ✅ COMPLETED
-- [x] Updated Projects collection with workflow status tracking
-- [x] Added reverse relationship to InitialConcepts
+- [x] Updated Projects collection with comprehensive story fields
+- [x] Added workflow status tracking
 - [x] Added workflow step validation and progression tracking
 
 ### Step 1.2: Generate TypeScript Types
@@ -47,9 +47,8 @@ export async function GET(
 }
 ```
 
-2. **`src/app/api/projects/[projectId]/initial-concept/route.ts`**
-3. **`src/app/api/projects/[projectId]/workflow-status/route.ts`**
-4. **`src/app/api/projects/[projectId]/progress/route.ts`**
+2. **`src/app/api/projects/[projectId]/workflow-status/route.ts`**
+3. **`src/app/api/projects/[projectId]/progress/route.ts`**
 
 ### Step 1.4: Create Configuration API Routes
 
@@ -314,20 +313,20 @@ export function WorkflowNavigation() {
 import { InitialConceptForm } from '@/components/workflow/InitialConceptForm'
 import { ConceptNavigation } from '@/components/workflow/ConceptNavigation'
 
-export default function InitialConceptPage({
+export default function StoryPage({
   params,
 }: {
   params: { projectId: string }
 }) {
   return (
-    <div className="initial-concept-page">
+    <div className="story-page">
       <div className="workflow-header">
-        <h1>Initial Concept Development</h1>
-        <p>Create a comprehensive creative blueprint for your project</p>
+        <h1>Story Development</h1>
+        <p>Generate and enhance your story using AI</p>
       </div>
-      
-      <InitialConceptForm projectId={params.projectId} />
-      <ConceptNavigation />
+
+      <StoryContent projectId={params.projectId} />
+      <StoryNavigation />
     </div>
   )
 }

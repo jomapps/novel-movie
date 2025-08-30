@@ -1,7 +1,7 @@
 'use client'
 
 import { Check, X, Loader2, BookOpen, Users, Palette, Target, Lightbulb, Film } from 'lucide-react'
-import { Project, InitialConcept, Story } from '@/payload-types'
+import { Project, Story } from '@/payload-types'
 
 interface StoryStatusItem {
   id: string
@@ -16,14 +16,12 @@ interface StoryStatusItem {
 
 interface StoryStatusSidebarProps {
   project: Project
-  initialConcept: InitialConcept | null
   story: Story | null
   onStoryUpdate: (story: Story) => void
 }
 
 export default function StoryStatusSidebar({
   project,
-  initialConcept,
   story,
   onStoryUpdate,
 }: StoryStatusSidebarProps) {
@@ -31,17 +29,23 @@ export default function StoryStatusSidebar({
   const getStatusItems = (): StoryStatusItem[] => {
     const items: StoryStatusItem[] = []
 
-    // Initial Concept Status
+    // Project Setup Status
+    const hasRequiredFields = project.name && project.movieFormat && project.movieStyle
+    const hasOptionalFields =
+      project.primaryGenres?.length > 0 && project.corePremise && project.targetAudience?.length > 0
+
     items.push({
-      id: 'initial-concept',
-      label: 'Initial Concept',
-      status: initialConcept ? 'completed' : 'not-started',
+      id: 'project-setup',
+      label: 'Project Setup',
+      status: hasRequiredFields ? (hasOptionalFields ? 'completed' : 'in-progress') : 'not-started',
       icon: <Lightbulb className="w-4 h-4" />,
-      metrics: initialConcept
-        ? {
-            details: `Status: ${initialConcept.status || 'draft'}`,
-          }
-        : undefined,
+      metrics: {
+        details: hasOptionalFields
+          ? 'All fields complete'
+          : hasRequiredFields
+            ? 'Basic setup complete'
+            : 'Setup required',
+      },
     })
 
     // Story Generation Status

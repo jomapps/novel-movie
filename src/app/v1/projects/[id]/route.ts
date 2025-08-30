@@ -91,18 +91,18 @@ export async function DELETE(
       )
     }
 
-    // Find and delete related initial-concepts
-    const initialConcepts = await payload.find({
-      collection: 'initial-concepts',
+    // Find and delete related fundamental data
+    const fundamentalData = await payload.find({
+      collection: 'fundamental-data',
       where: {
         project: { equals: id },
       },
     })
 
-    for (const concept of initialConcepts.docs) {
+    for (const data of fundamentalData.docs) {
       await payload.delete({
-        collection: 'initial-concepts',
-        id: concept.id,
+        collection: 'fundamental-data',
+        id: data.id,
       })
     }
 

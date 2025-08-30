@@ -22,7 +22,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, Pdf, Vi
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {CharacterArchetypesResponse, ContentGuidelinesResponse, PacingResponse, ProjectFieldsResponse, QualityAssessment, ReferenceResponse, SettingResponse, ThematicResponse, VisualStyleResponse} from "./types"
+import type {InitialStoryResponse, ProjectFieldsResponse, QualityMetrics} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -89,34 +89,6 @@ export class BamlSyncClient {
   }
 
   
-  AssessProjectQuality(
-      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],corePremise: string,targetAudience: string,toneAndMood: string,visualStyle: string,themes: string,characterArchetypes: string,settingElements: string,pacingElements: string,references: string,
-      __baml_options__?: BamlCallOptions
-  ): types.QualityAssessment {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "AssessProjectQuality",
-        {
-          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"toneAndMood": toneAndMood,"visualStyle": visualStyle,"themes": themes,"characterArchetypes": characterArchetypes,"settingElements": settingElements,"pacingElements": pacingElements,"references": references
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.QualityAssessment
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
   GenerateAllProjectFields(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,primaryGenres?: string[] | null,corePremise?: string | null,targetAudience?: string[] | null,tone?: string[] | null,
       __baml_options__?: BamlCallOptions
@@ -145,10 +117,10 @@ export class BamlSyncClient {
     }
   }
   
-  GenerateCharacterArchetypes(
-      projectName: string,primaryGenres: string[],corePremise: string,themes: string[],targetAudience: string,existingProtagonistType?: string | null,existingSupportingRoles?: string | null,existingRelationshipDynamics?: string | null,
+  GenerateInitialStory(
+      projectName: string,projectTitle?: string | null,shortDescription?: string | null,longDescription?: string | null,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],corePremise: string,targetAudience: string[],tone: string[],
       __baml_options__?: BamlCallOptions
-  ): types.CharacterArchetypesResponse {
+  ): types.InitialStoryResponse {
     try {
       const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
       const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
@@ -157,9 +129,9 @@ export class BamlSyncClient {
         Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
       );
       const raw = this.runtime.callFunctionSync(
-        "GenerateCharacterArchetypes",
+        "GenerateInitialStory",
         {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"themes": themes,"targetAudience": targetAudience,"existingProtagonistType": existingProtagonistType?? null,"existingSupportingRoles": existingSupportingRoles?? null,"existingRelationshipDynamics": existingRelationshipDynamics?? null
+          "projectName": projectName,"projectTitle": projectTitle?? null,"shortDescription": shortDescription?? null,"longDescription": longDescription?? null,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"tone": tone
         },
         this.ctxManager.cloneContext(),
         options.tb?.__tb(),
@@ -167,91 +139,7 @@ export class BamlSyncClient {
         collector,
         env,
       )
-      return raw.parsed(false) as types.CharacterArchetypesResponse
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateContentGuidelines(
-      projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string,themes: string[],existingContentRestrictions?: string | null,existingCulturalSensitivities?: string | null,existingEducationalValue?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.ContentGuidelinesResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateContentGuidelines",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"themes": themes,"existingContentRestrictions": existingContentRestrictions?? null,"existingCulturalSensitivities": existingCulturalSensitivities?? null,"existingEducationalValue": existingEducationalValue?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.ContentGuidelinesResponse
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateCorePremise(
-      projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,primaryGenres: string[],existingPremise?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): string {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateCorePremise",
-        {
-          "projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"series": series?? null,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"existingPremise": existingPremise?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as string
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateEmotionalArc(
-      projectName: string,primaryGenres: string[],corePremise: string,tones: string[],moods: string[],existingEmotionalArc?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): string {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateEmotionalArc",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"tones": tones,"moods": moods,"existingEmotionalArc": existingEmotionalArc?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as string
+      return raw.parsed(false) as types.InitialStoryResponse
     } catch (error: any) {
       throw toBamlError(error);
     }
@@ -280,34 +168,6 @@ export class BamlSyncClient {
         env,
       )
       return raw.parsed(false) as string
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GeneratePacingElements(
-      projectName: string,primaryGenres: string[],corePremise: string,durationUnit: number,movieFormat: string,themes: string[],existingNarrativeStructure?: string | null,existingPacingStyle?: string | null,existingClimaxIntensity?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.PacingResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GeneratePacingElements",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"durationUnit": durationUnit,"movieFormat": movieFormat,"themes": themes,"existingNarrativeStructure": existingNarrativeStructure?? null,"existingPacingStyle": existingPacingStyle?? null,"existingClimaxIntensity": existingClimaxIntensity?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.PacingResponse
     } catch (error: any) {
       throw toBamlError(error);
     }
@@ -369,62 +229,6 @@ export class BamlSyncClient {
     }
   }
   
-  GenerateReferenceMaterials(
-      projectName: string,primaryGenres: string[],corePremise: string,visualStyle: string,themes: string[],existingVisualReferences?: string | null,existingNarrativeReferences?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.ReferenceResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateReferenceMaterials",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"visualStyle": visualStyle,"themes": themes,"existingVisualReferences": existingVisualReferences?? null,"existingNarrativeReferences": existingNarrativeReferences?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.ReferenceResponse
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateSettingElements(
-      projectName: string,primaryGenres: string[],corePremise: string,themes: string[],visualStyle: string,existingTimePeriod?: string | null,existingGeographicSetting?: string | null,existingSocialContext?: string | null,existingScale?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.SettingResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateSettingElements",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"themes": themes,"visualStyle": visualStyle,"existingTimePeriod": existingTimePeriod?? null,"existingGeographicSetting": existingGeographicSetting?? null,"existingSocialContext": existingSocialContext?? null,"existingScale": existingScale?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.SettingResponse
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
   GenerateShortDescription(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,projectTitle?: string | null,existingShortDescription?: string | null,existingLongDescription?: string | null,
       __baml_options__?: BamlCallOptions
@@ -481,6 +285,34 @@ export class BamlSyncClient {
     }
   }
   
+  GenerateStoryWithContext(
+      projectData: string,additionalContext?: string | null,focusAreas?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): types.InitialStoryResponse {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.callFunctionSync(
+        "GenerateStoryWithContext",
+        {
+          "projectData": projectData,"additionalContext": additionalContext?? null,"focusAreas": focusAreas?? null
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.InitialStoryResponse
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
   GenerateTargetAudience(
       projectName: string,primaryGenres: string[],corePremise: string,movieFormat: string,durationUnit: number,existingAudience?: string[] | null,
       __baml_options__?: BamlCallOptions
@@ -509,90 +341,6 @@ export class BamlSyncClient {
     }
   }
   
-  GenerateTargetAudienceCustomDescription(
-      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],psychographics: string,existingCustomDescription?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): string {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateTargetAudienceCustomDescription",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"psychographics": psychographics,"existingCustomDescription": existingCustomDescription?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as string
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateTargetAudiencePsychographics(
-      projectName: string,primaryGenres: string[],corePremise: string,demographics: string[],existingPsychographics?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): string {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateTargetAudiencePsychographics",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"demographics": demographics,"existingPsychographics": existingPsychographics?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as string
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateThematicElements(
-      projectName: string,primaryGenres: string[],corePremise: string,centralThemes: string[],existingMoralQuestions?: string | null,existingMessageTakeaway?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.ThematicResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateThematicElements",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"centralThemes": centralThemes,"existingMoralQuestions": existingMoralQuestions?? null,"existingMessageTakeaway": existingMessageTakeaway?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.ThematicResponse
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
   GenerateTone(
       projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string[],movieStyle: string,existingTone?: string[] | null,
       __baml_options__?: BamlCallOptions
@@ -616,34 +364,6 @@ export class BamlSyncClient {
         env,
       )
       return raw.parsed(false) as string[]
-    } catch (error: any) {
-      throw toBamlError(error);
-    }
-  }
-  
-  GenerateVisualStyleElements(
-      projectName: string,primaryGenres: string[],corePremise: string,cinematographyStyle: string,colorDominance: string,saturation: string,cameraMovement: string,existingSymbolicColors?: string | null,existingLightingPreferences?: string | null,
-      __baml_options__?: BamlCallOptions
-  ): types.VisualStyleResponse {
-    try {
-      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
-      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
-      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
-      const env: Record<string, string> = Object.fromEntries(
-        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
-      );
-      const raw = this.runtime.callFunctionSync(
-        "GenerateVisualStyleElements",
-        {
-          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"cinematographyStyle": cinematographyStyle,"colorDominance": colorDominance,"saturation": saturation,"cameraMovement": cameraMovement,"existingSymbolicColors": existingSymbolicColors?? null,"existingLightingPreferences": existingLightingPreferences?? null
-        },
-        this.ctxManager.cloneContext(),
-        options.tb?.__tb(),
-        options.clientRegistry,
-        collector,
-        env,
-      )
-      return raw.parsed(false) as types.VisualStyleResponse
     } catch (error: any) {
       throw toBamlError(error);
     }

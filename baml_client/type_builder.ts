@@ -27,30 +27,18 @@ export { FieldType, EnumBuilder, ClassBuilder }
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
-    CharacterArchetypesResponse: ClassViewer<'CharacterArchetypesResponse', "protagonistType" | "supportingRoles" | "relationshipDynamics">;
-    
-    ContentGuidelinesResponse: ClassViewer<'ContentGuidelinesResponse', "contentRestrictions" | "culturalSensitivities" | "educationalValue">;
-    
-    PacingResponse: ClassViewer<'PacingResponse', "narrativeStructure" | "pacingStyle" | "climaxIntensity">;
+    InitialStoryResponse: ClassViewer<'InitialStoryResponse', "storyContent" | "qualityMetrics" | "generationNotes">;
     
     ProjectFieldsResponse: ClassViewer<'ProjectFieldsResponse', "projectTitle" | "shortDescription" | "longDescription">;
     
-    QualityAssessment: ClassViewer<'QualityAssessment', "qualityScore" | "recommendations">;
-    
-    ReferenceResponse: ClassViewer<'ReferenceResponse', "visualReferences" | "narrativeReferences">;
-    
-    SettingResponse: ClassViewer<'SettingResponse', "timePeriod" | "geographicSetting" | "socialContext" | "scale">;
-    
-    ThematicResponse: ClassViewer<'ThematicResponse', "moralQuestions" | "messageTakeaway">;
-    
-    VisualStyleResponse: ClassViewer<'VisualStyleResponse', "symbolicColors" | "lightingPreferences">;
+    QualityMetrics: ClassViewer<'QualityMetrics', "overallQuality" | "structureScore" | "characterDepth" | "coherenceScore" | "conflictTension" | "dialogueQuality" | "genreAlignment" | "audienceEngagement" | "visualStorytelling" | "productionReadiness">;
     
     
 
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "CharacterArchetypesResponse","ContentGuidelinesResponse","PacingResponse","ProjectFieldsResponse","QualityAssessment","ReferenceResponse","SettingResponse","ThematicResponse","VisualStyleResponse",
+            "InitialStoryResponse","ProjectFieldsResponse","QualityMetrics",
           ]),
           enums: new Set([
             
@@ -58,40 +46,16 @@ export default class TypeBuilder {
           runtime: DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME
         });
         
-        this.CharacterArchetypesResponse = this.tb.classViewer("CharacterArchetypesResponse", [
-          "protagonistType","supportingRoles","relationshipDynamics",
-        ]);
-        
-        this.ContentGuidelinesResponse = this.tb.classViewer("ContentGuidelinesResponse", [
-          "contentRestrictions","culturalSensitivities","educationalValue",
-        ]);
-        
-        this.PacingResponse = this.tb.classViewer("PacingResponse", [
-          "narrativeStructure","pacingStyle","climaxIntensity",
+        this.InitialStoryResponse = this.tb.classViewer("InitialStoryResponse", [
+          "storyContent","qualityMetrics","generationNotes",
         ]);
         
         this.ProjectFieldsResponse = this.tb.classViewer("ProjectFieldsResponse", [
           "projectTitle","shortDescription","longDescription",
         ]);
         
-        this.QualityAssessment = this.tb.classViewer("QualityAssessment", [
-          "qualityScore","recommendations",
-        ]);
-        
-        this.ReferenceResponse = this.tb.classViewer("ReferenceResponse", [
-          "visualReferences","narrativeReferences",
-        ]);
-        
-        this.SettingResponse = this.tb.classViewer("SettingResponse", [
-          "timePeriod","geographicSetting","socialContext","scale",
-        ]);
-        
-        this.ThematicResponse = this.tb.classViewer("ThematicResponse", [
-          "moralQuestions","messageTakeaway",
-        ]);
-        
-        this.VisualStyleResponse = this.tb.classViewer("VisualStyleResponse", [
-          "symbolicColors","lightingPreferences",
+        this.QualityMetrics = this.tb.classViewer("QualityMetrics", [
+          "overallQuality","structureScore","characterDepth","coherenceScore","conflictTension","dialogueQuality","genreAlignment","audienceEngagement","visualStorytelling","productionReadiness",
         ]);
         
         
