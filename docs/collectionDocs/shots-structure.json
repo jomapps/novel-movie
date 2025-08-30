@@ -1,0 +1,182 @@
+{
+  "shot_id": {
+    "type": "string",
+    "description": "A unique identifier for this specific shot (e.g., a UUID). This is generated automatically by the screenwriting software or a pre-processing script to ensure every shot can be tracked individually.",
+    "source": "System Generated"
+  },
+  "sequence_number": {
+    "type": "integer",
+    "description": "The overall shot number in the entire film, providing a chronological reference. This helps in ordering and managing shots across the entire project.",
+    "source": "Screenplay Analysis (sequential numbering)"
+  },
+  "scene_number": {
+    "type": "integer",
+    "description": "Indicates which scene this shot belongs to. This is directly extracted from the screenplay's scene headings (e.g., SCENE 1, SCENE 2).",
+    "source": "Screenplay (Scene Heading)"
+  },
+  "shot_number_in_scene": {
+    "type": "integer",
+    "description": "The sequential number of the shot within its parent scene. This is determined by breaking down the scene's action and dialogue into individual shots.",
+    "source": "Screenplay Breakdown/Shot List Generation"
+  },
+  "estimated_duration_seconds": {
+    "type": "number",
+    "description": "The expected on-screen duration of the shot in seconds, respecting the soft limit of 5s and the hard limit of 7s. This is estimated by the screenwriter or director during the breakdown process.",
+    "source": "Screenwriter/Director's Discretion"
+  },
+  "narrative_layer": {
+    "description": "This object contains the core storytelling elements of the shot, derived directly from the screenplay's action lines and character descriptions.",
+    "source": "Screenplay (Action, Character Descriptions)",
+    "properties": {
+      "action_description": {
+        "type": "string",
+        "description": "A concise, present-tense description of the primary action occurring in the shot. What are the characters or objects doing? Example: 'Marcus slowly sits up on the medical bed, wincing in pain.'",
+        "source": "Screenplay (Action Lines)"
+      },
+      "character_performance": {
+        "type": "string",
+        "description": "Details on the characters' emotional state, expressions, and non-verbal cues. This guides the AI in generating nuanced character animations. Example: 'His face is a mask of confusion and fear. He squints, trying to focus on his surroundings.'",
+        "source": "Screenplay (Parentheticals, Action Lines)"
+      },
+      "shot_purpose": {
+        "type": "string",
+        "description": "The narrative reason for this shot's existence. What information or feeling is it intended to convey to the audience? Example: 'To establish Marcus's vulnerability and disorientation immediately after waking up.'",
+        "source": "Director's Notes/Scene Analysis"
+      }
+    }
+  },
+  "contextual_layer": {
+    "description": "This object provides the broader cinematic and thematic context, guiding the AI on the shot's overall 'feel' and style.",
+    "source": "Director's Vision/Genre Conventions",
+    "properties": {
+      "tone_and_mood": {
+        "type": "string",
+        "description": "Adjectives and phrases describing the emotional atmosphere of the shot. Example: 'Clinical, sterile, tense, isolating, mysterious.'",
+        "source": "Director's Notes/Screenplay Tone"
+      },
+      "genre_aesthetics": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Specifies the genre conventions to apply to the shot's visual style. Example: ['psychological thriller', 'medical horror', 'sci-fi noir'].",
+        "source": "Director's Vision/Genre"
+      },
+      "cinematic_references": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Specific films, directors, or art styles that serve as visual or tonal inspiration for the AI. Example: ['Lighting inspired by Blade Runner 2049', 'Camera movement similar to the opening of Shutter Island'].",
+        "source": "Director's Lookbook/Vision Board"
+      }
+    }
+  },
+  "technical_layer": {
+    "description": "Contains the technical specifications for the virtual camera, lighting, and sound.",
+    "source": "Director of Photography/Sound Designer's Input",
+    "properties": {
+      "camera": {
+        "type": "object",
+        "properties": {
+          "angle": {
+            "type": "string",
+            "description": "The type of camera shot (e.g., 'Wide Shot', 'Medium Close-Up', 'Point of View', 'Over the Shoulder').",
+            "source": "Shot List"
+          },
+          "movement": {
+            "type": "string",
+            "description": "Describes the camera's movement during the shot (e.g., 'Static', 'Slow Push-in', 'Handheld Jitter', 'Dolly Left').",
+            "source": "Shot List"
+          },
+          "lens": {
+            "type": "string",
+            "description": "Specifies the virtual lens characteristics to achieve a certain look (e.g., 'Wide-angle with lens distortion', '50mm prime', 'Telephoto with shallow depth of field').",
+            "source": "Director of Photography's Plan"
+          },
+          "focus": {
+            "type": "string",
+            "description": "Describes the focus point or any focus pulls. Example: 'Sharp focus on Marcus's eyes, background is soft', 'Rack focus from the syringe to his face.'",
+            "source": "Shot List"
+          }
+        }
+      },
+      "lighting": {
+        "type": "string",
+        "description": "A detailed description of the lighting setup and quality. Example: 'Harsh, top-down fluorescent light creating deep shadows under the eyes. A single, flickering blue light from a monitor provides fill.'",
+        "source": "Director of Photography's Plan"
+      },
+      "audio": {
+        "type": "object",
+        "properties": {
+          "dialogue": {
+            "type": "string",
+            "description": "The line of dialogue spoken within this shot. Kept short to fit the duration. Longer dialogues are broken into multiple shots.",
+            "source": "Screenplay (Dialogue)"
+          },
+          "sound_effects": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of key sound effects to be present in the shot. Example: ['faint EKG beep', 'hum of ventilation', 'creak of leather bed'].",
+            "source": "Screenplay/Sound Designer's Notes"
+          },
+          "music_cue": {
+            "type": "string",
+            "description": "Describes the musical score's tone or specific cue for this shot. Example: 'Low, unsettling ambient drone begins', 'A sudden, sharp orchestral stab.'",
+            "source": "Composer's Cue Sheet/Director's Notes"
+          }
+        }
+      }
+    }
+  },
+  "digital_assets": {
+    "description": "A comprehensive list of all unique digital assets required to render this shot. Each key maps to a specific asset in the digital libraries.",
+    "source": "Automated Script Analysis/Manual Tagging",
+    "properties": {
+      "characters": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of character asset keys. Example: ['char_marcus_v01']"
+      },
+      "animals": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of animal asset keys. Example: []"
+      },
+      "locations": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "The primary location set or environment key. Example: ['loc_medical_bay_v03']"
+      },
+      "objects": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of prop or object asset keys. Example: ['obj_medical_bed_v01', 'obj_iv_stand_v02', 'obj_heart_monitor_v01']"
+      },
+      "vehicles": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of vehicle asset keys. Example: []"
+      },
+      "clothes": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "List of clothing/wardrobe asset keys worn by characters in the shot. Example: ['cloth_marcus_medical_gown_v01']"
+      }
+    }
+  }
+}

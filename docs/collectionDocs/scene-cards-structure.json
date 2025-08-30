@@ -1,0 +1,34 @@
+{
+  "scene_id": "sc001",
+  "sequence_number": 1,
+  "setting": "INT. MEDICAL BAY - NIGHT",
+  "action_summary": "Marcus, a man in his 30s, wakes up disoriented on a medical bed in a sterile, futuristic room. He is alone. He tries to sit up, notices an IV in his arm, and calls out, but no one answers. He observes his surroundings with growing fear and confusion.",
+  "dialogue_script": [
+    {
+      "character": "Marcus",
+      "line": "Hello? Is anyone there?"
+    },
+    {
+      "character": "Marcus",
+      "line": "(whispering to himself) Where... where am I?"
+    }
+  ],
+  "characters_present": [
+    "char_marcus_v01"
+  ],
+  "narrative_purpose": "To establish the protagonist's isolation, vulnerability, and the mystery of his situation.",
+  "emotional_arc": "Starts with groggy disorientation, transitions to confusion, and ends with rising fear.",
+  "key_objects_and_props": [
+    "obj_medical_bed_v01",
+    "obj_iv_stand_v02",
+    "obj_heart_monitor_v01"
+  ],
+  "animals_present": [],
+  "vehicles_present": [],
+  "clothing_and_accessories": [
+    "cloth_marcus_medical_gown_v01"
+  ],
+  "locations_mentioned_in_scene": [
+    "loc_medical_bay_v03"
+  ]
+}
