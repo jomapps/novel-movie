@@ -1,0 +1,37 @@
+[Unit]
+Description=Novel Movie CrewAI Server
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=simple
+User=crewai
+Group=crewai
+WorkingDirectory=/opt/novel-movie-crewai-server
+Environment=PATH=/opt/novel-movie-crewai-server/venv/bin
+EnvironmentFile=/opt/novel-movie-crewai-server/.env
+ExecStart=/opt/novel-movie-crewai-server/venv/bin/python main.py
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=crewai-server
+
+# Security
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/novel-movie-crewai-server /var/log/crewai-server
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
