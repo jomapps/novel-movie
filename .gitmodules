@@ -1,0 +1,3 @@
+[submodule "novel-movie-crewai-server"]
+	path = novel-movie-crewai-server
+	url = https://github.com/jomapps/novel-movie-crewai-server.git

@@ -54,6 +54,3 @@ node_modules/
 
 # backups
 /backups
-
-# Separate CrewAI server repository
-/novel-movie-crewai-server
