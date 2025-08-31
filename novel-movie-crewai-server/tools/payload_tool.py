@@ -7,37 +7,37 @@ import json
 import logging
 from typing import Any, Dict, Optional
 
-from crewai_tools import BaseTool
+from crewai.tools import BaseTool
 from services.payload_service import PayloadService
 
 
 class PayloadTool(BaseTool):
     """
     Tool for interacting with Novel Movie PayloadCMS API.
-    
+
     This tool allows CrewAI agents to:
     - Get project data and configurations
     - Retrieve story content and metadata
     - Update project status and workflow state
     - Access user preferences and settings
     """
-    
+
     name: str = "novel_movie_data"
     description: str = """
     Access Novel Movie application data through PayloadCMS API.
-    
+
     Available actions:
     - get_project: Get project data and configuration
     - get_story: Get story content and metadata
     - update_status: Update project workflow status
     - get_user_preferences: Get user preferences and settings
     - save_results: Save crew execution results
-    
+
     Input format: JSON string with 'action' and relevant parameters.
     """
-    
-    def __init__(self):
-        super().__init__()
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.payload_service = PayloadService()
         self.logger = logging.getLogger(__name__)
     

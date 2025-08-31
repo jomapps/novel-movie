@@ -7,7 +7,7 @@ import json
 import logging
 from typing import Any, Dict, Optional
 
-from crewai_tools import BaseTool
+from crewai.tools import BaseTool
 from services.pathrag_service import PathRAGService
 
 
@@ -37,8 +37,8 @@ class PathRAGTool(BaseTool):
     Input format: JSON string with 'action', 'project_id', and relevant parameters.
     """
     
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.pathrag_service = PathRAGService()
         self.logger = logging.getLogger(__name__)
     

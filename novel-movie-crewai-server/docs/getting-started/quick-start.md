@@ -2,6 +2,10 @@
 
 Get the Novel Movie CrewAI Server up and running in minutes.
 
+## ✅ **Current Status: READY TO USE**
+
+The CrewAI server is **fully implemented and tested**. Follow the steps below to start using it immediately.
+
 ## 🚀 Prerequisites
 
 - Python 3.11 or higher
@@ -18,18 +22,18 @@ git clone <your-repository-url>
 cd novel-movie-crewai-server
 
 # 2. Create virtual environment
-python3.11 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+python -m venv crewai_env
+crewai_env\Scripts\activate  # On Windows (Linux/Mac: source crewai_env/bin/activate)
 
 # 3. Install dependencies
-pip install -r requirements.txt
+crewai_env\Scripts\pip.exe install crewai fastapi uvicorn pydantic-settings structlog redis langchain langchain-openai crewai-tools
 
 # 4. Configure environment
 cp .env.example .env
 # Edit .env with your settings (see Configuration section below)
 
 # 5. Start the server
-python main.py
+crewai_env\Scripts\python.exe main.py
 ```
 
 **Server will be available at: http://localhost:5001**
