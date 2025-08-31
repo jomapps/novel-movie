@@ -102,13 +102,7 @@ class PathRAGService:
                     raise Exception(f"Query failed: {response.status}")
         except Exception as e:
             self.logger.error(f"PathRAG query failed: {str(e)}")
-            # Return mock response for development
-            return {
-                "query": query,
-                "result": f"Mock response for query: {query}",
-                "params": params,
-                "message": "PathRAG service is in placeholder mode"
-            }
+            raise
     
     async def delete_entity(self, entity_name: str) -> Dict[str, Any]:
         """Delete an entity from the knowledge graph"""
