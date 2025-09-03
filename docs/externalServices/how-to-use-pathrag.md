@@ -6,7 +6,7 @@ This document provides comprehensive instructions on how to use the PathRAG API 
 
 The default API server runs on:
 ```
-http://movie.ft.tc:5000
+http://localhost:5000
 ```
 
 You can configure the host and port using environment variables:
@@ -25,7 +25,7 @@ You can configure the host and port using environment variables:
 
 **Example Request:**
 ```bash
-curl -X GET http://movie.ft.tc:5000/health
+curl -X GET http://localhost:5000/health
 ```
 
 **Example Response:**
@@ -48,7 +48,7 @@ curl -X GET http://movie.ft.tc:5000/health
 
 **Example Request:**
 ```bash
-curl -X GET http://movie.ft.tc:5000/status
+curl -X GET http://localhost:5000/status
 ```
 
 **Example Response:**
@@ -72,7 +72,7 @@ curl -X GET http://movie.ft.tc:5000/status
 
 **Example Request (Single Document):**
 ```bash
-curl -X POST http://movie.ft.tc:5000/insert \
+curl -X POST http://localhost:5000/insert \
   -H "Content-Type: application/json" \
   -d '{
     "documents": "PathRAG is a graph-based retrieval augmented generation system that uses ArangoDB for knowledge storage."
@@ -81,7 +81,7 @@ curl -X POST http://movie.ft.tc:5000/insert \
 
 **Example Request (Multiple Documents):**
 ```bash
-curl -X POST http://movie.ft.tc:5000/insert \
+curl -X POST http://localhost:5000/insert \
   -H "Content-Type: application/json" \
   -d '{
     "documents": [
@@ -123,7 +123,7 @@ curl -X POST http://movie.ft.tc:5000/insert \
 
 **Example Request (Basic Query):**
 ```bash
-curl -X POST http://movie.ft.tc:5000/query \
+curl -X POST http://localhost:5000/query \
   -H "Content-Type: application/json" \
   -d '{
     "query": "What is PathRAG and how does it work?"
@@ -132,7 +132,7 @@ curl -X POST http://movie.ft.tc:5000/query \
 
 **Example Request (With Parameters):**
 ```bash
-curl -X POST http://movie.ft.tc:5000/query \
+curl -X POST http://localhost:5000/query \
   -H "Content-Type: application/json" \
   -d '{
     "query": "Explain the architecture of PathRAG",
@@ -172,7 +172,7 @@ curl -X POST http://movie.ft.tc:5000/query \
 
 **Example Request:**
 ```bash
-curl -X POST http://movie.ft.tc:5000/insert_custom_kg \
+curl -X POST http://localhost:5000/insert_custom_kg \
   -H "Content-Type: application/json" \
   -d '{
     "custom_kg": {
@@ -213,7 +213,7 @@ curl -X POST http://movie.ft.tc:5000/insert_custom_kg \
 
 **Example Request:**
 ```bash
-curl -X DELETE http://movie.ft.tc:5000/delete_entity \
+curl -X DELETE http://localhost:5000/delete_entity \
   -H "Content-Type: application/json" \
   -d '{
     "entity_name": "PathRAG"
@@ -240,7 +240,7 @@ curl -X DELETE http://movie.ft.tc:5000/delete_entity \
 
 **Example Request:**
 ```bash
-curl -X GET http://movie.ft.tc:5000/config
+curl -X GET http://localhost:5000/config
 ```
 
 **Example Response:**
@@ -270,7 +270,7 @@ curl -X GET http://movie.ft.tc:5000/config
 
 **Example Request:**
 ```bash
-curl -X GET http://movie.ft.tc:5000/stats
+curl -X GET http://localhost:5000/stats
 ```
 
 **Example Response:**
@@ -380,7 +380,7 @@ import requests
 import json
 
 class PathRAGClient:
-    def __init__(self, base_url="http://movie.ft.tc:5000"):
+    def __init__(self, base_url="http://localhost:5000"):
         self.base_url = base_url
     
     def health_check(self):
