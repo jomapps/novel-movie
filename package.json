@@ -17,6 +17,8 @@
     "db:restore": "cross-env NODE_OPTIONS=--no-deprecation node scripts/db-restore.js",
     "test:services": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-all-services.js",
     "db:seed": "cross-env NODE_OPTIONS=--no-deprecation payload run src/scripts/seed.ts",
+    "db:seed-check": "cross-env NODE_OPTIONS=--no-deprecation node scripts/check-database-seed.js",
+    "debug:tone": "cross-env NODE_OPTIONS=--no-deprecation node scripts/debug-tone-validation.js",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test:quality-score": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-quality-score.js",
     "credit:check": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-credit-check.js",
