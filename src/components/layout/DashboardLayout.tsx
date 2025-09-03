@@ -37,12 +37,14 @@ export default function DashboardLayout({
   const isInitialConceptPage = pathname.includes('/initial-concept')
   // Check if we're on the Story page (it has its own sidebar)
   const isStoryPage = pathname.includes('/story')
+  // Check if we're on the Screenplay page (it has its own sidebar)
+  const isScreenplayPage = pathname.includes('/screenplay')
 
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
         {/* Sidebar - conditionally show field status or navigation */}
-        {selectedProject && !isStoryPage && (
+        {selectedProject && !isStoryPage && !isScreenplayPage && (
           <>
             {isInitialConceptPage && formData ? (
               <FieldStatusSidebar
@@ -58,7 +60,7 @@ export default function DashboardLayout({
         )}
 
         {/* Main content */}
-        <div className={selectedProject && !isStoryPage ? 'lg:pl-64' : ''}>
+        <div className={selectedProject && !isStoryPage && !isScreenplayPage ? 'lg:pl-64' : ''}>
           {/* Header */}
           <DashboardHeader
             title={title}
