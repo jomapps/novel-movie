@@ -132,7 +132,7 @@ export async function DELETE(
       message: 'Project and all related data deleted successfully',
       deletedItems: {
         project: 1,
-        initialConcepts: initialConcepts.totalDocs,
+        fundamentalData: fundamentalData.totalDocs,
         stories: stories.totalDocs,
       },
     })

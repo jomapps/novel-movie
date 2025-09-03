@@ -39,14 +39,12 @@ export default function ConfirmDialog({
         />
 
         {/* Dialog */}
-        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full relative z-10">
           <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div className="flex items-start">
               <div className="mt-3 text-center sm:mt-0 sm:text-left flex-1">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg leading-6 font-medium text-gray-900">
-                    {title}
-                  </h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900">{title}</h3>
                   <button
                     onClick={onClose}
                     className="rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
