@@ -16,6 +16,7 @@ const CoreElementsAutofillRequestSchema = z.object({
   corePremise: z.string().optional().default(''),
   targetAudience: z.array(z.string()).optional().default([]),
   tone: z.array(z.string()).optional().default([]),
+  mood: z.array(z.string()).optional().default([]),
 })
 
 export async function POST(request: NextRequest) {
@@ -27,7 +28,9 @@ export async function POST(request: NextRequest) {
 
     // Check if all required fields are present
     const requiredFields = ['name', 'movieFormat', 'movieStyle', 'durationUnit']
-    const missingFields = requiredFields.filter((field) => !validatedData[field as keyof typeof validatedData])
+    const missingFields = requiredFields.filter(
+      (field) => !validatedData[field as keyof typeof validatedData],
+    )
 
     if (missingFields.length > 0) {
       return NextResponse.json(
@@ -62,6 +65,7 @@ export async function POST(request: NextRequest) {
         corePremise: validatedData.corePremise,
         targetAudience: validatedData.targetAudience,
         tone: validatedData.tone,
+        mood: validatedData.mood,
       },
     })
 

@@ -27,6 +27,7 @@ export interface CoreElementsContext {
     corePremise: string
     targetAudience: string[]
     tone: string[]
+    mood: string[]
   }
 }
 
@@ -35,6 +36,7 @@ export interface GeneratedCoreElements {
   corePremise?: string
   targetAudience?: string[]
   tone?: string[]
+  mood?: string[]
 }
 
 /**
@@ -148,6 +150,32 @@ export async function generateCoreStoryElements(
         }
       } catch (error) {
         console.warn('Failed to generate tone:', error)
+        // Continue with other fields even if this one fails
+      }
+    }
+
+    // Generate Mood if not provided or empty
+    if (!context.currentValues.mood || context.currentValues.mood.length === 0) {
+      try {
+        const moodResult = await b.GenerateMood(
+          context.projectName,
+          generatedFields.primaryGenres || context.currentValues.primaryGenres || [],
+          generatedFields.corePremise || context.currentValues.corePremise || '',
+          generatedFields.targetAudience || context.currentValues.targetAudience || [],
+          context.movieStyle,
+          generatedFields.tone || context.currentValues.tone || [], // Pass selected tones for context
+          null, // existingMood
+        )
+
+        if (moodResult && Array.isArray(moodResult) && moodResult.length > 0) {
+          // Convert mood names to IDs by finding them in the database
+          const moodIds = await convertMoodNamesToIds(moodResult)
+          if (moodIds.length > 0) {
+            generatedFields.mood = moodIds
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to generate mood:', error)
         // Continue with other fields even if this one fails
       }
     }
@@ -303,6 +331,42 @@ async function convertToneNamesToIds(toneNames: string[]): Promise<string[]> {
     return toneIds
   } catch (error) {
     console.error('Error converting tone names to IDs:', error)
+  }
+
+  return []
+}
+
+/**
+ * Convert mood names to IDs by finding them in the database
+ */
+async function convertMoodNamesToIds(moodNames: string[]): Promise<string[]> {
+  try {
+    const payload = await getPayload({ config })
+
+    const moods = await payload.find({
+      collection: 'mood-descriptors',
+      where: {
+        isActive: { equals: true },
+      },
+      limit: 100,
+    })
+
+    const moodIds: string[] = []
+
+    for (const moodName of moodNames) {
+      const mood = moods.docs.find(
+        (m: any) =>
+          m.name.toLowerCase() === moodName.toLowerCase() ||
+          m.slug === moodName.toLowerCase().replace(/\s+/g, '-'),
+      )
+      if (mood) {
+        moodIds.push(mood.id)
+      }
+    }
+
+    return moodIds
+  } catch (error) {
+    console.error('Error converting mood names to IDs:', error)
   }
 
   return []

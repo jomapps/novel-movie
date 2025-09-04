@@ -333,6 +333,7 @@ export default function CreateProjectPage() {
           corePremise: formData.corePremise,
           targetAudience: formData.targetAudience,
           tone: formData.tone,
+          mood: formData.mood,
         }),
       })
 
@@ -392,6 +393,10 @@ export default function CreateProjectPage() {
 
           if (generatedFields.tone && generatedFields.tone.length > 0) {
             updated.tone = generatedFields.tone
+          }
+
+          if (generatedFields.mood && generatedFields.mood.length > 0) {
+            updated.mood = generatedFields.mood
           }
 
           return updated

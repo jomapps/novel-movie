@@ -171,6 +171,34 @@ export class BamlAsyncClient {
     }
   }
   
+  async GenerateMood(
+      projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string[],movieStyle: string,selectedTones?: string[] | null,existingMood?: string[] | null,
+      __baml_options__?: BamlCallOptions
+  ): Promise<string[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = await this.runtime.callFunction(
+        "GenerateMood",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"selectedTones": selectedTones?? null,"existingMood": existingMood?? null
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as string[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async GeneratePrimaryGenres(
       projectName: string,movieFormat: string,movieStyle: string,series?: string | null,durationUnit: number,existingGenres?: string[] | null,
       __baml_options__?: BamlCallOptions
@@ -476,6 +504,40 @@ class BamlStreamClient {
         raw,
         (a): string => a,
         (a): string => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  GenerateMood(
+      projectName: string,primaryGenres: string[],corePremise: string,targetAudience: string[],movieStyle: string,selectedTones?: string[] | null,existingMood?: string[] | null,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[], env?: Record<string, string | undefined> }
+  ): BamlStream<string[], string[]> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.streamFunction(
+        "GenerateMood",
+        {
+          "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"selectedTones": selectedTones ?? null,"existingMood": existingMood ?? null
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return new BamlStream<string[], string[]>(
+        raw,
+        (a): string[] => a,
+        (a): string[] => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {
