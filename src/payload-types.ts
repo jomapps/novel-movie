@@ -236,9 +236,13 @@ export interface Project {
    */
   targetAudience?: (string | AudienceDemographic)[] | null;
   /**
-   * Select 1-2 tones that define the story's emotional approach
+   * Select 1-2 tones that define how the story is told (narrative approach)
    */
   tone?: (string | ToneOption)[] | null;
+  /**
+   * Select 1-2 moods that define the emotional atmosphere and feeling
+   */
+  mood?: (string | MoodDescriptor)[] | null;
   /**
    * Container for AI-generated content and assets
    */
@@ -687,6 +691,66 @@ export interface ToneOption {
   /**
    * Tags to help AI understand this tone for content generation
    */
+  aiGenerationTags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "mood-descriptors".
+ */
+export interface MoodDescriptor {
+  id: string;
+  /**
+   * Mood descriptor (e.g., "Optimistic", "Melancholic", "Tense")
+   */
+  name: string;
+  slug: string;
+  /**
+   * Description of this mood and its emotional characteristics
+   */
+  description: string;
+  category: 'positive' | 'negative' | 'neutral' | 'complex';
+  intensity: 'subtle' | 'moderate' | 'strong' | 'overwhelming';
+  /**
+   * How this mood affects audience emotional response
+   */
+  emotionalImpact?: string | null;
+  visualElements?: {
+    /**
+     * Colors that evoke this mood
+     */
+    colorAssociations?: string | null;
+    /**
+     * Lighting techniques that create this mood
+     */
+    lightingStyle?: string | null;
+    /**
+     * Visual composition approaches for this mood
+     */
+    compositionStyle?: string | null;
+  };
+  audioElements?: {
+    /**
+     * Musical styles that support this mood
+     */
+    musicStyle?: string | null;
+    /**
+     * Sound design elements that enhance this mood
+     */
+    soundDesign?: string | null;
+  };
+  /**
+   * Genres that commonly use this mood
+   */
+  genreCompatibility?: (string | Genre)[] | null;
+  isActive?: boolean | null;
+  sortOrder?: number | null;
   aiGenerationTags?:
     | {
         tag: string;
@@ -1276,66 +1340,6 @@ export interface CentralTheme {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "mood-descriptors".
- */
-export interface MoodDescriptor {
-  id: string;
-  /**
-   * Mood descriptor (e.g., "Optimistic", "Melancholic", "Tense")
-   */
-  name: string;
-  slug: string;
-  /**
-   * Description of this mood and its emotional characteristics
-   */
-  description: string;
-  category: 'positive' | 'negative' | 'neutral' | 'complex';
-  intensity: 'subtle' | 'moderate' | 'strong' | 'overwhelming';
-  /**
-   * How this mood affects audience emotional response
-   */
-  emotionalImpact?: string | null;
-  visualElements?: {
-    /**
-     * Colors that evoke this mood
-     */
-    colorAssociations?: string | null;
-    /**
-     * Lighting techniques that create this mood
-     */
-    lightingStyle?: string | null;
-    /**
-     * Visual composition approaches for this mood
-     */
-    compositionStyle?: string | null;
-  };
-  audioElements?: {
-    /**
-     * Musical styles that support this mood
-     */
-    musicStyle?: string | null;
-    /**
-     * Sound design elements that enhance this mood
-     */
-    soundDesign?: string | null;
-  };
-  /**
-   * Genres that commonly use this mood
-   */
-  genreCompatibility?: (string | Genre)[] | null;
-  isActive?: boolean | null;
-  sortOrder?: number | null;
-  aiGenerationTags?:
-    | {
-        tag: string;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -1498,6 +1502,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   corePremise?: T;
   targetAudience?: T;
   tone?: T;
+  mood?: T;
   generatedContent?:
     | T
     | {

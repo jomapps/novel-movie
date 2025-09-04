@@ -123,7 +123,7 @@ function GenerateTargetAudience(
   "#
 }
 
-// Tone Generation - Tone and Mood Expert
+// Tone Generation - Narrative Tone Expert
 function GenerateTone(
   projectName: string,
   primaryGenres: string[],
@@ -134,7 +134,7 @@ function GenerateTone(
 ) -> string[] {
   client OpenRouterAdvanced
   prompt #"
-    You are a tone and mood specialist with expertise in crafting the emotional atmosphere of stories. Your task is to select appropriate tones that will guide the storytelling approach.
+    You are a narrative tone specialist with expertise in defining how stories are told. Your task is to select appropriate tones that will guide the storytelling approach and narrative style.
 
     Project Context:
     - Project Name: {{ projectName }}
@@ -147,18 +147,62 @@ function GenerateTone(
     Current Tone: {{ existingTone|join(", ") }}
     {% endif %}
 
-    Available Tones:
-    Dramatic, Comedic, Dark, Light-hearted, Suspenseful, Romantic, Action-packed, Mysterious, Inspirational, Satirical, Melancholic, Uplifting, Gritty, Whimsical, Intense, Contemplative, Adventurous, Nostalgic, Surreal, Realistic
+    Available Narrative Tones:
+    Serious, Comedic, Dramatic, Suspenseful, Romantic, Action-packed, Mysterious, Inspirational, Satirical, Gritty, Whimsical, Intense, Contemplative, Adventurous, Surreal, Realistic
 
     Instructions:
-    - Select 2-3 tones that best capture the intended emotional atmosphere
+    - Select 1-2 tones that define HOW the story is told (narrative approach)
+    - Focus on storytelling style, not emotional atmosphere
     - Ensure the tones complement the genres and premise
-    - Consider the target audience when selecting appropriate tones
+    - Consider how these tones will guide dialogue, pacing, and narrative structure
     - Choose tones that work well together and don't conflict
     - Align with the movie style and overall project vision
-    - Think about how these tones will guide dialogue, pacing, and visual style
 
-    Return only a JSON array of 2-3 tone names, no additional text or explanation.
-    Example: ["Dramatic", "Suspenseful", "Dark"]
+    Return only a JSON array of 1-2 tone names, no additional text or explanation.
+    Example: ["Dramatic", "Suspenseful"]
+  "#
+}
+
+// Mood Generation - Emotional Atmosphere Expert
+function GenerateMood(
+  projectName: string,
+  primaryGenres: string[],
+  corePremise: string,
+  targetAudience: string[],
+  movieStyle: string,
+  selectedTones: string[]?,
+  existingMood: string[]?
+) -> string[] {
+  client OpenRouterAdvanced
+  prompt #"
+    You are an emotional atmosphere specialist with expertise in crafting the emotional feeling and mood of stories. Your task is to select appropriate moods that will define the emotional atmosphere audiences will experience.
+
+    Project Context:
+    - Project Name: {{ projectName }}
+    - Primary Genres: {{ primaryGenres|join(", ") }}
+    - Core Premise: {{ corePremise }}
+    - Target Audience: {{ targetAudience|join(", ") }}
+    - Movie Style: {{ movieStyle }}
+    {% if selectedTones %}
+    - Selected Narrative Tones: {{ selectedTones|join(", ") }}
+    {% endif %}
+
+    {% if existingMood %}
+    Current Mood: {{ existingMood|join(", ") }}
+    {% endif %}
+
+    Available Emotional Moods:
+    Optimistic, Melancholic, Tense, Hopeful, Brooding, Energetic, Contemplative, Anxious, Peaceful, Chaotic, Nostalgic, Triumphant, Mysterious, Dark, Uplifting, Somber, Playful, Intense, Serene, Foreboding
+
+    Instructions:
+    - Select 1-2 moods that define the EMOTIONAL ATMOSPHERE and feeling
+    - Focus on what emotions the audience should feel, not how the story is told
+    - Ensure the moods complement the selected narrative tones and genres
+    - Consider the target audience's emotional preferences
+    - Choose moods that work well together and create a cohesive emotional experience
+    - Think about the overall emotional journey the audience will take
+
+    Return only a JSON array of 1-2 mood names, no additional text or explanation.
+    Example: ["Optimistic", "Tense"]
   "#
 }

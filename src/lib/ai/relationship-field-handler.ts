@@ -44,6 +44,16 @@ export const RELATIONSHIP_FIELD_CONFIGS: Record<string, RelationshipFieldConfig>
       isActive: true,
     },
   },
+  mood: {
+    collection: 'mood-descriptors',
+    searchFields: ['name', 'slug'],
+    createFields: {
+      category: 'neutral',
+      intensity: 'moderate',
+      description: 'AI-generated mood descriptor',
+      isActive: true,
+    },
+  },
 }
 
 /**
@@ -171,25 +181,8 @@ export async function generateTargetDemographics(context: any): Promise<string[]
   return shuffled.slice(0, 2 + Math.floor(Math.random() * 2))
 }
 
-export async function generateTones(context: any): Promise<string[]> {
-  // Generate tones based on genre
-  const toneOptions = [
-    'Dramatic',
-    'Suspenseful',
-    'Comedic',
-    'Romantic',
-    'Dark',
-    'Uplifting',
-    'Mysterious',
-    'Intense',
-    'Lighthearted',
-    'Serious',
-  ]
-
-  // Select 2-3 tones
-  const shuffled = toneOptions.sort(() => 0.5 - Math.random())
-  return shuffled.slice(0, 2 + Math.floor(Math.random() * 2))
-}
+// Remove fallback functions - use BAML only for AI generation
+// These functions are no longer needed as we use BAML for all AI generation
 
 export async function generateMoods(context: any): Promise<string[]> {
   // Generate moods based on context

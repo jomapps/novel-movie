@@ -29,6 +29,7 @@ interface FormData {
   corePremise: string
   targetAudience: string[]
   tone: string[]
+  mood: string[]
 }
 
 interface FormErrors {
@@ -63,6 +64,7 @@ export default function EditProjectPage() {
     corePremise: '',
     targetAudience: [],
     tone: [],
+    mood: [],
   })
   const [errors, setErrors] = useState<FormErrors>({})
   const [showCreateSeriesModal, setShowCreateSeriesModal] = useState(false)
@@ -74,6 +76,7 @@ export default function EditProjectPage() {
   const [genreOptions, setGenreOptions] = useState<any[]>([])
   const [audienceOptions, setAudienceOptions] = useState<any[]>([])
   const [toneOptions, setToneOptions] = useState<any[]>([])
+  const [moodOptions, setMoodOptions] = useState<any[]>([])
 
   // Fetch project data
   useEffect(() => {
@@ -118,6 +121,9 @@ export default function EditProjectPage() {
             tone: Array.isArray(projectData.tone)
               ? projectData.tone.map((t) => (typeof t === 'object' ? t.id : t)).filter(Boolean)
               : [],
+            mood: Array.isArray(projectData.mood)
+              ? projectData.mood.map((m) => (typeof m === 'object' ? m.id : m)).filter(Boolean)
+              : [],
           })
         } else {
           setFetchError(data.error || 'Project not found')
@@ -139,7 +145,7 @@ export default function EditProjectPage() {
   useEffect(() => {
     const fetchOptions = async () => {
       try {
-        const [formatsRes, stylesRes, seriesRes, genresRes, audienceRes, toneRes] =
+        const [formatsRes, stylesRes, seriesRes, genresRes, audienceRes, toneRes, moodRes] =
           await Promise.all([
             fetch('/v1/movie-formats'),
             fetch('/v1/movie-styles'),
@@ -147,15 +153,17 @@ export default function EditProjectPage() {
             fetch('/v1/config/genres'),
             fetch('/v1/config/audience-demographics'),
             fetch('/v1/config/tone-options'),
+            fetch('/v1/config/mood-descriptors'),
           ])
 
-        const [formats, styles, series, genres, audience, tones] = await Promise.all([
+        const [formats, styles, series, genres, audience, tones, moods] = await Promise.all([
           formatsRes.json(),
           stylesRes.json(),
           seriesRes.json(),
           genresRes.json(),
           audienceRes.json(),
           toneRes.json(),
+          moodRes.json(),
         ])
 
         if (formats.success) {
@@ -176,6 +184,9 @@ export default function EditProjectPage() {
         }
         if (tones.success) {
           setToneOptions(tones.data || [])
+        }
+        if (moods.success) {
+          setMoodOptions(moods.data || [])
         }
       } catch (err) {
         console.error('Error fetching options:', err)
@@ -489,9 +500,9 @@ export default function EditProjectPage() {
               </FormField>
 
               <FormField
-                label="Tone & Mood"
+                label="Tone"
                 error={errors.tone}
-                description="Select tones that define the story's emotional atmosphere"
+                description="Select tones that define how the story is told (narrative approach)"
               >
                 <MultiSelect
                   value={formData.tone}
@@ -500,9 +511,27 @@ export default function EditProjectPage() {
                     value: tone.id,
                     label: tone.name,
                   }))}
-                  placeholder="Select tone & mood"
-                  maxSelections={3}
+                  placeholder="Select narrative tones"
+                  maxSelections={2}
                   error={!!errors.tone}
+                />
+              </FormField>
+
+              <FormField
+                label="Mood"
+                error={errors.mood}
+                description="Select moods that define the emotional atmosphere and feeling"
+              >
+                <MultiSelect
+                  value={formData.mood}
+                  onChange={(value) => handleInputChange('mood', value)}
+                  options={moodOptions.map((mood) => ({
+                    value: mood.id,
+                    label: mood.name,
+                  }))}
+                  placeholder="Select emotional moods"
+                  maxSelections={2}
+                  error={!!errors.mood}
                 />
               </FormField>
 

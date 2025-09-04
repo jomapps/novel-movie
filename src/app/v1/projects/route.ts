@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Handle other relationship arrays similarly
-    const relationshipFields = ['primaryGenres', 'targetAudience']
+    const relationshipFields = ['primaryGenres', 'targetAudience', 'mood']
     relationshipFields.forEach((field) => {
       if (cleanedData[field] && Array.isArray(cleanedData[field])) {
         cleanedData[field] = cleanedData[field].filter(

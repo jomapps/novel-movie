@@ -281,16 +281,30 @@ export const Projects: CollectionConfig = {
       },
     },
 
-    // 4. Tone & Mood (Essential for story generation)
+    // 4. Tone (Essential for story generation)
     {
       name: 'tone',
       type: 'relationship',
       relationTo: 'tone-options',
       hasMany: true,
       maxRows: 2,
-      required: false, // Allow empty creation, will be filled by AI or user
+      required: false, // Optional during creation, can be filled by AI or user
       admin: {
-        description: "Select 1-2 tones that define the story's emotional approach",
+        description: 'Select 1-2 tones that define how the story is told (narrative approach)',
+        sortOptions: 'name',
+      },
+    },
+
+    // 5. Mood (Essential for story generation)
+    {
+      name: 'mood',
+      type: 'relationship',
+      relationTo: 'mood-descriptors',
+      hasMany: true,
+      maxRows: 2,
+      required: false, // Optional during creation, can be filled by AI or user
+      admin: {
+        description: 'Select 1-2 moods that define the emotional atmosphere and feeling',
         sortOptions: 'name',
       },
     },
