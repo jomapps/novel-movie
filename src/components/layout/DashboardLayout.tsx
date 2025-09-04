@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, ReactNode } from 'react'
-import Sidebar from './Sidebar'
 import FieldStatusSidebar from './FieldStatusSidebar'
 import DashboardHeader from './DashboardHeader'
 import ErrorBoundary from '@/components/ui/ErrorBoundary'
@@ -43,24 +42,18 @@ export default function DashboardLayout({
   return (
     <ErrorBoundary>
       <div className="min-h-screen bg-gray-50">
-        {/* Sidebar - conditionally show field status or navigation */}
-        {selectedProject && !isStoryPage && !isScreenplayPage && (
-          <>
-            {isInitialConceptPage && formData ? (
-              <FieldStatusSidebar
-                isOpen={sidebarOpen}
-                onToggle={toggleSidebar}
-                pageTitle={title}
-                formData={formData}
-              />
-            ) : (
-              <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} pageTitle={title} />
-            )}
-          </>
+        {/* Special sidebars for specific pages only */}
+        {selectedProject && isInitialConceptPage && formData && (
+          <FieldStatusSidebar
+            isOpen={sidebarOpen}
+            onToggle={toggleSidebar}
+            pageTitle={title}
+            formData={formData}
+          />
         )}
 
         {/* Main content */}
-        <div className={selectedProject && !isStoryPage && !isScreenplayPage ? 'lg:pl-64' : ''}>
+        <div className={selectedProject && isInitialConceptPage && formData ? 'lg:pl-64' : ''}>
           {/* Header */}
           <DashboardHeader
             title={title}

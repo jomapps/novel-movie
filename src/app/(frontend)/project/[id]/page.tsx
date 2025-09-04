@@ -7,6 +7,7 @@ import { Project } from '@/payload-types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import Button from '@/components/ui/Button'
 import DashboardLayout from '@/components/layout/DashboardLayout'
+import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
 interface ProjectResponse {
   success: boolean
@@ -17,6 +18,7 @@ interface ProjectResponse {
 export default function ProjectDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const { selectProject } = useSelectedProject()
   const [project, setProject] = useState<Project | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -29,6 +31,8 @@ export default function ProjectDetailPage() {
 
         if (data.success) {
           setProject(data.data)
+          // Set as selected project
+          selectProject(data.data)
         } else {
           setError(data.error || 'Project not found')
         }
