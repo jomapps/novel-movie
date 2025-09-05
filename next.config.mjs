@@ -10,6 +10,8 @@ const nextConfig = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
+  // Allow cross-origin requests for development assets from these origins
+  allowedDevOrigins: ['local.ft.tc', 'novel.ft.tc', 'crew.ft.tc', 'pathrag.ft.tc'],
 }
 
 export default withSentryConfig(

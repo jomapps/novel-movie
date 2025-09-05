@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Bell, X, Plus, User, Menu } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 
@@ -24,6 +25,12 @@ export default function DashboardHeader({
   const [searchQuery, setSearchQuery] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const { selectedProject, deselectProject } = useSelectedProject()
+  const router = useRouter()
+
+  const handleDeselectProject = () => {
+    deselectProject()
+    router.push('/projects')
+  }
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
@@ -110,7 +117,7 @@ export default function DashboardHeader({
                     {selectedProject.projectTitle || selectedProject.name}
                   </span>
                   <button
-                    onClick={deselectProject}
+                    onClick={handleDeselectProject}
                     className="ml-2 p-0.5 rounded-full hover:bg-blue-100 text-blue-600 hover:text-blue-800 transition-colors"
                     title="Deselect project"
                   >

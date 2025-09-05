@@ -31,7 +31,8 @@ export default function ScreenplayPage() {
         if (!projectResponse.ok) {
           throw new Error('Failed to fetch project')
         }
-        const projectData = await projectResponse.json()
+        const projectResult = await projectResponse.json()
+        const projectData = projectResult.data || projectResult.doc || projectResult
         setProject(projectData)
 
         // Set as selected project

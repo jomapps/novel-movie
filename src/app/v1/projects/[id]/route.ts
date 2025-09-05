@@ -1,6 +1,7 @@
 import { getPayload } from 'payload'
 import { NextRequest, NextResponse } from 'next/server'
 import config from '@payload-config'
+import { createCORSPreflightResponse } from '@/lib/cors'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -146,4 +147,11 @@ export async function DELETE(
       { status: 500 },
     )
   }
+}
+
+/**
+ * OPTIONS handler for CORS preflight requests
+ */
+export async function OPTIONS(request: NextRequest) {
+  return createCORSPreflightResponse(request)
 }
