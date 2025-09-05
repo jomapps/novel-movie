@@ -75,18 +75,12 @@ export async function POST(request: NextRequest) {
         currentStep: 3, // Initial generation is step 3
         status: 'in-progress',
         qualityMetrics: storyResult.qualityMetrics,
-        generationParameters: {
-          model: 'baml-openrouter-advanced',
-          temperature: 0.8,
-          maxTokens: 4000,
-          prompt: 'initial-story-generation-comprehensive',
-        },
         enhancementHistory: [
           {
             stepNumber: 3,
             stepName: 'initial-generation',
-            startTime: new Date(),
-            endTime: new Date(),
+            startTime: new Date().toISOString(),
+            endTime: new Date().toISOString(),
             processingTime: 0,
             contentBefore: '',
             contentAfter: storyResult.storyContent,

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { b } from '@/baml_client'
+import { b } from '../../../../../baml_client'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,41 +12,34 @@ export async function POST(request: NextRequest) {
     let result
     
     switch (functionName) {
-      case 'GenerateCorePremise':
-        result = await b.GenerateCorePremise(
+      case 'GenerateSimpleCorePremise':
+        result = await b.GenerateSimpleCorePremise(
           'Test Project',
-          ['Drama'],
-          'Test premise generation',
-          ['General Audience'],
-          'Cinematic'
-        )
-        break
-        
-      case 'GenerateTone':
-        result = await b.GenerateTone(
-          'Test Project',
-          ['Drama'],
-          'Test premise',
-          ['General Audience'],
+          'Feature Film',
           'Cinematic',
+          null,
+          120,
+          ['Drama'],
           null
         )
         break
-        
+
       default:
         // Generic test using a simple function
-        result = await b.GenerateCorePremise(
+        result = await b.GenerateSimpleCorePremise(
           'Test Project',
+          'Feature Film',
+          'Cinematic',
+          null,
+          120,
           ['Drama'],
-          prompt,
-          ['General Audience'],
-          'Cinematic'
+          prompt
         )
     }
 
     return NextResponse.json({
       success: true,
-      function: functionName || 'GenerateCorePremise',
+      function: functionName || 'GenerateSimpleCorePremise',
       result,
       timestamp: new Date().toISOString()
     })

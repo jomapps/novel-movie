@@ -38,7 +38,7 @@ export default function ScreenplayStatusSidebar({
         icon: <BookOpen className="w-4 h-4" />,
         estimatedTime: 'Complete',
         metrics: story ? {
-          score: story.qualityMetrics?.overallQuality,
+          score: story.qualityMetrics?.overallQuality ?? undefined,
           details: `Step ${story.currentStep}/12`
         } : undefined
       },

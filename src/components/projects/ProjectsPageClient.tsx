@@ -130,7 +130,7 @@ export default function ProjectsPageClient({ initialProjects }: ProjectsPageClie
         message={
           <div>
             <p className="text-sm text-gray-500 mb-2">
-              Are you sure you want to delete the project "{deleteDialog.projectName}"?
+              Are you sure you want to delete the project &quot;{deleteDialog.projectName}&quot;?
             </p>
             <p className="text-sm text-red-600 font-medium">This action cannot be undone.</p>
           </div>

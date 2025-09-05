@@ -174,7 +174,7 @@ export default function StoryContent({ project, story, onStoryUpdate }: StoryCon
             title="Quality Metrics"
             icon={<BarChart3 className="w-5 h-5" />}
             metrics={{
-              score: story.qualityMetrics.overallQuality,
+              score: story.qualityMetrics.overallQuality ?? undefined,
               label: 'Overall',
             }}
           >
@@ -245,16 +245,7 @@ export default function StoryContent({ project, story, onStoryUpdate }: StoryCon
           </CollapsibleSection>
         )}
 
-        {/* Generation Parameters */}
-        {story.generationParameters && (
-          <CollapsibleSection title="Generation Parameters" icon={<Sparkles className="w-5 h-5" />}>
-            <div className="mt-4 bg-gray-50 p-4 rounded-lg">
-              <pre className="text-sm text-gray-700 whitespace-pre-wrap">
-                {JSON.stringify(story.generationParameters, null, 2)}
-              </pre>
-            </div>
-          </CollapsibleSection>
-        )}
+
       </div>
     </div>
   )

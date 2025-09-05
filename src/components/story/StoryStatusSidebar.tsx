@@ -32,7 +32,7 @@ export default function StoryStatusSidebar({
     // Project Setup Status
     const hasRequiredFields = project.name && project.movieFormat && project.movieStyle
     const hasOptionalFields =
-      project.primaryGenres?.length > 0 && project.corePremise && project.targetAudience?.length > 0
+      (project.primaryGenres?.length ?? 0) > 0 && project.corePremise && (project.targetAudience?.length ?? 0) > 0
 
     items.push({
       id: 'project-setup',
@@ -56,7 +56,7 @@ export default function StoryStatusSidebar({
       icon: <BookOpen className="w-4 h-4" />,
       metrics: story
         ? {
-            score: story.qualityMetrics?.overallQuality,
+            score: story.qualityMetrics?.overallQuality ?? undefined,
             details: `Step ${story.currentStep}/12`,
           }
         : undefined,

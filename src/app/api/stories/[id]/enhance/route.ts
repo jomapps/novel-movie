@@ -4,11 +4,12 @@ import config from '@payload-config'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = await getPayload({ config })
-    const storyId = params.id
+    const resolvedParams = await params
+    const storyId = resolvedParams.id
 
     // Fetch the current story
     const story = await payload.findByID({

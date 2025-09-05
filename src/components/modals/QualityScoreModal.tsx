@@ -139,7 +139,7 @@ export default function QualityScoreModal({
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-3">Expert Recommendations</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Detailed feedback and actionable suggestions to enhance your project's potential.
+                  Detailed feedback and actionable suggestions to enhance your project&apos;s potential.
                   You can edit these recommendations and re-run the assessment.
                 </p>
 

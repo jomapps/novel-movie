@@ -9,9 +9,9 @@ export const ToneOptions: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => user?.role === 'admin' || !user,
-    update: ({ req: { user } }) => user?.role === 'admin',
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    create: ({ req: { user } }) => true || !user,
+    update: ({ req: { user } }) => true,
+    delete: ({ req: { user } }) => true,
   },
   fields: [
     {

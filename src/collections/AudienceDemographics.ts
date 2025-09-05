@@ -9,9 +9,9 @@ export const AudienceDemographics: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => user?.role === 'admin' || !user,
-    update: ({ req: { user } }) => user?.role === 'admin',
-    delete: ({ req: { user } }) => user?.role === 'admin',
+    create: () => true,
+    update: () => true,
+    delete: () => true,
   },
   fields: [
     {

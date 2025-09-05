@@ -10,6 +10,7 @@ import {
   Genre,
   AudienceDemographic,
   ToneOption,
+  MoodDescriptor,
 } from '@/payload-types'
 import FormField from '@/components/forms/FormField'
 import Input from '@/components/forms/Input'
@@ -165,10 +166,11 @@ export default function CreateProjectPage() {
 
   // Check if all required fields are filled
   const areRequiredFieldsFilled = () => {
-    const requiredFields = ['name', 'movieFormat', 'movieStyle', 'durationUnit']
-    const allBasicFieldsFilled = requiredFields.every((field) =>
-      formData[field as keyof FormData]?.trim(),
-    )
+    const requiredFields: (keyof Pick<FormData, 'name' | 'movieFormat' | 'movieStyle' | 'durationUnit'>)[] = ['name', 'movieFormat', 'movieStyle', 'durationUnit']
+    const allBasicFieldsFilled = requiredFields.every((field) => {
+      const value = formData[field]
+      return typeof value === 'string' && value.trim()
+    })
 
     // If series field is shown, it must also be filled
     if (showSeriesField) {

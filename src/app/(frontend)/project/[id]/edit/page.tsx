@@ -592,20 +592,21 @@ export default function EditProjectPage() {
                 />
               </FormField>
 
-              <FormField
-                label="Long Description"
-                error={errors.longDescription}
-                description="Detailed description of the project"
-                className="lg:col-span-2"
-              >
-                <Textarea
-                  value={formData.longDescription}
-                  onChange={(e) => handleInputChange('longDescription', e.target.value)}
-                  placeholder="Enter a detailed description"
-                  rows={4}
-                  error={!!errors.longDescription}
-                />
-              </FormField>
+              <div className="lg:col-span-2">
+                <FormField
+                  label="Long Description"
+                  error={errors.longDescription}
+                  description="Detailed description of the project"
+                >
+                  <Textarea
+                    value={formData.longDescription}
+                    onChange={(e) => handleInputChange('longDescription', e.target.value)}
+                    placeholder="Enter a detailed description"
+                    rows={4}
+                    error={!!errors.longDescription}
+                  />
+                </FormField>
+              </div>
             </div>
           </div>
 

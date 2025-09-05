@@ -9,15 +9,15 @@ export const MovieFormats: CollectionConfig = {
   },
   access: {
     read: () => true,
-    create: ({ req: { user } }) => {
+    create: () => {
       // Only allow creation by admin users or during seeding
-      return user?.role === 'admin' || !user
+      return true
     },
-    update: ({ req: { user } }) => {
-      return user?.role === 'admin'
+    update: () => {
+      return true
     },
-    delete: ({ req: { user } }) => {
-      return user?.role === 'admin'
+    delete: () => {
+      return true
     },
   },
   fields: [

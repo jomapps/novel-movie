@@ -30,7 +30,12 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps) 
       depth: 2, // Include related data like movieFormat and movieStyle
     })
 
-    return <ProjectsPageClient initialProjects={projects} />
+    return <ProjectsPageClient initialProjects={{
+      ...projects,
+      page: projects.page ?? 1,
+      hasNextPage: projects.hasNextPage ?? false,
+      hasPrevPage: projects.hasPrevPage ?? false,
+    }} />
   } catch (error) {
     console.error('Error fetching projects:', error)
     return (

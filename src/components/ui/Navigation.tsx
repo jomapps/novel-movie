@@ -47,7 +47,7 @@ export default function Navigation() {
                       : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                   }`}
                 >
-                  {'icon' in item && item.icon}
+                  {'icon' in item && item.icon as React.ReactNode}
                   {item.label}
                 </Link>
               ))}
@@ -120,7 +120,7 @@ export default function Navigation() {
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                {'icon' in item && item.icon}
+                {'icon' in item && item.icon as React.ReactNode}
                 {item.label}
               </Link>
             ))}

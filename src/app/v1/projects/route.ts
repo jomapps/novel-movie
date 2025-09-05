@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     if (cleanedData.tone && Array.isArray(cleanedData.tone)) {
       // Filter out empty strings and null values
       cleanedData.tone = cleanedData.tone.filter(
-        (id) => id && typeof id === 'string' && id.trim() !== '',
+        (id: any) => id && typeof id === 'string' && id.trim() !== '',
       )
       // If no valid tone IDs, remove the field entirely
       if (cleanedData.tone.length === 0) {

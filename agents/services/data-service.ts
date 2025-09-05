@@ -88,7 +88,10 @@ export class DataService {
   /**
    * Update project status in PayloadCMS
    */
-  static async updateProjectStatus(projectId: string, status: string) {
+  static async updateProjectStatus(
+    projectId: string,
+    status: 'project-setup' | 'story-generation' | 'character-development' | 'scene-planning' | 'media-generation' | 'post-production' | 'final-review' | 'completed'
+  ) {
     const payload = await getPayload({ config })
     return await payload.update({
       collection: 'projects',
