@@ -123,8 +123,20 @@ function getEnhancementFocus(step: number) {
   )
 }
 
-function getStepName(step: number): string {
-  const stepNames = {
+type StepName =
+  | 'initial-generation'
+  | 'structure-enhancement'
+  | 'character-enhancement'
+  | 'coherence-enhancement'
+  | 'conflict-enhancement'
+  | 'dialogue-enhancement'
+  | 'genre-enhancement'
+  | 'audience-optimization'
+  | 'visual-enhancement'
+  | 'final-polish'
+
+function getStepName(step: number): StepName {
+  const stepNames: Record<number, StepName> = {
     1: 'initial-generation',
     2: 'initial-generation',
     3: 'initial-generation',
@@ -139,7 +151,7 @@ function getStepName(step: number): string {
     12: 'final-polish',
   }
 
-  return stepNames[step as keyof typeof stepNames] || 'initial-generation'
+  return stepNames[step] || 'initial-generation'
 }
 
 async function enhanceStoryWithBAML(
@@ -149,7 +161,7 @@ async function enhanceStoryWithBAML(
 ): Promise<{ content: string; qualityMetrics: any }> {
   try {
     // Use BAML for actual story enhancement
-    const baml = getBamlClient()
+    const baml = await getBamlClient()
 
     const enhancementResult = await baml.EnhanceStory(
       currentContent,

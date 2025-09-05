@@ -28,7 +28,7 @@ const checkStoryDiagnosis = async (): Promise<void> => {
       console.log('   - Status:', project.status)
       console.log('   - Workflow Status:', JSON.stringify(project.workflowStatus, null, 4))
     } catch (error) {
-      console.log('❌ Project not found:', error.message)
+      console.log('❌ Project not found:', error instanceof Error ? error.message : String(error))
       return
     }
 
@@ -130,14 +130,13 @@ const checkStoryDiagnosis = async (): Promise<void> => {
       console.log('\n7. Enhancement history (last 3 entries):')
       const recent = story.enhancementHistory.slice(-3)
       recent.forEach((entry, index) => {
-        console.log(
-          `   ${index + 1}. Step ${entry.stepNumber || entry.step}: ${entry.stepName || entry.focusArea}`,
-        )
-        console.log(`      Quality: ${entry.qualityAfter?.overallQuality || 'N/A'}`)
+        console.log(`   ${index + 1}. Step ${entry.stepNumber}: ${entry.stepName}`)
+        const qualityAfter = entry.qualityAfter as any
+        console.log(`      Quality: ${qualityAfter?.overallQuality || 'N/A'}`)
       })
     }
   } catch (error) {
-    console.error('❌ Diagnosis failed:', error.message)
+    console.error('❌ Diagnosis failed:', error instanceof Error ? error.message : String(error))
     console.error(error)
   }
 }
