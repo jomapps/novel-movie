@@ -22,7 +22,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio, Pdf, Vi
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {Act, ActStructure, CharacterArc, InitialStoryResponse, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
+import type {Act, ActStructure, AdaptiveAct, Character, CharacterArc, CharacterDevelopmentDetails, CharacterDevelopmentResponse, CharacterGenerationMetadata, CharacterPsychology, CharacterQualityMetrics, CharacterRelationship, DialogueVoice, InitialStoryResponse, NarrativeStructure, PhysicalDescription, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, SaveTheCatBeat, SequenceStructure, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -48,6 +48,56 @@ export class HttpRequest {
         "AnalyzeStoryStructure",
         {
           "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DevelopCharacters(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],characterArcs: string[],storyBeats: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "DevelopCharacters",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience,"characterArcs": characterArcs,"storyBeats": storyBeats
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      existingCharacters: string[],storyContent: string,focusAreas: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "EnhanceCharacterProfiles",
+        {
+          "existingCharacters": existingCharacters,"storyContent": storyContent,"focusAreas": focusAreas
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -373,6 +423,31 @@ export class HttpRequest {
         "GenerateTone",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateCharacterConsistency(
+      characters: string[],storyBeats: string[],storyContent: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "ValidateCharacterConsistency",
+        {
+          "characters": characters,"storyBeats": storyBeats,"storyContent": storyContent
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -441,6 +516,56 @@ export class HttpStreamRequest {
     }
   }
   
+  DevelopCharacters(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],characterArcs: string[],storyBeats: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "DevelopCharacters",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience,"characterArcs": characterArcs,"storyBeats": storyBeats
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      existingCharacters: string[],storyContent: string,focusAreas: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "EnhanceCharacterProfiles",
+        {
+          "existingCharacters": existingCharacters,"storyContent": storyContent,"focusAreas": focusAreas
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   EnhanceStory(
       currentStory: string,focusArea: string,targetMetrics: string[],currentQuality: types.QualityMetrics,
       __baml_options__?: BamlCallOptions
@@ -754,6 +879,31 @@ export class HttpStreamRequest {
         "GenerateTone",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateCharacterConsistency(
+      characters: string[],storyBeats: string[],storyContent: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "ValidateCharacterConsistency",
+        {
+          "characters": characters,"storyBeats": storyBeats,"storyContent": storyContent
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

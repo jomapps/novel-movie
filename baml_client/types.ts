@@ -68,17 +68,90 @@ export interface ActStructure {
   
 }
 
+export interface AdaptiveAct {
+  actNumber: number
+  name: string
+  description: string
+  duration: number
+  keyEvents: string[]
+  purpose: string
+  
+}
+
+export interface Character {
+  name: string
+  role: string
+  archetype?: string | null
+  characterDevelopment: CharacterDevelopmentDetails
+  characterArc: CharacterArc
+  physicalDescription: PhysicalDescription
+  dialogueVoice: DialogueVoice
+  relationships: CharacterRelationship[]
+  generationMetadata: CharacterGenerationMetadata
+  
+}
+
 export interface CharacterArc {
-  characterName?: string | null
-  character?: string | null
-  arcDescription?: string | null
-  startingState?: string | null
-  startState?: string | null
-  endingState?: string | null
-  endState?: string | null
-  transformationProcess?: string | null
-  transformation?: string | null
-  keyMoments: string[]
+  startState: string
+  transformation: string
+  endState: string
+  
+}
+
+export interface CharacterDevelopmentDetails {
+  biography: string
+  personality: string
+  motivations: string
+  backstory: string
+  psychology: CharacterPsychology
+  
+}
+
+export interface CharacterDevelopmentResponse {
+  characters: Character[]
+  qualityMetrics: CharacterQualityMetrics
+  generationNotes: string
+  
+}
+
+export interface CharacterGenerationMetadata {
+  generatedAt: string
+  generationMethod: string
+  qualityScore: number
+  completeness: number
+  
+}
+
+export interface CharacterPsychology {
+  motivation: string
+  fears: string
+  desires: string
+  flaws: string
+  
+}
+
+export interface CharacterQualityMetrics {
+  overallQuality: number
+  characterDepth: number
+  arcConsistency: number
+  relationshipClarity: number
+  dialogueDistinction: number
+  psychologicalRealism: number
+  
+}
+
+export interface CharacterRelationship {
+  character: string
+  relationship: string
+  dynamic: string
+  
+}
+
+export interface DialogueVoice {
+  voiceDescription: string
+  style: string
+  patterns: string
+  vocabulary: string
   
 }
 
@@ -86,6 +159,24 @@ export interface InitialStoryResponse {
   storyContent: string
   qualityMetrics: QualityMetrics
   generationNotes: string
+  
+}
+
+export interface NarrativeStructure {
+  structureType: string
+  adaptiveActs: AdaptiveAct[]
+  sequences?: SequenceStructure[] | null
+  saveTheCatBeats?: SaveTheCatBeat[] | null
+  
+}
+
+export interface PhysicalDescription {
+  description: string
+  age?: number | null
+  height?: string | null
+  eyeColor?: string | null
+  hairColor?: string | null
+  clothing?: string | null
   
 }
 
@@ -131,6 +222,26 @@ export interface QualityMetrics {
   
 }
 
+export interface SaveTheCatBeat {
+  beatNumber: number
+  name: string
+  description: string
+  pageNumber: number
+  timing: number
+  purpose: string
+  
+}
+
+export interface SequenceStructure {
+  sequenceNumber: number
+  name: string
+  description: string
+  duration: number
+  miniMovieArc: string
+  keyBeats: string[]
+  
+}
+
 export interface StoryBeat {
   beatId?: number | null
   beat: string
@@ -144,8 +255,7 @@ export interface StoryBeat {
 }
 
 export interface StoryStructureResponse {
-  actStructure?: ActStructure | null
-  threeActStructure?: ActStructure | null
+  narrativeStructure: NarrativeStructure
   storyBeats: StoryBeat[]
   characterArcs: CharacterArc[]
   subplots: Subplot[]

@@ -93,10 +93,73 @@ function DevelopCharacters(
 ) -> CharacterDevelopmentResponse {
   client OpenRouterAdvanced
   prompt #"
-    You are a master character development specialist and psychology expert with deep understanding of character creation, personality development, and dramatic storytelling. Your task is to create comprehensive, psychologically realistic character profiles based on the provided story content and structure.
+    You are a master character development specialist and psychology expert with deep understanding of character creation, personality development, and dramatic storytelling. Your task is to create comprehensive, psychologically realistic character profiles based on the provided story content and structure, optimized for the specific duration format.
 
     STORY CONTENT:
     {{ storyContent }}
+
+    DURATION-ADAPTIVE CHARACTER DEVELOPMENT CONSTRAINTS:
+    {% if durationUnit <= 2 %}
+    MICRO-FORMAT CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 1-2 maximum (focus on single protagonist)
+    - Development Depth: Essential traits only - no extensive backstory
+    - Character Arc: Single moment of change or realization
+    - Psychology: One primary motivation/conflict
+    - Relationships: Minimal - focus on internal or single external relationship
+    - Dialogue Voice: Distinctive but minimal - character shown through action
+    - Physical Description: Key visual elements only
+    - Backstory: Only what's essential to understand the moment
+    {% elif durationUnit <= 5 %}
+    ULTRA-SHORT CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 2-3 maximum (protagonist + 1-2 others)
+    - Development Depth: Core traits and primary motivation
+    - Character Arc: Simple but clear transformation
+    - Psychology: Primary motivation with one key conflict/fear
+    - Relationships: 1-2 key relationships that drive story
+    - Dialogue Voice: Distinct and efficient
+    - Physical Description: Essential visual characteristics
+    - Backstory: Minimal but sufficient for character understanding
+    {% elif durationUnit <= 30 %}
+    SHORT FILM CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 3-5 maximum (protagonist + supporting cast)
+    - Development Depth: Well-developed core traits and motivations
+    - Character Arc: Traditional character growth with clear progression
+    - Psychology: Primary and secondary motivations, key fears/desires
+    - Relationships: 2-3 meaningful relationships affecting story
+    - Dialogue Voice: Distinctive speech patterns and vocabulary
+    - Physical Description: Detailed appearance supporting character
+    - Backstory: Sufficient depth for character consistency
+    {% elif durationUnit <= 60 %}
+    MEDIUM FORMAT CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 4-8 (protagonist + developed supporting characters)
+    - Development Depth: Full psychological profiles with complexity
+    - Character Arc: Complete transformation with multiple growth phases
+    - Psychology: Complex motivations, fears, desires, and flaws
+    - Relationships: Multiple interconnected relationships
+    - Dialogue Voice: Rich, distinctive speech patterns
+    - Physical Description: Comprehensive appearance and mannerisms
+    - Backstory: Detailed history informing current behavior
+    {% elif durationUnit <= 120 %}
+    FEATURE LENGTH CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 6-12 (complex character ensemble)
+    - Development Depth: Deep psychological complexity and nuance
+    - Character Arc: Multi-layered transformation with setbacks and growth
+    - Psychology: Intricate psychological makeup with contradictions
+    - Relationships: Complex web of relationships affecting all characters
+    - Dialogue Voice: Highly distinctive and evolved speech patterns
+    - Physical Description: Detailed physical presence and evolution
+    - Backstory: Rich personal history with formative experiences
+    {% else %}
+    EXTENDED FORMAT CHARACTER REQUIREMENTS ({{ durationUnit }} minutes):
+    - Character Count: 8-20+ (epic ensemble with multiple protagonists)
+    - Development Depth: Epic character complexity across extended narrative
+    - Character Arc: Multiple transformation phases, generational changes
+    - Psychology: Deep psychological exploration with evolution over time
+    - Relationships: Extensive relationship networks across storylines
+    - Dialogue Voice: Evolving speech patterns showing character growth
+    - Physical Description: Physical evolution throughout extended narrative
+    - Backstory: Comprehensive personal histories spanning generations/time
+    {% endif %}
 
     PROJECT CONTEXT:
     - Project Name: {{ projectName }}

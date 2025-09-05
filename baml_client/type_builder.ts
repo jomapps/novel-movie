@@ -31,9 +31,31 @@ export default class TypeBuilder {
     
     ActStructure: ClassViewer<'ActStructure', "act1" | "act2" | "act3">;
     
-    CharacterArc: ClassViewer<'CharacterArc', "characterName" | "character" | "arcDescription" | "startingState" | "startState" | "endingState" | "endState" | "transformationProcess" | "transformation" | "keyMoments">;
+    AdaptiveAct: ClassViewer<'AdaptiveAct', "actNumber" | "name" | "description" | "duration" | "keyEvents" | "purpose">;
+    
+    Character: ClassViewer<'Character', "name" | "role" | "archetype" | "characterDevelopment" | "characterArc" | "physicalDescription" | "dialogueVoice" | "relationships" | "generationMetadata">;
+    
+    CharacterArc: ClassViewer<'CharacterArc', "startState" | "transformation" | "endState">;
+    
+    CharacterDevelopmentDetails: ClassViewer<'CharacterDevelopmentDetails', "biography" | "personality" | "motivations" | "backstory" | "psychology">;
+    
+    CharacterDevelopmentResponse: ClassViewer<'CharacterDevelopmentResponse', "characters" | "qualityMetrics" | "generationNotes">;
+    
+    CharacterGenerationMetadata: ClassViewer<'CharacterGenerationMetadata', "generatedAt" | "generationMethod" | "qualityScore" | "completeness">;
+    
+    CharacterPsychology: ClassViewer<'CharacterPsychology', "motivation" | "fears" | "desires" | "flaws">;
+    
+    CharacterQualityMetrics: ClassViewer<'CharacterQualityMetrics', "overallQuality" | "characterDepth" | "arcConsistency" | "relationshipClarity" | "dialogueDistinction" | "psychologicalRealism">;
+    
+    CharacterRelationship: ClassViewer<'CharacterRelationship', "character" | "relationship" | "dynamic">;
+    
+    DialogueVoice: ClassViewer<'DialogueVoice', "voiceDescription" | "style" | "patterns" | "vocabulary">;
     
     InitialStoryResponse: ClassViewer<'InitialStoryResponse', "storyContent" | "qualityMetrics" | "generationNotes">;
+    
+    NarrativeStructure: ClassViewer<'NarrativeStructure', "structureType" | "adaptiveActs" | "sequences" | "saveTheCatBeats">;
+    
+    PhysicalDescription: ClassViewer<'PhysicalDescription', "description" | "age" | "height" | "eyeColor" | "hairColor" | "clothing">;
     
     ProjectFieldsResponse: ClassViewer<'ProjectFieldsResponse', "projectTitle" | "shortDescription" | "longDescription">;
     
@@ -45,9 +67,13 @@ export default class TypeBuilder {
     
     QualityMetrics: ClassViewer<'QualityMetrics', "overallQuality" | "structureScore" | "characterDepth" | "coherenceScore" | "conflictTension" | "dialogueQuality" | "genreAlignment" | "audienceEngagement" | "visualStorytelling" | "productionReadiness">;
     
+    SaveTheCatBeat: ClassViewer<'SaveTheCatBeat', "beatNumber" | "name" | "description" | "pageNumber" | "timing" | "purpose">;
+    
+    SequenceStructure: ClassViewer<'SequenceStructure', "sequenceNumber" | "name" | "description" | "duration" | "miniMovieArc" | "keyBeats">;
+    
     StoryBeat: ClassViewer<'StoryBeat', "beatId" | "beat" | "timestamp" | "timing" | "description" | "charactersPresent" | "characters" | "emotionalTone">;
     
-    StoryStructureResponse: ClassViewer<'StoryStructureResponse', "actStructure" | "threeActStructure" | "storyBeats" | "characterArcs" | "subplots" | "qualityScore" | "qualityAssessment" | "generationNotes">;
+    StoryStructureResponse: ClassViewer<'StoryStructureResponse', "narrativeStructure" | "storyBeats" | "characterArcs" | "subplots" | "qualityScore" | "qualityAssessment" | "generationNotes">;
     
     StructureValidationResponse: ClassViewer<'StructureValidationResponse', "isReady" | "overallScore" | "strengths" | "weaknesses" | "recommendations" | "criticalIssues">;
     
@@ -58,7 +84,7 @@ export default class TypeBuilder {
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "Act","ActStructure","CharacterArc","InitialStoryResponse","ProjectFieldsResponse","QualityAssessment","QualityBreakdown","QualityMetric","QualityMetrics","StoryBeat","StoryStructureResponse","StructureValidationResponse","Subplot",
+            "Act","ActStructure","AdaptiveAct","Character","CharacterArc","CharacterDevelopmentDetails","CharacterDevelopmentResponse","CharacterGenerationMetadata","CharacterPsychology","CharacterQualityMetrics","CharacterRelationship","DialogueVoice","InitialStoryResponse","NarrativeStructure","PhysicalDescription","ProjectFieldsResponse","QualityAssessment","QualityBreakdown","QualityMetric","QualityMetrics","SaveTheCatBeat","SequenceStructure","StoryBeat","StoryStructureResponse","StructureValidationResponse","Subplot",
           ]),
           enums: new Set([
             
@@ -74,12 +100,56 @@ export default class TypeBuilder {
           "act1","act2","act3",
         ]);
         
+        this.AdaptiveAct = this.tb.classViewer("AdaptiveAct", [
+          "actNumber","name","description","duration","keyEvents","purpose",
+        ]);
+        
+        this.Character = this.tb.classViewer("Character", [
+          "name","role","archetype","characterDevelopment","characterArc","physicalDescription","dialogueVoice","relationships","generationMetadata",
+        ]);
+        
         this.CharacterArc = this.tb.classViewer("CharacterArc", [
-          "characterName","character","arcDescription","startingState","startState","endingState","endState","transformationProcess","transformation","keyMoments",
+          "startState","transformation","endState",
+        ]);
+        
+        this.CharacterDevelopmentDetails = this.tb.classViewer("CharacterDevelopmentDetails", [
+          "biography","personality","motivations","backstory","psychology",
+        ]);
+        
+        this.CharacterDevelopmentResponse = this.tb.classViewer("CharacterDevelopmentResponse", [
+          "characters","qualityMetrics","generationNotes",
+        ]);
+        
+        this.CharacterGenerationMetadata = this.tb.classViewer("CharacterGenerationMetadata", [
+          "generatedAt","generationMethod","qualityScore","completeness",
+        ]);
+        
+        this.CharacterPsychology = this.tb.classViewer("CharacterPsychology", [
+          "motivation","fears","desires","flaws",
+        ]);
+        
+        this.CharacterQualityMetrics = this.tb.classViewer("CharacterQualityMetrics", [
+          "overallQuality","characterDepth","arcConsistency","relationshipClarity","dialogueDistinction","psychologicalRealism",
+        ]);
+        
+        this.CharacterRelationship = this.tb.classViewer("CharacterRelationship", [
+          "character","relationship","dynamic",
+        ]);
+        
+        this.DialogueVoice = this.tb.classViewer("DialogueVoice", [
+          "voiceDescription","style","patterns","vocabulary",
         ]);
         
         this.InitialStoryResponse = this.tb.classViewer("InitialStoryResponse", [
           "storyContent","qualityMetrics","generationNotes",
+        ]);
+        
+        this.NarrativeStructure = this.tb.classViewer("NarrativeStructure", [
+          "structureType","adaptiveActs","sequences","saveTheCatBeats",
+        ]);
+        
+        this.PhysicalDescription = this.tb.classViewer("PhysicalDescription", [
+          "description","age","height","eyeColor","hairColor","clothing",
         ]);
         
         this.ProjectFieldsResponse = this.tb.classViewer("ProjectFieldsResponse", [
@@ -102,12 +172,20 @@ export default class TypeBuilder {
           "overallQuality","structureScore","characterDepth","coherenceScore","conflictTension","dialogueQuality","genreAlignment","audienceEngagement","visualStorytelling","productionReadiness",
         ]);
         
+        this.SaveTheCatBeat = this.tb.classViewer("SaveTheCatBeat", [
+          "beatNumber","name","description","pageNumber","timing","purpose",
+        ]);
+        
+        this.SequenceStructure = this.tb.classViewer("SequenceStructure", [
+          "sequenceNumber","name","description","duration","miniMovieArc","keyBeats",
+        ]);
+        
         this.StoryBeat = this.tb.classViewer("StoryBeat", [
           "beatId","beat","timestamp","timing","description","charactersPresent","characters","emotionalTone",
         ]);
         
         this.StoryStructureResponse = this.tb.classViewer("StoryStructureResponse", [
-          "actStructure","threeActStructure","storyBeats","characterArcs","subplots","qualityScore","qualityAssessment","generationNotes",
+          "narrativeStructure","storyBeats","characterArcs","subplots","qualityScore","qualityAssessment","generationNotes",
         ]);
         
         this.StructureValidationResponse = this.tb.classViewer("StructureValidationResponse", [

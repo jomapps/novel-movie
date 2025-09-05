@@ -22,7 +22,7 @@ import type { BamlRuntime, FunctionResult, BamlCtxManager, Image, Audio, Pdf, Vi
 import { toBamlError, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type * as types from "./types"
-import type {Act, ActStructure, CharacterArc, InitialStoryResponse, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
+import type {Act, ActStructure, AdaptiveAct, Character, CharacterArc, CharacterDevelopmentDetails, CharacterDevelopmentResponse, CharacterGenerationMetadata, CharacterPsychology, CharacterQualityMetrics, CharacterRelationship, DialogueVoice, InitialStoryResponse, NarrativeStructure, PhysicalDescription, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, SaveTheCatBeat, SequenceStructure, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
 import type TypeBuilder from "./type_builder"
 import { HttpRequest, HttpStreamRequest } from "./sync_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -112,6 +112,62 @@ export class BamlSyncClient {
         env,
       )
       return raw.parsed(false) as types.StoryStructureResponse
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DevelopCharacters(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],characterArcs: string[],storyBeats: string[],
+      __baml_options__?: BamlCallOptions
+  ): types.CharacterDevelopmentResponse {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.callFunctionSync(
+        "DevelopCharacters",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience,"characterArcs": characterArcs,"storyBeats": storyBeats
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterDevelopmentResponse
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      existingCharacters: string[],storyContent: string,focusAreas: string[],
+      __baml_options__?: BamlCallOptions
+  ): types.CharacterDevelopmentResponse {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.callFunctionSync(
+        "EnhanceCharacterProfiles",
+        {
+          "existingCharacters": existingCharacters,"storyContent": storyContent,"focusAreas": focusAreas
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterDevelopmentResponse
     } catch (error: any) {
       throw toBamlError(error);
     }
@@ -476,6 +532,34 @@ export class BamlSyncClient {
         env,
       )
       return raw.parsed(false) as string[]
+    } catch (error: any) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateCharacterConsistency(
+      characters: string[],storyBeats: string[],storyContent: string,
+      __baml_options__?: BamlCallOptions
+  ): types.CharacterQualityMetrics {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.callFunctionSync(
+        "ValidateCharacterConsistency",
+        {
+          "characters": characters,"storyBeats": storyBeats,"storyContent": storyContent
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterQualityMetrics
     } catch (error: any) {
       throw toBamlError(error);
     }

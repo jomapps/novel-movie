@@ -23,7 +23,7 @@ import { toBamlError } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Act, ActStructure, CharacterArc, InitialStoryResponse, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
+import type {Act, ActStructure, AdaptiveAct, Character, CharacterArc, CharacterDevelopmentDetails, CharacterDevelopmentResponse, CharacterGenerationMetadata, CharacterPsychology, CharacterQualityMetrics, CharacterRelationship, DialogueVoice, InitialStoryResponse, NarrativeStructure, PhysicalDescription, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, SaveTheCatBeat, SequenceStructure, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
 import type TypeBuilder from "./type_builder"
 
 export class LlmResponseParser {
@@ -48,6 +48,52 @@ export class LlmResponseParser {
         __baml_options__?.clientRegistry,
         env,
       ) as types.StoryStructureResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DevelopCharacters(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): types.CharacterDevelopmentResponse {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "DevelopCharacters",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as types.CharacterDevelopmentResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): types.CharacterDevelopmentResponse {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "EnhanceCharacterProfiles",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as types.CharacterDevelopmentResponse
     } catch (error) {
       throw toBamlError(error);
     }
@@ -352,6 +398,29 @@ export class LlmResponseParser {
     }
   }
   
+  ValidateCharacterConsistency(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): types.CharacterQualityMetrics {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "ValidateCharacterConsistency",
+        llmResponse,
+        false,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as types.CharacterQualityMetrics
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   ValidateStructureForScreenplay(
       llmResponse: string,
       __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
@@ -399,6 +468,52 @@ export class LlmStreamParser {
         __baml_options__?.clientRegistry,
         env,
       ) as partial_types.StoryStructureResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DevelopCharacters(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): partial_types.CharacterDevelopmentResponse {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "DevelopCharacters",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as partial_types.CharacterDevelopmentResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): partial_types.CharacterDevelopmentResponse {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "EnhanceCharacterProfiles",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as partial_types.CharacterDevelopmentResponse
     } catch (error) {
       throw toBamlError(error);
     }
@@ -698,6 +813,29 @@ export class LlmStreamParser {
         __baml_options__?.clientRegistry,
         env,
       ) as string[]
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateCharacterConsistency(
+      llmResponse: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, env?: Record<string, string | undefined> }
+  ): partial_types.CharacterQualityMetrics {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.parseLlmResponse(
+        "ValidateCharacterConsistency",
+        llmResponse,
+        true,
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        env,
+      ) as partial_types.CharacterQualityMetrics
     } catch (error) {
       throw toBamlError(error);
     }

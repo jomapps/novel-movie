@@ -1004,7 +1004,87 @@ export interface StoryStructure {
    */
   story: string | Story;
   /**
-   * Traditional three-act story structure breakdown
+   * Type of narrative structure used based on duration
+   */
+  narrativeStructureType?:
+    | (
+        | 'single-moment'
+        | 'compressed-three-act'
+        | 'traditional-three-act'
+        | 'five-act'
+        | 'save-the-cat'
+        | 'eight-sequence'
+      )
+    | null;
+  /**
+   * Duration-adaptive narrative structure data
+   */
+  adaptiveStructure?: {
+    /**
+     * Structure type identifier
+     */
+    structureType?: string | null;
+    /**
+     * Adaptive acts based on structure type
+     */
+    acts?:
+      | {
+          actNumber: number;
+          name: string;
+          description?: string | null;
+          /**
+           * Duration in minutes
+           */
+          duration?: number | null;
+          keyEvents?:
+            | {
+                event: string;
+                id?: string | null;
+              }[]
+            | null;
+          purpose?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Eight-sequence structure data (for extended formats)
+     */
+    sequences?:
+      | {
+          sequenceNumber: number;
+          name: string;
+          description?: string | null;
+          duration?: number | null;
+          miniMovieArc?: string | null;
+          keyBeats?:
+            | {
+                beat: string;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Save the Cat beat sheet data (for feature films)
+     */
+    saveTheCatBeats?:
+      | {
+          beatNumber: number;
+          name: string;
+          description?: string | null;
+          pageNumber?: number | null;
+          /**
+           * Timing in minutes
+           */
+          timing?: number | null;
+          purpose?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Legacy three-act structure (for backward compatibility)
    */
   actStructure?: {
     act1?: {
@@ -1173,6 +1253,100 @@ export interface StoryStructure {
      * Notes from the AI generation process
      */
     generationNotes?: string | null;
+  };
+  /**
+   * Duration-adaptive compliance and validation data
+   */
+  durationCompliance?: {
+    /**
+     * Duration format category (Micro-format, Ultra-short, etc.)
+     */
+    formatCategory?: string | null;
+    /**
+     * Target duration in minutes
+     */
+    targetDuration?: number | null;
+    /**
+     * Whether structure meets duration format requirements
+     */
+    isCompliant?: boolean | null;
+    /**
+     * Appropriate complexity level for duration
+     */
+    complexityLevel?: ('minimal' | 'simple' | 'moderate' | 'complex' | 'epic') | null;
+    /**
+     * Format-specific constraints applied
+     */
+    constraints?: {
+      /**
+       * Maximum recommended story beats
+       */
+      maxStoryBeats?: number | null;
+      /**
+       * Maximum recommended characters
+       */
+      maxCharacters?: number | null;
+      /**
+       * Maximum recommended locations
+       */
+      maxLocations?: number | null;
+      /**
+       * Maximum recommended subplots
+       */
+      maxSubplots?: number | null;
+      /**
+       * Recommended beats per minute pacing
+       */
+      beatsPerMinute?: number | null;
+    };
+    /**
+     * Actual structure metrics
+     */
+    actualMetrics?: {
+      /**
+       * Actual number of story beats
+       */
+      storyBeatsCount?: number | null;
+      /**
+       * Actual number of main characters
+       */
+      characterCount?: number | null;
+      /**
+       * Actual number of subplots
+       */
+      subplotCount?: number | null;
+      /**
+       * Actual beats per minute pacing
+       */
+      averageBeatsPerMinute?: number | null;
+    };
+    /**
+     * Duration compliance warnings
+     */
+    warnings?:
+      | {
+          warning: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Recommendations for improvement
+     */
+    recommendations?:
+      | {
+          recommendation: string;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Format-specific pacing guidelines
+     */
+    pacingGuidelines?:
+      | {
+          guideline: string;
+          id?: string | null;
+        }[]
+      | null;
   };
   /**
    * Current status of the story structure
@@ -2146,6 +2320,55 @@ export interface StoryStructuresSelect<T extends boolean = true> {
   project?: T;
   projectName?: T;
   story?: T;
+  narrativeStructureType?: T;
+  adaptiveStructure?:
+    | T
+    | {
+        structureType?: T;
+        acts?:
+          | T
+          | {
+              actNumber?: T;
+              name?: T;
+              description?: T;
+              duration?: T;
+              keyEvents?:
+                | T
+                | {
+                    event?: T;
+                    id?: T;
+                  };
+              purpose?: T;
+              id?: T;
+            };
+        sequences?:
+          | T
+          | {
+              sequenceNumber?: T;
+              name?: T;
+              description?: T;
+              duration?: T;
+              miniMovieArc?: T;
+              keyBeats?:
+                | T
+                | {
+                    beat?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        saveTheCatBeats?:
+          | T
+          | {
+              beatNumber?: T;
+              name?: T;
+              description?: T;
+              pageNumber?: T;
+              timing?: T;
+              purpose?: T;
+              id?: T;
+            };
+      };
   actStructure?:
     | T
     | {
@@ -2225,6 +2448,49 @@ export interface StoryStructuresSelect<T extends boolean = true> {
         processingTime?: T;
         qualityScore?: T;
         generationNotes?: T;
+      };
+  durationCompliance?:
+    | T
+    | {
+        formatCategory?: T;
+        targetDuration?: T;
+        isCompliant?: T;
+        complexityLevel?: T;
+        constraints?:
+          | T
+          | {
+              maxStoryBeats?: T;
+              maxCharacters?: T;
+              maxLocations?: T;
+              maxSubplots?: T;
+              beatsPerMinute?: T;
+            };
+        actualMetrics?:
+          | T
+          | {
+              storyBeatsCount?: T;
+              characterCount?: T;
+              subplotCount?: T;
+              averageBeatsPerMinute?: T;
+            };
+        warnings?:
+          | T
+          | {
+              warning?: T;
+              id?: T;
+            };
+        recommendations?:
+          | T
+          | {
+              recommendation?: T;
+              id?: T;
+            };
+        pacingGuidelines?:
+          | T
+          | {
+              guideline?: T;
+              id?: T;
+            };
       };
   status?: T;
   updatedAt?: T;

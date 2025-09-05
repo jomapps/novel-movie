@@ -20,7 +20,7 @@ $ pnpm add @boundaryml/baml
 
 import type { Image, Audio, Pdf, Video } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
-import type {  Act,  ActStructure,  CharacterArc,  InitialStoryResponse,  ProjectFieldsResponse,  QualityAssessment,  QualityBreakdown,  QualityMetric,  QualityMetrics,  StoryBeat,  StoryStructureResponse,  StructureValidationResponse,  Subplot } from "./types"
+import type {  Act,  ActStructure,  AdaptiveAct,  Character,  CharacterArc,  CharacterDevelopmentDetails,  CharacterDevelopmentResponse,  CharacterGenerationMetadata,  CharacterPsychology,  CharacterQualityMetrics,  CharacterRelationship,  DialogueVoice,  InitialStoryResponse,  NarrativeStructure,  PhysicalDescription,  ProjectFieldsResponse,  QualityAssessment,  QualityBreakdown,  QualityMetric,  QualityMetrics,  SaveTheCatBeat,  SequenceStructure,  StoryBeat,  StoryStructureResponse,  StructureValidationResponse,  Subplot } from "./types"
 import type * as types from "./types"
 
 /******************************************************************************
@@ -53,22 +53,91 @@ export namespace partial_types {
       act2?: Act | null
       act3?: Act | null
     }
+    export interface AdaptiveAct {
+      actNumber?: number | null
+      name?: string | null
+      description?: string | null
+      duration?: number | null
+      keyEvents: string[]
+      purpose?: string | null
+    }
+    export interface Character {
+      name?: string | null
+      role?: string | null
+      archetype?: string | null
+      characterDevelopment?: CharacterDevelopmentDetails | null
+      characterArc?: CharacterArc | null
+      physicalDescription?: PhysicalDescription | null
+      dialogueVoice?: DialogueVoice | null
+      relationships: CharacterRelationship[]
+      generationMetadata?: CharacterGenerationMetadata | null
+    }
     export interface CharacterArc {
-      characterName?: string | null
-      character?: string | null
-      arcDescription?: string | null
-      startingState?: string | null
       startState?: string | null
-      endingState?: string | null
-      endState?: string | null
-      transformationProcess?: string | null
       transformation?: string | null
-      keyMoments: string[]
+      endState?: string | null
+    }
+    export interface CharacterDevelopmentDetails {
+      biography?: string | null
+      personality?: string | null
+      motivations?: string | null
+      backstory?: string | null
+      psychology?: CharacterPsychology | null
+    }
+    export interface CharacterDevelopmentResponse {
+      characters: Character[]
+      qualityMetrics?: CharacterQualityMetrics | null
+      generationNotes?: string | null
+    }
+    export interface CharacterGenerationMetadata {
+      generatedAt?: string | null
+      generationMethod?: string | null
+      qualityScore?: number | null
+      completeness?: number | null
+    }
+    export interface CharacterPsychology {
+      motivation?: string | null
+      fears?: string | null
+      desires?: string | null
+      flaws?: string | null
+    }
+    export interface CharacterQualityMetrics {
+      overallQuality?: number | null
+      characterDepth?: number | null
+      arcConsistency?: number | null
+      relationshipClarity?: number | null
+      dialogueDistinction?: number | null
+      psychologicalRealism?: number | null
+    }
+    export interface CharacterRelationship {
+      character?: string | null
+      relationship?: string | null
+      dynamic?: string | null
+    }
+    export interface DialogueVoice {
+      voiceDescription?: string | null
+      style?: string | null
+      patterns?: string | null
+      vocabulary?: string | null
     }
     export interface InitialStoryResponse {
       storyContent?: string | null
       qualityMetrics?: QualityMetrics | null
       generationNotes?: string | null
+    }
+    export interface NarrativeStructure {
+      structureType?: string | null
+      adaptiveActs: AdaptiveAct[]
+      sequences?: SequenceStructure[] | null
+      saveTheCatBeats?: SaveTheCatBeat[] | null
+    }
+    export interface PhysicalDescription {
+      description?: string | null
+      age?: number | null
+      height?: string | null
+      eyeColor?: string | null
+      hairColor?: string | null
+      clothing?: string | null
     }
     export interface ProjectFieldsResponse {
       projectTitle?: string | null
@@ -102,6 +171,22 @@ export namespace partial_types {
       visualStorytelling?: number | null
       productionReadiness?: number | null
     }
+    export interface SaveTheCatBeat {
+      beatNumber?: number | null
+      name?: string | null
+      description?: string | null
+      pageNumber?: number | null
+      timing?: number | null
+      purpose?: string | null
+    }
+    export interface SequenceStructure {
+      sequenceNumber?: number | null
+      name?: string | null
+      description?: string | null
+      duration?: number | null
+      miniMovieArc?: string | null
+      keyBeats: string[]
+    }
     export interface StoryBeat {
       beatId?: number | null
       beat?: string | null
@@ -113,8 +198,7 @@ export namespace partial_types {
       emotionalTone?: string | null
     }
     export interface StoryStructureResponse {
-      actStructure?: ActStructure | null
-      threeActStructure?: ActStructure | null
+      narrativeStructure?: NarrativeStructure | null
       storyBeats: StoryBeat[]
       characterArcs: CharacterArc[]
       subplots: Subplot[]

@@ -358,7 +358,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                   {/* Act 1 */}
                   <div className="border border-gray-200 rounded-lg p-4">
                     <h5 className="font-medium text-gray-800 mb-2">
-                      Act 1 - Setup ({storyStructure.actStructure?.act1?.duration || 0} min)
+                      Act 1 - Setup ({storyStructure.actStructure?.act1?.duration || 0}
+                      {project.durationUnit < 10 ? 's' : ' min'})
                     </h5>
                     <div className="space-y-2 text-sm text-gray-600">
                       {storyStructure.actStructure?.act1?.setup && (
@@ -384,7 +385,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                   {/* Act 2 */}
                   <div className="border border-gray-200 rounded-lg p-4">
                     <h5 className="font-medium text-gray-800 mb-2">
-                      Act 2 - Confrontation ({storyStructure.actStructure?.act2?.duration || 0} min)
+                      Act 2 - Confrontation ({storyStructure.actStructure?.act2?.duration || 0}
+                      {project.durationUnit < 10 ? 's' : ' min'})
                     </h5>
                     <div className="space-y-2 text-sm text-gray-600">
                       {storyStructure.actStructure?.act2?.confrontation && (
@@ -410,7 +412,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                   {/* Act 3 */}
                   <div className="border border-gray-200 rounded-lg p-4">
                     <h5 className="font-medium text-gray-800 mb-2">
-                      Act 3 - Resolution ({storyStructure.actStructure?.act3?.duration || 0} min)
+                      Act 3 - Resolution ({storyStructure.actStructure?.act3?.duration || 0}
+                      {project.durationUnit < 10 ? 's' : ' min'})
                     </h5>
                     <div className="space-y-2 text-sm text-gray-600">
                       {storyStructure.actStructure?.act3?.climax && (
@@ -444,7 +447,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                     {storyStructure.storyBeats.slice(0, 5).map((beat: any, index: number) => (
                       <div key={index} className="border-l-4 border-blue-200 pl-4 py-2">
                         <div className="font-medium text-sm">
-                          {beat.beat} ({beat.timing}min)
+                          {beat.beat} ({beat.timing}
+                          {project.durationUnit < 10 ? 's' : 'min'})
                         </div>
                         <div className="text-sm text-gray-600">{beat.description}</div>
                         {beat.emotionalTone && (

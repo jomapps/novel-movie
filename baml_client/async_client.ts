@@ -23,7 +23,7 @@ import { toBamlError, BamlStream, type HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check, RecursivePartialNull as MovedRecursivePartialNull } from "./types"
 import type { partial_types } from "./partial_types"
 import type * as types from "./types"
-import type {Act, ActStructure, CharacterArc, InitialStoryResponse, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
+import type {Act, ActStructure, AdaptiveAct, Character, CharacterArc, CharacterDevelopmentDetails, CharacterDevelopmentResponse, CharacterGenerationMetadata, CharacterPsychology, CharacterQualityMetrics, CharacterRelationship, DialogueVoice, InitialStoryResponse, NarrativeStructure, PhysicalDescription, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, SaveTheCatBeat, SequenceStructure, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
 import type TypeBuilder from "./type_builder"
 import { AsyncHttpRequest, AsyncHttpStreamRequest } from "./async_request"
 import { LlmResponseParser, LlmStreamParser } from "./parser"
@@ -110,6 +110,62 @@ export class BamlAsyncClient {
         env,
       )
       return raw.parsed(false) as types.StoryStructureResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async DevelopCharacters(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],characterArcs: string[],storyBeats: string[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<types.CharacterDevelopmentResponse> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = await this.runtime.callFunction(
+        "DevelopCharacters",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience,"characterArcs": characterArcs,"storyBeats": storyBeats
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterDevelopmentResponse
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  async EnhanceCharacterProfiles(
+      existingCharacters: string[],storyContent: string,focusAreas: string[],
+      __baml_options__?: BamlCallOptions
+  ): Promise<types.CharacterDevelopmentResponse> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = await this.runtime.callFunction(
+        "EnhanceCharacterProfiles",
+        {
+          "existingCharacters": existingCharacters,"storyContent": storyContent,"focusAreas": focusAreas
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterDevelopmentResponse
     } catch (error) {
       throw toBamlError(error);
     }
@@ -479,6 +535,34 @@ export class BamlAsyncClient {
     }
   }
   
+  async ValidateCharacterConsistency(
+      characters: string[],storyBeats: string[],storyContent: string,
+      __baml_options__?: BamlCallOptions
+  ): Promise<types.CharacterQualityMetrics> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = await this.runtime.callFunction(
+        "ValidateCharacterConsistency",
+        {
+          "characters": characters,"storyBeats": storyBeats,"storyContent": storyContent
+        },
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return raw.parsed(false) as types.CharacterQualityMetrics
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   async ValidateStructureForScreenplay(
       storyStructure: string,targetDuration: number,movieFormat: string,
       __baml_options__?: BamlCallOptions
@@ -548,6 +632,74 @@ class BamlStreamClient {
         raw,
         (a): partial_types.StoryStructureResponse => a,
         (a): types.StoryStructureResponse => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  DevelopCharacters(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],characterArcs: string[],storyBeats: string[],
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[], env?: Record<string, string | undefined> }
+  ): BamlStream<partial_types.CharacterDevelopmentResponse, types.CharacterDevelopmentResponse> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.streamFunction(
+        "DevelopCharacters",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience,"characterArcs": characterArcs,"storyBeats": storyBeats
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return new BamlStream<partial_types.CharacterDevelopmentResponse, types.CharacterDevelopmentResponse>(
+        raw,
+        (a): partial_types.CharacterDevelopmentResponse => a,
+        (a): types.CharacterDevelopmentResponse => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceCharacterProfiles(
+      existingCharacters: string[],storyContent: string,focusAreas: string[],
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[], env?: Record<string, string | undefined> }
+  ): BamlStream<partial_types.CharacterDevelopmentResponse, types.CharacterDevelopmentResponse> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.streamFunction(
+        "EnhanceCharacterProfiles",
+        {
+          "existingCharacters": existingCharacters,"storyContent": storyContent,"focusAreas": focusAreas
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return new BamlStream<partial_types.CharacterDevelopmentResponse, types.CharacterDevelopmentResponse>(
+        raw,
+        (a): partial_types.CharacterDevelopmentResponse => a,
+        (a): types.CharacterDevelopmentResponse => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {
@@ -990,6 +1142,40 @@ class BamlStreamClient {
         raw,
         (a): string[] => a,
         (a): string[] => a,
+        this.ctxManager.cloneContext(),
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateCharacterConsistency(
+      characters: string[],storyBeats: string[],storyContent: string,
+      __baml_options__?: { tb?: TypeBuilder, clientRegistry?: ClientRegistry, collector?: Collector | Collector[], env?: Record<string, string | undefined> }
+  ): BamlStream<partial_types.CharacterQualityMetrics, types.CharacterQualityMetrics> {
+    try {
+      const options = { ...this.bamlOptions, ...(__baml_options__ || {}) }
+      const collector = options.collector ? (Array.isArray(options.collector) ? options.collector : [options.collector]) : [];
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      const raw = this.runtime.streamFunction(
+        "ValidateCharacterConsistency",
+        {
+          "characters": characters,"storyBeats": storyBeats,"storyContent": storyContent
+        },
+        undefined,
+        this.ctxManager.cloneContext(),
+        options.tb?.__tb(),
+        options.clientRegistry,
+        collector,
+        env,
+      )
+      return new BamlStream<partial_types.CharacterQualityMetrics, types.CharacterQualityMetrics>(
+        raw,
+        (a): partial_types.CharacterQualityMetrics => a,
+        (a): types.CharacterQualityMetrics => a,
         this.ctxManager.cloneContext(),
       )
     } catch (error) {

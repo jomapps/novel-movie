@@ -24,7 +24,7 @@ const StoryStructures: CollectionConfig = {
         description: 'Associated project for this story structure',
       },
     },
-    
+
     // Auto-populated project name for easier identification
     {
       name: 'projectName',
@@ -46,12 +46,174 @@ const StoryStructures: CollectionConfig = {
       },
     },
 
-    // Three-Act Structure
+    // Narrative Structure Type
+    {
+      name: 'narrativeStructureType',
+      type: 'select',
+      options: [
+        { label: 'Single Moment', value: 'single-moment' },
+        { label: 'Compressed Three-Act', value: 'compressed-three-act' },
+        { label: 'Traditional Three-Act', value: 'traditional-three-act' },
+        { label: 'Five-Act Structure', value: 'five-act' },
+        { label: 'Save the Cat Beat Sheet', value: 'save-the-cat' },
+        { label: 'Eight-Sequence Structure', value: 'eight-sequence' },
+      ],
+      admin: {
+        description: 'Type of narrative structure used based on duration',
+        readOnly: true,
+      },
+    },
+
+    // Adaptive Structure Data
+    {
+      name: 'adaptiveStructure',
+      type: 'group',
+      admin: {
+        description: 'Duration-adaptive narrative structure data',
+      },
+      fields: [
+        {
+          name: 'structureType',
+          type: 'text',
+          admin: {
+            description: 'Structure type identifier',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'acts',
+          type: 'array',
+          admin: {
+            description: 'Adaptive acts based on structure type',
+          },
+          fields: [
+            {
+              name: 'actNumber',
+              type: 'number',
+              required: true,
+            },
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'description',
+              type: 'textarea',
+            },
+            {
+              name: 'duration',
+              type: 'number',
+              admin: {
+                description: 'Duration in minutes',
+              },
+            },
+            {
+              name: 'keyEvents',
+              type: 'array',
+              fields: [
+                {
+                  name: 'event',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+            {
+              name: 'purpose',
+              type: 'text',
+            },
+          ],
+        },
+        {
+          name: 'sequences',
+          type: 'array',
+          admin: {
+            description: 'Eight-sequence structure data (for extended formats)',
+          },
+          fields: [
+            {
+              name: 'sequenceNumber',
+              type: 'number',
+              required: true,
+            },
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'description',
+              type: 'textarea',
+            },
+            {
+              name: 'duration',
+              type: 'number',
+            },
+            {
+              name: 'miniMovieArc',
+              type: 'text',
+            },
+            {
+              name: 'keyBeats',
+              type: 'array',
+              fields: [
+                {
+                  name: 'beat',
+                  type: 'text',
+                  required: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          name: 'saveTheCatBeats',
+          type: 'array',
+          admin: {
+            description: 'Save the Cat beat sheet data (for feature films)',
+          },
+          fields: [
+            {
+              name: 'beatNumber',
+              type: 'number',
+              required: true,
+            },
+            {
+              name: 'name',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'description',
+              type: 'textarea',
+            },
+            {
+              name: 'pageNumber',
+              type: 'number',
+            },
+            {
+              name: 'timing',
+              type: 'number',
+              admin: {
+                description: 'Timing in minutes',
+              },
+            },
+            {
+              name: 'purpose',
+              type: 'text',
+            },
+          ],
+        },
+      ],
+    },
+
+    // Legacy Three-Act Structure (for backward compatibility)
     {
       name: 'actStructure',
       type: 'group',
       admin: {
-        description: 'Traditional three-act story structure breakdown',
+        description: 'Legacy three-act structure (for backward compatibility)',
       },
       fields: [
         // Act 1
@@ -90,7 +252,7 @@ const StoryStructures: CollectionConfig = {
             },
           ],
         },
-        
+
         // Act 2
         {
           name: 'act2',
@@ -127,7 +289,7 @@ const StoryStructures: CollectionConfig = {
             },
           ],
         },
-        
+
         // Act 3
         {
           name: 'act3',
@@ -272,7 +434,7 @@ const StoryStructures: CollectionConfig = {
           name: 'keyMoments',
           type: 'array',
           admin: {
-            description: 'Key moments in this character\'s arc',
+            description: "Key moments in this character's arc",
           },
           fields: [
             {
@@ -374,6 +536,190 @@ const StoryStructures: CollectionConfig = {
       ],
     },
 
+    // Duration compliance tracking
+    {
+      name: 'durationCompliance',
+      type: 'group',
+      admin: {
+        description: 'Duration-adaptive compliance and validation data',
+      },
+      fields: [
+        {
+          name: 'formatCategory',
+          type: 'text',
+          admin: {
+            description: 'Duration format category (Micro-format, Ultra-short, etc.)',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'targetDuration',
+          type: 'number',
+          admin: {
+            description: 'Target duration in minutes',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'isCompliant',
+          type: 'checkbox',
+          admin: {
+            description: 'Whether structure meets duration format requirements',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'complexityLevel',
+          type: 'select',
+          options: [
+            { label: 'Minimal', value: 'minimal' },
+            { label: 'Simple', value: 'simple' },
+            { label: 'Moderate', value: 'moderate' },
+            { label: 'Complex', value: 'complex' },
+            { label: 'Epic', value: 'epic' },
+          ],
+          admin: {
+            description: 'Appropriate complexity level for duration',
+            readOnly: true,
+          },
+        },
+        {
+          name: 'constraints',
+          type: 'group',
+          admin: {
+            description: 'Format-specific constraints applied',
+          },
+          fields: [
+            {
+              name: 'maxStoryBeats',
+              type: 'number',
+              admin: {
+                description: 'Maximum recommended story beats',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'maxCharacters',
+              type: 'number',
+              admin: {
+                description: 'Maximum recommended characters',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'maxLocations',
+              type: 'number',
+              admin: {
+                description: 'Maximum recommended locations',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'maxSubplots',
+              type: 'number',
+              admin: {
+                description: 'Maximum recommended subplots',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'beatsPerMinute',
+              type: 'number',
+              admin: {
+                description: 'Recommended beats per minute pacing',
+                readOnly: true,
+                step: 0.1,
+              },
+            },
+          ],
+        },
+        {
+          name: 'actualMetrics',
+          type: 'group',
+          admin: {
+            description: 'Actual structure metrics',
+          },
+          fields: [
+            {
+              name: 'storyBeatsCount',
+              type: 'number',
+              admin: {
+                description: 'Actual number of story beats',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'characterCount',
+              type: 'number',
+              admin: {
+                description: 'Actual number of main characters',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'subplotCount',
+              type: 'number',
+              admin: {
+                description: 'Actual number of subplots',
+                readOnly: true,
+              },
+            },
+            {
+              name: 'averageBeatsPerMinute',
+              type: 'number',
+              admin: {
+                description: 'Actual beats per minute pacing',
+                readOnly: true,
+                step: 0.1,
+              },
+            },
+          ],
+        },
+        {
+          name: 'warnings',
+          type: 'array',
+          admin: {
+            description: 'Duration compliance warnings',
+          },
+          fields: [
+            {
+              name: 'warning',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+        {
+          name: 'recommendations',
+          type: 'array',
+          admin: {
+            description: 'Recommendations for improvement',
+          },
+          fields: [
+            {
+              name: 'recommendation',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+        {
+          name: 'pacingGuidelines',
+          type: 'array',
+          admin: {
+            description: 'Format-specific pacing guidelines',
+          },
+          fields: [
+            {
+              name: 'guideline',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
+
     // Status tracking
     {
       name: 'status',
@@ -391,7 +737,7 @@ const StoryStructures: CollectionConfig = {
       },
     },
   ],
-  
+
   // Auto-populate project name
   hooks: {
     beforeChange: [
