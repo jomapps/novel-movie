@@ -138,11 +138,12 @@ function StepContent({
 export default function ScreenplayContent({ project, story }: ScreenplayContentProps) {
   const [activeStep, setActiveStep] = useState<string | null>(null)
   const [storyStructure, setStoryStructure] = useState<any>(null)
+  const [characters, setCharacters] = useState<any>(null)
   const [stepStatuses, setStepStatuses] = useState<Record<string, string>>({
     'story-foundation': 'completed',
   })
 
-  // Fetch existing story structure on component mount
+  // Fetch existing story structure and characters on component mount
   useEffect(() => {
     const fetchStoryStructure = async () => {
       try {
@@ -160,7 +161,24 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
       }
     }
 
+    const fetchCharacters = async () => {
+      try {
+        const response = await fetch(`/v1/projects/${project.id}/character-development`)
+        if (response.ok) {
+          const characterData = await response.json()
+          setCharacters(characterData)
+          setStepStatuses((prev) => ({
+            ...prev,
+            'character-development': 'completed',
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching characters:', error)
+      }
+    }
+
     fetchStoryStructure()
+    fetchCharacters()
   }, [project.id])
 
   const handleStepExecution = async (stepId: string) => {
@@ -186,6 +204,26 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
         setStepStatuses((prev) => ({
           ...prev,
           'story-structure': 'completed',
+        }))
+      } else if (stepId === 'character-development') {
+        // Generate character development
+        const response = await fetch(`/v1/projects/${project.id}/character-development`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to develop characters')
+        }
+
+        const characters = await response.json()
+        setCharacters(characters)
+        setStepStatuses((prev) => ({
+          ...prev,
+          'character-development': 'completed',
         }))
       } else {
         // For other steps, just simulate for now
@@ -469,7 +507,46 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
           status={getStepStatus('character-development')}
           isAvailable={isStepAvailable('character-development')}
           onExecute={() => handleStepExecution('character-development')}
-        />
+        >
+          {characters && (
+            <div className="mt-4 space-y-4">
+              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                <h4 className="font-medium text-green-800 mb-2">Character Development Complete</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-green-700">Total Characters:</span>
+                    <span className="ml-2 font-medium">
+                      {characters.totalCharacters || characters.characters?.length || 0}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-green-700">Average Quality:</span>
+                    <span className="ml-2 font-medium">
+                      {characters.summary?.averageQuality ||
+                        characters.qualityMetrics?.overallQuality ||
+                        'N/A'}
+                    </span>
+                  </div>
+                </div>
+                {characters.characters && characters.characters.length > 0 && (
+                  <div className="mt-3">
+                    <span className="text-green-700 text-sm">Characters:</span>
+                    <div className="flex flex-wrap gap-2 mt-1">
+                      {characters.characters.map((char: any, index: number) => (
+                        <span
+                          key={index}
+                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                        >
+                          {char.name} ({char.role})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </StepContent>
 
         {/* Story Outline Creation */}
         <StepContent

@@ -16,6 +16,7 @@ import { Series } from './collections/Series'
 
 import { Stories } from './collections/Stories'
 import StoryStructures from './collections/StoryStructures'
+import { Characters } from './collections/Characters'
 import { FundamentalData } from './collections/FundamentalData'
 import { Genres } from './collections/Genres'
 import { AudienceDemographics } from './collections/AudienceDemographics'
@@ -44,6 +45,7 @@ export default buildConfig({
 
     Stories,
     StoryStructures,
+    Characters,
     FundamentalData,
     Genres,
     AudienceDemographics,

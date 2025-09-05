@@ -39,8 +39,9 @@ interface ScreenplayStatusSidebarProps {
 
 export default function ScreenplayStatusSidebar({ project, story }: ScreenplayStatusSidebarProps) {
   const [storyStructure, setStoryStructure] = useState<any>(null)
+  const [characters, setCharacters] = useState<any>(null)
 
-  // Fetch story structure status
+  // Fetch story structure and character status
   useEffect(() => {
     const fetchStoryStructure = async () => {
       try {
@@ -54,7 +55,20 @@ export default function ScreenplayStatusSidebar({ project, story }: ScreenplaySt
       }
     }
 
+    const fetchCharacters = async () => {
+      try {
+        const response = await fetch(`/v1/projects/${project.id}/character-development`)
+        if (response.ok) {
+          const characterData = await response.json()
+          setCharacters(characterData)
+        }
+      } catch (error) {
+        console.error('Error fetching characters:', error)
+      }
+    }
+
     fetchStoryStructure()
+    fetchCharacters()
   }, [project.id])
 
   // Define the screenplay generation workflow steps
@@ -93,10 +107,17 @@ export default function ScreenplayStatusSidebar({ project, story }: ScreenplaySt
         id: 'character-development',
         label: 'Character Development',
         description: 'Detailed character profiles, relationships, dialogue voice',
-        status: 'not-started', // TODO: Check actual status from database
+        status: characters ? 'completed' : 'not-started',
         icon: <Users className="w-4 h-4" />,
         dependencies: ['story-structure'],
         estimatedTime: '10-15 min',
+        metrics: characters
+          ? {
+              score:
+                characters.summary?.averageQuality || characters.qualityMetrics?.overallQuality,
+              details: `${characters.totalCharacters || characters.characters?.length || 0} characters, ${characters.summary?.charactersByRole ? Object.keys(characters.summary.charactersByRole).length : 0} roles`,
+            }
+          : undefined,
       },
       {
         id: 'story-outline',

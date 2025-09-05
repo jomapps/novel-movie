@@ -75,6 +75,7 @@ export interface Config {
     series: Series;
     stories: Story;
     'story-structures': StoryStructure;
+    characters: Character;
     'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
@@ -96,6 +97,7 @@ export interface Config {
     series: SeriesSelect<false> | SeriesSelect<true>;
     stories: StoriesSelect<false> | StoriesSelect<true>;
     'story-structures': StoryStructuresSelect<false> | StoryStructuresSelect<true>;
+    characters: CharactersSelect<false> | CharactersSelect<true>;
     'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
@@ -1180,6 +1182,288 @@ export interface StoryStructure {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters".
+ */
+export interface Character {
+  id: string;
+  /**
+   * Associated project for this character
+   */
+  project: string | Project;
+  /**
+   * Auto-populated from project name
+   */
+  projectName?: string | null;
+  /**
+   * Associated story structure for character arc development
+   */
+  storyStructure?: (string | null) | StoryStructure;
+  /**
+   * Character name
+   */
+  name: string;
+  /**
+   * Character development status
+   */
+  status: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived';
+  /**
+   * Character role in the story
+   */
+  role: 'protagonist' | 'antagonist' | 'supporting' | 'minor';
+  /**
+   * Character archetype (e.g., Hero, Mentor, Trickster)
+   */
+  archetype?: string | null;
+  /**
+   * Core character development information
+   */
+  characterDevelopment?: {
+    /**
+     * Character background and history
+     */
+    biography?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Personality traits and characteristics
+     */
+    personality?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Character motivations and goals
+     */
+    motivations?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Character backstory and formative experiences
+     */
+    backstory?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    psychology?: {
+      /**
+       * Primary motivation driving the character
+       */
+      motivation?: string | null;
+      /**
+       * Character fears and anxieties
+       */
+      fears?: string | null;
+      /**
+       * Character desires and wants
+       */
+      desires?: string | null;
+      /**
+       * Character flaws and weaknesses
+       */
+      flaws?: string | null;
+    };
+  };
+  /**
+   * Character transformation throughout the story
+   */
+  characterArc?: {
+    /**
+     * Character state at the beginning of the story
+     */
+    startState?: string | null;
+    /**
+     * How the character changes throughout the story
+     */
+    transformation?: string | null;
+    /**
+     * Character state at the end of the story
+     */
+    endState?: string | null;
+  };
+  /**
+   * Character physical appearance
+   */
+  physicalDescription?: {
+    /**
+     * Overall physical description
+     */
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Character age
+     */
+    age?: number | null;
+    /**
+     * Character height
+     */
+    height?: string | null;
+    /**
+     * Eye color
+     */
+    eyeColor?: string | null;
+    /**
+     * Hair color
+     */
+    hairColor?: string | null;
+    /**
+     * Typical clothing and style
+     */
+    clothing?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  /**
+   * Character dialogue style and voice
+   */
+  dialogueVoice?: {
+    /**
+     * Character voice and speaking style
+     */
+    voiceDescription?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * Dialogue style (formal, casual, etc.)
+     */
+    style?: string | null;
+    /**
+     * Speech patterns and mannerisms
+     */
+    patterns?: string | null;
+    /**
+     * Vocabulary level and word choices
+     */
+    vocabulary?: string | null;
+  };
+  /**
+   * Character relationships with other characters
+   */
+  relationships?:
+    | {
+        /**
+         * Related character
+         */
+        character?: (string | null) | Character;
+        /**
+         * Type of relationship (friend, enemy, family, etc.)
+         */
+        relationship?: string | null;
+        /**
+         * Relationship dynamic and interaction style
+         */
+        dynamic?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * AI generation metadata and quality metrics
+   */
+  generationMetadata?: {
+    /**
+     * When this character was generated
+     */
+    generatedAt?: string | null;
+    /**
+     * How this character was created
+     */
+    generationMethod?: ('ai_generated' | 'user_created' | 'hybrid') | null;
+    /**
+     * Character development quality score (0-100)
+     */
+    qualityScore?: number | null;
+    /**
+     * Character profile completeness percentage
+     */
+    completeness?: number | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Extended story development data including themes, characters, settings, and references
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1576,6 +1860,10 @@ export interface PayloadLockedDocument {
         value: string | StoryStructure;
       } | null)
     | ({
+        relationTo: 'characters';
+        value: string | Character;
+      } | null)
+    | ({
         relationTo: 'fundamental-data';
         value: string | FundamentalDatum;
       } | null)
@@ -1939,6 +2227,78 @@ export interface StoryStructuresSelect<T extends boolean = true> {
         generationNotes?: T;
       };
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters_select".
+ */
+export interface CharactersSelect<T extends boolean = true> {
+  project?: T;
+  projectName?: T;
+  storyStructure?: T;
+  name?: T;
+  status?: T;
+  role?: T;
+  archetype?: T;
+  characterDevelopment?:
+    | T
+    | {
+        biography?: T;
+        personality?: T;
+        motivations?: T;
+        backstory?: T;
+        psychology?:
+          | T
+          | {
+              motivation?: T;
+              fears?: T;
+              desires?: T;
+              flaws?: T;
+            };
+      };
+  characterArc?:
+    | T
+    | {
+        startState?: T;
+        transformation?: T;
+        endState?: T;
+      };
+  physicalDescription?:
+    | T
+    | {
+        description?: T;
+        age?: T;
+        height?: T;
+        eyeColor?: T;
+        hairColor?: T;
+        clothing?: T;
+      };
+  dialogueVoice?:
+    | T
+    | {
+        voiceDescription?: T;
+        style?: T;
+        patterns?: T;
+        vocabulary?: T;
+      };
+  relationships?:
+    | T
+    | {
+        character?: T;
+        relationship?: T;
+        dynamic?: T;
+        id?: T;
+      };
+  generationMetadata?:
+    | T
+    | {
+        generatedAt?: T;
+        generationMethod?: T;
+        qualityScore?: T;
+        completeness?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
