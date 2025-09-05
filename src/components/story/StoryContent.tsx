@@ -96,7 +96,7 @@ export default function StoryContent({ project, story, onStoryUpdate }: StoryCon
 
     setIsEnhancing(true)
     try {
-      const response = await fetch(`/api/stories/${story.id}/enhance`, {
+      const response = await fetch(`/v1/stories/${story.id}/enhance`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -244,8 +244,6 @@ export default function StoryContent({ project, story, onStoryUpdate }: StoryCon
             </div>
           </CollapsibleSection>
         )}
-
-
       </div>
     </div>
   )

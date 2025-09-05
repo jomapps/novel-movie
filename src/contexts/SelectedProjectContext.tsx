@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
 import { Project } from '@/payload-types'
 
 interface SelectedProjectContextType {
@@ -42,17 +42,20 @@ export function SelectedProjectProvider({ children }: SelectedProjectProviderPro
     }
   }, [selectedProject])
 
-  const selectProject = (project: Project) => {
+  const selectProject = useCallback((project: Project) => {
     setSelectedProject(project)
-  }
+  }, [])
 
-  const deselectProject = () => {
+  const deselectProject = useCallback(() => {
     setSelectedProject(null)
-  }
+  }, [])
 
-  const isProjectSelected = (projectId: string) => {
-    return selectedProject?.id === projectId
-  }
+  const isProjectSelected = useCallback(
+    (projectId: string) => {
+      return selectedProject?.id === projectId
+    },
+    [selectedProject],
+  )
 
   const contextValue: SelectedProjectContextType = {
     selectedProject,

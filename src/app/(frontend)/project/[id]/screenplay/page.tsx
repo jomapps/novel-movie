@@ -56,7 +56,7 @@ export default function ScreenplayPage() {
     if (projectId) {
       fetchData()
     }
-  }, [projectId, selectProject])
+  }, [projectId])
 
   // Check if story is available (prerequisite for screenplay)
   const hasStory = story && story.currentContent && story.status !== 'in-progress'
@@ -120,12 +120,15 @@ export default function ScreenplayPage() {
             <BookOpen className="w-12 h-12 text-blue-500 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Story Required</h3>
             <p className="text-gray-600 mb-4">
-              A completed story is required before screenplay generation can begin. Please complete your story development first.
+              A completed story is required before screenplay generation can begin. Please complete
+              your story development first.
             </p>
             <div className="space-y-2 text-sm text-gray-600">
               <p>
                 <strong>Current Status:</strong>{' '}
-                {!story ? 'No story generated' : `Story ${story.status} (Step ${story.currentStep}/12)`}
+                {!story
+                  ? 'No story generated'
+                  : `Story ${story.status} (Step ${story.currentStep}/12)`}
               </p>
             </div>
             <div className="mt-6">

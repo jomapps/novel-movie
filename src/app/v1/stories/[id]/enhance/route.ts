@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { getBamlClient } from '@/lib/ai/baml-client'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const payload = await getPayload({ config })
     const resolvedParams = await params
@@ -19,34 +17,29 @@ export async function POST(
     })
 
     if (!story) {
-      return NextResponse.json(
-        { error: 'Story not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Story not found' }, { status: 404 })
     }
 
     // Determine the next enhancement step
     const nextStep = Math.min(story.currentStep + 1, 12)
     const enhancementFocus = getEnhancementFocus(nextStep)
 
-    // Generate enhanced content
-    const enhancedContent = await enhanceStoryContent(
+    // Generate enhanced content and get new quality metrics
+    const enhancementResult = await enhanceStoryWithBAML(
       story.currentContent,
       enhancementFocus,
-      story.qualityMetrics
+      story.qualityMetrics,
     )
 
-    // Calculate new quality metrics
-    const newQualityMetrics = calculateEnhancedQualityMetrics(
-      story.qualityMetrics,
-      enhancementFocus
-    )
+    const enhancedContent = enhancementResult.content
+    const newQualityMetrics = enhancementResult.qualityMetrics
 
     // Create enhancement history entry
     const enhancementEntry = {
-      step: nextStep,
-      focusArea: enhancementFocus.name,
-      timestamp: new Date().toISOString(),
+      stepNumber: nextStep,
+      stepName: getStepName(nextStep),
+      startTime: new Date().toISOString(),
+      endTime: new Date().toISOString(),
       qualityBefore: story.qualityMetrics,
       qualityAfter: newQualityMetrics,
       changes: enhancementFocus.description,
@@ -60,10 +53,7 @@ export async function POST(
         currentContent: enhancedContent,
         currentStep: nextStep,
         qualityMetrics: newQualityMetrics,
-        enhancementHistory: [
-          ...(story.enhancementHistory || []),
-          enhancementEntry,
-        ],
+        enhancementHistory: [...(story.enhancementHistory || []), enhancementEntry],
         status: nextStep >= 12 ? 'completed' : 'in-progress',
       },
     })
@@ -71,10 +61,7 @@ export async function POST(
     return NextResponse.json(updatedStory)
   } catch (error) {
     console.error('Error enhancing story:', error)
-    return NextResponse.json(
-      { error: 'Failed to enhance story' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to enhance story' }, { status: 500 })
   }
 }
 
@@ -127,27 +114,68 @@ function getEnhancementFocus(step: number) {
     },
   }
 
-  return enhancementSteps[step as keyof typeof enhancementSteps] || {
-    name: 'General Enhancement',
-    description: 'Overall story improvement',
-    targetMetrics: ['overallQuality'],
-  }
+  return (
+    enhancementSteps[step as keyof typeof enhancementSteps] || {
+      name: 'General Enhancement',
+      description: 'Overall story improvement',
+      targetMetrics: ['overallQuality'],
+    }
+  )
 }
 
-async function enhanceStoryContent(
+function getStepName(step: number): string {
+  const stepNames = {
+    1: 'initial-generation',
+    2: 'initial-generation',
+    3: 'initial-generation',
+    4: 'structure-enhancement',
+    5: 'character-enhancement',
+    6: 'coherence-enhancement',
+    7: 'conflict-enhancement',
+    8: 'dialogue-enhancement',
+    9: 'genre-enhancement',
+    10: 'audience-optimization',
+    11: 'visual-enhancement',
+    12: 'final-polish',
+  }
+
+  return stepNames[step as keyof typeof stepNames] || 'initial-generation'
+}
+
+async function enhanceStoryWithBAML(
   currentContent: string,
   enhancementFocus: any,
-  currentMetrics: any
-): Promise<string> {
-  // This is a placeholder for the actual AI enhancement
-  // In a real implementation, this would call your AI service with specific prompts
-  // based on the enhancement focus
-  
-  const enhancementNote = `\n\n**[ENHANCEMENT - ${enhancementFocus.name}]**\n${enhancementFocus.description}\n\n`
-  
-  // For demonstration, we'll add enhancement notes to the content
-  // In reality, this would be a sophisticated AI rewrite
-  return currentContent + enhancementNote + generateEnhancementContent(enhancementFocus)
+  currentMetrics: any,
+): Promise<{ content: string; qualityMetrics: any }> {
+  try {
+    // Use BAML for actual story enhancement
+    const baml = getBamlClient()
+
+    const enhancementResult = await baml.EnhanceStory(
+      currentContent,
+      enhancementFocus.name,
+      enhancementFocus.targetMetrics,
+      currentMetrics,
+    )
+
+    return {
+      content: enhancementResult.storyContent,
+      qualityMetrics: enhancementResult.qualityMetrics,
+    }
+  } catch (error) {
+    console.error('BAML enhancement failed:', error)
+
+    // Fallback to placeholder enhancement if BAML fails
+    const enhancementNote = `\n\n**[ENHANCEMENT - ${enhancementFocus.name}]**\n${enhancementFocus.description}\n\n`
+    const fallbackContent =
+      currentContent + enhancementNote + generateEnhancementContent(enhancementFocus)
+    const fallbackMetrics = calculateEnhancedQualityMetrics(currentMetrics, enhancementFocus)
+
+    return {
+      content: fallbackContent,
+      qualityMetrics: fallbackMetrics,
+    }
+  }
 }
 
 function generateEnhancementContent(enhancementFocus: any): string {
@@ -195,13 +223,15 @@ function generateEnhancementContent(enhancementFocus: any): string {
 - Stronger atmosphere and mood through imagery`,
   }
 
-  return enhancements[enhancementFocus.name as keyof typeof enhancements] || 
-         `**ENHANCED CONTENT:**\nGeneral improvements applied to enhance overall story quality.`
+  return (
+    enhancements[enhancementFocus.name as keyof typeof enhancements] ||
+    `**ENHANCED CONTENT:**\nGeneral improvements applied to enhance overall story quality.`
+  )
 }
 
 function calculateEnhancedQualityMetrics(currentMetrics: any, enhancementFocus: any) {
   const newMetrics = { ...currentMetrics }
-  
+
   // Improve the target metrics for this enhancement step
   enhancementFocus.targetMetrics.forEach((metric: string) => {
     if (newMetrics[metric] !== undefined) {

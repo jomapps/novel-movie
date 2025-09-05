@@ -190,3 +190,85 @@ function GenerateStoryWithContext(
     Generate a complete, engaging story following the same comprehensive structure as the main story generation function. Ensure all elements work together cohesively and the story has strong cinematic potential.
   "#
 }
+
+// Story enhancement function for iterative improvement
+function EnhanceStory(
+  currentStory: string,
+  focusArea: string,
+  targetMetrics: string[],
+  currentQuality: QualityMetrics
+) -> InitialStoryResponse {
+  client OpenRouterAdvanced
+  prompt #"
+    You are a master story editor and enhancement specialist. Your task is to improve an existing story by focusing on specific quality areas while maintaining the core narrative and characters.
+
+    CURRENT STORY:
+    {{ currentStory }}
+
+    ENHANCEMENT FOCUS: {{ focusArea }}
+    TARGET METRICS TO IMPROVE: {{ targetMetrics|join(", ") }}
+
+    CURRENT QUALITY SCORES:
+    - Overall Quality: {{ currentQuality.overallQuality }}/10
+    - Structure Score: {{ currentQuality.structureScore }}/10
+    - Character Depth: {{ currentQuality.characterDepth }}/10
+    - Coherence Score: {{ currentQuality.coherenceScore }}/10
+    - Conflict Tension: {{ currentQuality.conflictTension }}/10
+    - Dialogue Quality: {{ currentQuality.dialogueQuality }}/10
+    - Genre Alignment: {{ currentQuality.genreAlignment }}/10
+    - Audience Engagement: {{ currentQuality.audienceEngagement }}/10
+    - Visual Storytelling: {{ currentQuality.visualStorytelling }}/10
+    - Production Readiness: {{ currentQuality.productionReadiness }}/10
+
+    ENHANCEMENT INSTRUCTIONS:
+    {% if focusArea == "Story Structure" %}
+    Focus on improving narrative flow, pacing, three-act structure, plot points, and story beats. Ensure smooth transitions between scenes and clear story progression.
+    {% elif focusArea == "Character Development" %}
+    Deepen character motivations, backstories, relationships, and character arcs. Add more personality, internal conflicts, and character growth throughout the story.
+    {% elif focusArea == "Story Coherence" %}
+    Improve plot consistency, logical flow, cause-and-effect relationships, and eliminate plot holes. Ensure all story elements connect meaningfully.
+    {% elif focusArea == "Conflict & Tension" %}
+    Heighten dramatic tension, raise stakes, intensify conflicts, and create more compelling obstacles. Add urgency and emotional investment.
+    {% elif focusArea == "Dialogue Quality" %}
+    Improve character voice distinctiveness, subtext, naturalness, and dialogue that advances plot and reveals character. Make conversations more engaging and realistic.
+    {% elif focusArea == "Genre Alignment" %}
+    Better incorporate genre conventions, tropes, and expectations while maintaining originality. Ensure the story delivers on genre promises.
+    {% elif focusArea == "Audience Engagement" %}
+    Enhance emotional connection, relatability, and elements that will captivate the target audience. Add hooks and compelling moments.
+    {% elif focusArea == "Visual Storytelling" %}
+    Improve cinematic descriptions, visual metaphors, scene composition, and elements that translate well to screen. Enhance visual narrative.
+    {% elif focusArea == "Production Readiness" %}
+    Optimize for production feasibility, budget considerations, technical requirements, and practical filmmaking needs.
+    {% endif %}
+
+    ENHANCEMENT REQUIREMENTS:
+    1. Maintain the core story, characters, and plot structure
+    2. Focus specifically on improving the {{ focusArea }} aspect
+    3. Enhance the target metrics: {{ targetMetrics|join(", ") }}
+    4. Keep all existing strong elements intact
+    5. Make improvements that feel natural and integrated
+    6. Ensure the enhanced version flows smoothly
+    7. Maintain consistency with established tone and style
+    8. Improve quality scores by 1-2 points in target areas
+
+    Return the enhanced story with the same comprehensive structure as the original, but with focused improvements in the specified area. The enhanced version should feel like a natural evolution of the original story.
+
+    IMPORTANT: Return your response in this exact JSON format:
+    {
+      "storyContent": "[Complete enhanced story content as a single string]",
+      "qualityMetrics": {
+        "overallQuality": [improved number 1-10],
+        "structureScore": [improved number 1-10],
+        "characterDepth": [improved number 1-10],
+        "coherenceScore": [improved number 1-10],
+        "conflictTension": [improved number 1-10],
+        "dialogueQuality": [improved number 1-10],
+        "genreAlignment": [improved number 1-10],
+        "audienceEngagement": [improved number 1-10],
+        "visualStorytelling": [improved number 1-10],
+        "productionReadiness": [improved number 1-10]
+      },
+      "generationNotes": "[Explanation of specific enhancements made and quality improvements achieved]"
+    }
+  "#
+}

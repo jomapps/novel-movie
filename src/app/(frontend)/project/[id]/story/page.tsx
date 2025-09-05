@@ -38,7 +38,7 @@ export default function StoryPage() {
         selectProject(projectData)
 
         // Fetch story if it exists
-        const storyResponse = await fetch(`/api/stories?where[project][equals]=${projectId}`)
+        const storyResponse = await fetch(`/v1/stories?where[project][equals]=${projectId}&limit=1`)
         if (storyResponse.ok) {
           const storyData = await storyResponse.json()
           if (storyData.docs && storyData.docs.length > 0) {
