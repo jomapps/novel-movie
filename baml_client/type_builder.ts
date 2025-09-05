@@ -27,24 +27,56 @@ export { FieldType, EnumBuilder, ClassBuilder }
 export default class TypeBuilder {
     private tb: _TypeBuilder;
     
+    Act: ClassViewer<'Act', "setup" | "incitingIncident" | "plotPoint1" | "confrontation" | "midpoint" | "plotPoint2" | "climax" | "fallingAction" | "resolution" | "duration">;
+    
+    ActStructure: ClassViewer<'ActStructure', "act1" | "act2" | "act3">;
+    
+    CharacterArc: ClassViewer<'CharacterArc', "characterName" | "character" | "arcDescription" | "startingState" | "startState" | "endingState" | "endState" | "transformationProcess" | "transformation" | "keyMoments">;
+    
     InitialStoryResponse: ClassViewer<'InitialStoryResponse', "storyContent" | "qualityMetrics" | "generationNotes">;
     
     ProjectFieldsResponse: ClassViewer<'ProjectFieldsResponse', "projectTitle" | "shortDescription" | "longDescription">;
     
+    QualityAssessment: ClassViewer<'QualityAssessment', "overallScore" | "breakdown">;
+    
+    QualityBreakdown: ClassViewer<'QualityBreakdown', "clearThreeActProgression" | "strongCharacterArcs" | "compellingStoryBeats" | "effectiveSubplotIntegration" | "cinematicPotential">;
+    
+    QualityMetric: ClassViewer<'QualityMetric', "score" | "justification">;
+    
     QualityMetrics: ClassViewer<'QualityMetrics', "overallQuality" | "structureScore" | "characterDepth" | "coherenceScore" | "conflictTension" | "dialogueQuality" | "genreAlignment" | "audienceEngagement" | "visualStorytelling" | "productionReadiness">;
+    
+    StoryBeat: ClassViewer<'StoryBeat', "beatId" | "beat" | "timestamp" | "timing" | "description" | "charactersPresent" | "characters" | "emotionalTone">;
+    
+    StoryStructureResponse: ClassViewer<'StoryStructureResponse', "actStructure" | "threeActStructure" | "storyBeats" | "characterArcs" | "subplots" | "qualityScore" | "qualityAssessment" | "generationNotes">;
+    
+    StructureValidationResponse: ClassViewer<'StructureValidationResponse', "isReady" | "overallScore" | "strengths" | "weaknesses" | "recommendations" | "criticalIssues">;
+    
+    Subplot: ClassViewer<'Subplot', "subplotName" | "name" | "description" | "resolution" | "charactersInvolved" | "involvedCharacters">;
     
     
 
     constructor() {
         this.tb = new _TypeBuilder({
           classes: new Set([
-            "InitialStoryResponse","ProjectFieldsResponse","QualityMetrics",
+            "Act","ActStructure","CharacterArc","InitialStoryResponse","ProjectFieldsResponse","QualityAssessment","QualityBreakdown","QualityMetric","QualityMetrics","StoryBeat","StoryStructureResponse","StructureValidationResponse","Subplot",
           ]),
           enums: new Set([
             
           ]),
           runtime: DO_NOT_USE_DIRECTLY_UNLESS_YOU_KNOW_WHAT_YOURE_DOING_RUNTIME
         });
+        
+        this.Act = this.tb.classViewer("Act", [
+          "setup","incitingIncident","plotPoint1","confrontation","midpoint","plotPoint2","climax","fallingAction","resolution","duration",
+        ]);
+        
+        this.ActStructure = this.tb.classViewer("ActStructure", [
+          "act1","act2","act3",
+        ]);
+        
+        this.CharacterArc = this.tb.classViewer("CharacterArc", [
+          "characterName","character","arcDescription","startingState","startState","endingState","endState","transformationProcess","transformation","keyMoments",
+        ]);
         
         this.InitialStoryResponse = this.tb.classViewer("InitialStoryResponse", [
           "storyContent","qualityMetrics","generationNotes",
@@ -54,8 +86,36 @@ export default class TypeBuilder {
           "projectTitle","shortDescription","longDescription",
         ]);
         
+        this.QualityAssessment = this.tb.classViewer("QualityAssessment", [
+          "overallScore","breakdown",
+        ]);
+        
+        this.QualityBreakdown = this.tb.classViewer("QualityBreakdown", [
+          "clearThreeActProgression","strongCharacterArcs","compellingStoryBeats","effectiveSubplotIntegration","cinematicPotential",
+        ]);
+        
+        this.QualityMetric = this.tb.classViewer("QualityMetric", [
+          "score","justification",
+        ]);
+        
         this.QualityMetrics = this.tb.classViewer("QualityMetrics", [
           "overallQuality","structureScore","characterDepth","coherenceScore","conflictTension","dialogueQuality","genreAlignment","audienceEngagement","visualStorytelling","productionReadiness",
+        ]);
+        
+        this.StoryBeat = this.tb.classViewer("StoryBeat", [
+          "beatId","beat","timestamp","timing","description","charactersPresent","characters","emotionalTone",
+        ]);
+        
+        this.StoryStructureResponse = this.tb.classViewer("StoryStructureResponse", [
+          "actStructure","threeActStructure","storyBeats","characterArcs","subplots","qualityScore","qualityAssessment","generationNotes",
+        ]);
+        
+        this.StructureValidationResponse = this.tb.classViewer("StructureValidationResponse", [
+          "isReady","overallScore","strengths","weaknesses","recommendations","criticalIssues",
+        ]);
+        
+        this.Subplot = this.tb.classViewer("Subplot", [
+          "subplotName","name","description","resolution","charactersInvolved","involvedCharacters",
         ]);
         
         

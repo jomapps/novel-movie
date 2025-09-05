@@ -22,7 +22,7 @@ import type { BamlRuntime, BamlCtxManager, ClientRegistry, Image, Audio, Pdf, Vi
 import { toBamlError, HTTPRequest } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
 import type * as types from "./types"
-import type {InitialStoryResponse, ProjectFieldsResponse, QualityMetrics} from "./types"
+import type {Act, ActStructure, CharacterArc, InitialStoryResponse, ProjectFieldsResponse, QualityAssessment, QualityBreakdown, QualityMetric, QualityMetrics, StoryBeat, StoryStructureResponse, StructureValidationResponse, Subplot} from "./types"
 import type TypeBuilder from "./type_builder"
 
 type BamlCallOptions = {
@@ -34,6 +34,31 @@ type BamlCallOptions = {
 export class HttpRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
+  
+  AnalyzeStoryStructure(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "AnalyzeStoryStructure",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
   
   EnhanceStory(
       currentStory: string,focusArea: string,targetMetrics: string[],currentQuality: types.QualityMetrics,
@@ -48,6 +73,31 @@ export class HttpRequest {
         "EnhanceStory",
         {
           "currentStory": currentStory,"focusArea": focusArea,"targetMetrics": targetMetrics,"currentQuality": currentQuality
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceStoryStructure(
+      currentStructure: string,storyContent: string,focusAreas: string[],targetQualityScore: number,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "EnhanceStoryStructure",
+        {
+          "currentStructure": currentStructure,"storyContent": storyContent,"focusAreas": focusAreas,"targetQualityScore": targetQualityScore
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -323,6 +373,31 @@ export class HttpRequest {
         "GenerateTone",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        false,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateStructureForScreenplay(
+      storyStructure: string,targetDuration: number,movieFormat: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "ValidateStructureForScreenplay",
+        {
+          "storyStructure": storyStructure,"targetDuration": targetDuration,"movieFormat": movieFormat
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -341,6 +416,31 @@ export class HttpStreamRequest {
   constructor(private runtime: BamlRuntime, private ctxManager: BamlCtxManager) {}
 
   
+  AnalyzeStoryStructure(
+      storyContent: string,projectName: string,movieFormat: string,movieStyle: string,durationUnit: number,primaryGenres: string[],targetAudience: string[],
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "AnalyzeStoryStructure",
+        {
+          "storyContent": storyContent,"projectName": projectName,"movieFormat": movieFormat,"movieStyle": movieStyle,"durationUnit": durationUnit,"primaryGenres": primaryGenres,"targetAudience": targetAudience
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
   EnhanceStory(
       currentStory: string,focusArea: string,targetMetrics: string[],currentQuality: types.QualityMetrics,
       __baml_options__?: BamlCallOptions
@@ -354,6 +454,31 @@ export class HttpStreamRequest {
         "EnhanceStory",
         {
           "currentStory": currentStory,"focusArea": focusArea,"targetMetrics": targetMetrics,"currentQuality": currentQuality
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  EnhanceStoryStructure(
+      currentStructure: string,storyContent: string,focusAreas: string[],targetQualityScore: number,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "EnhanceStoryStructure",
+        {
+          "currentStructure": currentStructure,"storyContent": storyContent,"focusAreas": focusAreas,"targetQualityScore": targetQualityScore
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),
@@ -629,6 +754,31 @@ export class HttpStreamRequest {
         "GenerateTone",
         {
           "projectName": projectName,"primaryGenres": primaryGenres,"corePremise": corePremise,"targetAudience": targetAudience,"movieStyle": movieStyle,"existingTone": existingTone?? null
+        },
+        this.ctxManager.cloneContext(),
+        __baml_options__?.tb?.__tb(),
+        __baml_options__?.clientRegistry,
+        true,
+        env,
+      )
+    } catch (error) {
+      throw toBamlError(error);
+    }
+  }
+  
+  ValidateStructureForScreenplay(
+      storyStructure: string,targetDuration: number,movieFormat: string,
+      __baml_options__?: BamlCallOptions
+  ): HTTPRequest {
+    try {
+      const rawEnv = __baml_options__?.env ? { ...process.env, ...__baml_options__.env } : { ...process.env };
+      const env: Record<string, string> = Object.fromEntries(
+        Object.entries(rawEnv).filter(([_, value]) => value !== undefined) as [string, string][]
+      );
+      return this.runtime.buildRequestSync(
+        "ValidateStructureForScreenplay",
+        {
+          "storyStructure": storyStructure,"targetDuration": targetDuration,"movieFormat": movieFormat
         },
         this.ctxManager.cloneContext(),
         __baml_options__?.tb?.__tb(),

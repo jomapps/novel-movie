@@ -24,6 +24,7 @@
     "test:quality-score": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-quality-score.js",
     "credit:check": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-credit-check.js",
     "credit:check:direct": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-openrouter-direct.js",
+    "test:story-structure": "cross-env NODE_OPTIONS=--no-deprecation node scripts/test-story-structure.js",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"

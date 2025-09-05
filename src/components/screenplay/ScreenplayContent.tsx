@@ -1,22 +1,22 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Project, Story } from '@/payload-types'
 import Button from '@/components/ui/Button'
-import { 
-  BookOpen, 
-  Target, 
-  Users, 
-  FileText, 
-  Film, 
-  Lightbulb, 
+import {
+  BookOpen,
+  Target,
+  Users,
+  FileText,
+  Film,
+  Lightbulb,
   Clapperboard,
   Video,
   Package,
   Play,
   CheckCircle,
   AlertCircle,
-  Clock
+  Clock,
 } from 'lucide-react'
 
 interface ScreenplayContentProps {
@@ -35,7 +35,16 @@ interface StepContentProps {
   children?: React.ReactNode
 }
 
-function StepContent({ stepId, title, description, icon, status, isAvailable, onExecute, children }: StepContentProps) {
+function StepContent({
+  stepId,
+  title,
+  description,
+  icon,
+  status,
+  isAvailable,
+  onExecute,
+  children,
+}: StepContentProps) {
   const [isExpanded, setIsExpanded] = useState(status === 'in-progress')
 
   const getStatusBadge = () => {
@@ -72,7 +81,7 @@ function StepContent({ stepId, title, description, icon, status, isAvailable, on
 
   return (
     <div className="border border-gray-200 rounded-lg mb-6">
-      <div 
+      <div
         className="p-6 cursor-pointer hover:bg-gray-50 transition-colors"
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -109,7 +118,9 @@ function StepContent({ stepId, title, description, icon, status, isAvailable, on
             {children || (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <p className="text-sm text-gray-600">
-                  {status === 'not-started' && !isAvailable && 'Complete previous steps to unlock this stage.'}
+                  {status === 'not-started' &&
+                    !isAvailable &&
+                    'Complete previous steps to unlock this stage.'}
                   {status === 'not-started' && isAvailable && 'Click "Start" to begin this step.'}
                   {status === 'in-progress' && 'This step is currently being processed...'}
                   {status === 'completed' && 'This step has been completed successfully.'}
@@ -126,52 +137,105 @@ function StepContent({ stepId, title, description, icon, status, isAvailable, on
 
 export default function ScreenplayContent({ project, story }: ScreenplayContentProps) {
   const [activeStep, setActiveStep] = useState<string | null>(null)
+  const [storyStructure, setStoryStructure] = useState<any>(null)
+  const [stepStatuses, setStepStatuses] = useState<Record<string, string>>({
+    'story-foundation': 'completed',
+  })
+
+  // Fetch existing story structure on component mount
+  useEffect(() => {
+    const fetchStoryStructure = async () => {
+      try {
+        const response = await fetch(`/v1/projects/${project.id}/story-structure`)
+        if (response.ok) {
+          const structure = await response.json()
+          setStoryStructure(structure)
+          setStepStatuses((prev) => ({
+            ...prev,
+            'story-structure': structure.status === 'generated' ? 'completed' : 'not-started',
+          }))
+        }
+      } catch (error) {
+        console.error('Error fetching story structure:', error)
+      }
+    }
+
+    fetchStoryStructure()
+  }, [project.id])
 
   const handleStepExecution = async (stepId: string) => {
     setActiveStep(stepId)
-    
+
     try {
-      // TODO: Implement actual step execution logic
-      console.log(`Executing step: ${stepId}`)
-      
-      // For now, just simulate the process
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // TODO: Update step status in database
-      
+      if (stepId === 'story-structure') {
+        // Generate story structure
+        const response = await fetch(`/v1/projects/${project.id}/story-structure`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to generate story structure')
+        }
+
+        const structure = await response.json()
+        setStoryStructure(structure)
+        setStepStatuses((prev) => ({
+          ...prev,
+          'story-structure': 'completed',
+        }))
+      } else {
+        // For other steps, just simulate for now
+        console.log(`Executing step: ${stepId}`)
+        await new Promise((resolve) => setTimeout(resolve, 2000))
+      }
     } catch (error) {
       console.error(`Error executing step ${stepId}:`, error)
+      setStepStatuses((prev) => ({
+        ...prev,
+        [stepId]: 'error',
+      }))
+      // You might want to show a toast notification here
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
     } finally {
       setActiveStep(null)
     }
   }
 
-  // Mock step statuses - TODO: Replace with actual data from database
-  const getStepStatus = (stepId: string) => {
-    if (stepId === 'story-foundation') return 'completed'
+  // Get step status from state
+  const getStepStatus = (stepId: string): 'completed' | 'not-started' | 'in-progress' | 'error' => {
+    if (activeStep === stepId) return 'in-progress'
+    const status = stepStatuses[stepId] || 'not-started'
+    // Ensure the status is one of the valid types
+    if (['completed', 'not-started', 'in-progress', 'error'].includes(status)) {
+      return status as 'completed' | 'not-started' | 'in-progress' | 'error'
+    }
     return 'not-started'
   }
 
   const isStepAvailable = (stepId: string) => {
     // Story foundation is always available if story exists
     if (stepId === 'story-foundation') return true
-    
+
     // For other steps, check if previous step is completed
     const stepOrder = [
       'story-foundation',
-      'story-structure', 
+      'story-structure',
       'character-development',
       'story-outline',
       'screenplay-generation',
       'screenplay-revision',
       'scene-planning',
       'media-generation',
-      'final-assembly'
+      'final-assembly',
     ]
-    
+
     const currentIndex = stepOrder.indexOf(stepId)
     if (currentIndex === 0) return true
-    
+
     const previousStep = stepOrder[currentIndex - 1]
     return getStepStatus(previousStep) === 'completed'
   }
@@ -183,7 +247,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Screenplay Production</h1>
           <p className="text-gray-600">
-            Transform your story into a professional screenplay through our step-by-step AI-powered workflow.
+            Transform your story into a professional screenplay through our step-by-step AI-powered
+            workflow.
           </p>
         </div>
 
@@ -204,7 +269,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
             </p>
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">Quality Score:</span> {story.qualityMetrics?.overallQuality || 'N/A'}/100
+                <span className="font-medium">Quality Score:</span>{' '}
+                {story.qualityMetrics?.overallQuality || 'N/A'}/100
               </div>
               <div>
                 <span className="font-medium">Enhancement Steps:</span> {story.currentStep}/12
@@ -213,7 +279,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                 <span className="font-medium">Status:</span> {story.status}
               </div>
               <div>
-                <span className="font-medium">Word Count:</span> ~{Math.floor(story.currentContent.length / 5)} words
+                <span className="font-medium">Word Count:</span> ~
+                {Math.floor(story.currentContent.length / 5)} words
               </div>
             </div>
           </div>
@@ -228,7 +295,170 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
           status={getStepStatus('story-structure')}
           isAvailable={isStepAvailable('story-structure')}
           onExecute={() => handleStepExecution('story-structure')}
-        />
+        >
+          {storyStructure && (
+            <div className="space-y-6">
+              {/* Quality Score */}
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-900 mb-2">Structure Analysis Complete ✓</h4>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="font-medium">Quality Score:</span>{' '}
+                    {storyStructure.generationMetadata?.qualityScore || 'N/A'}/100
+                  </div>
+                  <div>
+                    <span className="font-medium">Processing Time:</span>{' '}
+                    {storyStructure.generationMetadata?.processingTime || 0}s
+                  </div>
+                </div>
+              </div>
+
+              {/* Three-Act Structure */}
+              <div>
+                <h4 className="font-medium text-gray-900 mb-3">Three-Act Structure</h4>
+                <div className="space-y-4">
+                  {/* Act 1 */}
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <h5 className="font-medium text-gray-800 mb-2">
+                      Act 1 - Setup ({storyStructure.actStructure?.act1?.duration || 0} min)
+                    </h5>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      {storyStructure.actStructure?.act1?.setup && (
+                        <div>
+                          <strong>Setup:</strong> {storyStructure.actStructure.act1.setup}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act1?.incitingIncident && (
+                        <div>
+                          <strong>Inciting Incident:</strong>{' '}
+                          {storyStructure.actStructure.act1.incitingIncident}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act1?.plotPoint1 && (
+                        <div>
+                          <strong>Plot Point 1:</strong>{' '}
+                          {storyStructure.actStructure.act1.plotPoint1}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Act 2 */}
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <h5 className="font-medium text-gray-800 mb-2">
+                      Act 2 - Confrontation ({storyStructure.actStructure?.act2?.duration || 0} min)
+                    </h5>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      {storyStructure.actStructure?.act2?.confrontation && (
+                        <div>
+                          <strong>Confrontation:</strong>{' '}
+                          {storyStructure.actStructure.act2.confrontation}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act2?.midpoint && (
+                        <div>
+                          <strong>Midpoint:</strong> {storyStructure.actStructure.act2.midpoint}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act2?.plotPoint2 && (
+                        <div>
+                          <strong>Plot Point 2:</strong>{' '}
+                          {storyStructure.actStructure.act2.plotPoint2}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Act 3 */}
+                  <div className="border border-gray-200 rounded-lg p-4">
+                    <h5 className="font-medium text-gray-800 mb-2">
+                      Act 3 - Resolution ({storyStructure.actStructure?.act3?.duration || 0} min)
+                    </h5>
+                    <div className="space-y-2 text-sm text-gray-600">
+                      {storyStructure.actStructure?.act3?.climax && (
+                        <div>
+                          <strong>Climax:</strong> {storyStructure.actStructure.act3.climax}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act3?.fallingAction && (
+                        <div>
+                          <strong>Falling Action:</strong>{' '}
+                          {storyStructure.actStructure.act3.fallingAction}
+                        </div>
+                      )}
+                      {storyStructure.actStructure?.act3?.resolution && (
+                        <div>
+                          <strong>Resolution:</strong> {storyStructure.actStructure.act3.resolution}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Story Beats */}
+              {storyStructure.storyBeats && storyStructure.storyBeats.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Story Beats ({storyStructure.storyBeats.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {storyStructure.storyBeats.slice(0, 5).map((beat: any, index: number) => (
+                      <div key={index} className="border-l-4 border-blue-200 pl-4 py-2">
+                        <div className="font-medium text-sm">
+                          {beat.beat} ({beat.timing}min)
+                        </div>
+                        <div className="text-sm text-gray-600">{beat.description}</div>
+                        {beat.emotionalTone && (
+                          <div className="text-xs text-blue-600 mt-1">
+                            Tone: {beat.emotionalTone}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {storyStructure.storyBeats.length > 5 && (
+                      <div className="text-sm text-gray-500 italic">
+                        ... and {storyStructure.storyBeats.length - 5} more beats
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Character Arcs */}
+              {storyStructure.characterArcs && storyStructure.characterArcs.length > 0 && (
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-3">
+                    Character Arcs ({storyStructure.characterArcs.length})
+                  </h4>
+                  <div className="space-y-3">
+                    {storyStructure.characterArcs.slice(0, 3).map((arc: any, index: number) => (
+                      <div key={index} className="border border-gray-200 rounded-lg p-3">
+                        <div className="font-medium text-sm mb-2">{arc.character}</div>
+                        <div className="text-xs text-gray-600 space-y-1">
+                          <div>
+                            <strong>Start:</strong> {arc.startState}
+                          </div>
+                          <div>
+                            <strong>End:</strong> {arc.endState}
+                          </div>
+                          <div>
+                            <strong>Transformation:</strong> {arc.transformation}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {storyStructure.characterArcs.length > 3 && (
+                      <div className="text-sm text-gray-500 italic">
+                        ... and {storyStructure.characterArcs.length - 3} more character arcs
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </StepContent>
 
         {/* Character Development */}
         <StepContent

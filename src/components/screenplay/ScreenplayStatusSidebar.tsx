@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import {
   Check,
   X,
@@ -37,6 +38,25 @@ interface ScreenplayStatusSidebarProps {
 }
 
 export default function ScreenplayStatusSidebar({ project, story }: ScreenplayStatusSidebarProps) {
+  const [storyStructure, setStoryStructure] = useState<any>(null)
+
+  // Fetch story structure status
+  useEffect(() => {
+    const fetchStoryStructure = async () => {
+      try {
+        const response = await fetch(`/v1/projects/${project.id}/story-structure`)
+        if (response.ok) {
+          const structure = await response.json()
+          setStoryStructure(structure)
+        }
+      } catch (error) {
+        console.error('Error fetching story structure:', error)
+      }
+    }
+
+    fetchStoryStructure()
+  }, [project.id])
+
   // Define the screenplay generation workflow steps
   const getScreenplaySteps = (): ScreenplayStep[] => {
     const steps: ScreenplayStep[] = [
@@ -58,10 +78,16 @@ export default function ScreenplayStatusSidebar({ project, story }: ScreenplaySt
         id: 'story-structure',
         label: 'Story Structure Planning',
         description: 'Three-act structure, story beats, character arcs',
-        status: 'not-started', // TODO: Check actual status from database
+        status: storyStructure ? 'completed' : 'not-started',
         icon: <Target className="w-4 h-4" />,
         dependencies: ['story-foundation'],
         estimatedTime: '5-10 min',
+        metrics: storyStructure
+          ? {
+              score: storyStructure.generationMetadata?.qualityScore,
+              details: `${storyStructure.storyBeats?.length || 0} beats, ${storyStructure.characterArcs?.length || 0} arcs`,
+            }
+          : undefined,
       },
       {
         id: 'character-development',

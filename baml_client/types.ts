@@ -47,6 +47,41 @@ export function all_succeeded<CheckName extends string>(checks: Record<CheckName
 export function get_checks<CheckName extends string>(checks: Record<CheckName, Check>): Check[] {
     return Object.values(checks)
 }
+export interface Act {
+  setup?: string | null
+  incitingIncident?: string | null
+  plotPoint1?: string | null
+  confrontation?: string | null
+  midpoint?: string | null
+  plotPoint2?: string | null
+  climax?: string | null
+  fallingAction?: string | null
+  resolution?: string | null
+  duration: number
+  
+}
+
+export interface ActStructure {
+  act1: Act
+  act2: Act
+  act3: Act
+  
+}
+
+export interface CharacterArc {
+  characterName?: string | null
+  character?: string | null
+  arcDescription?: string | null
+  startingState?: string | null
+  startState?: string | null
+  endingState?: string | null
+  endState?: string | null
+  transformationProcess?: string | null
+  transformation?: string | null
+  keyMoments: string[]
+  
+}
+
 export interface InitialStoryResponse {
   storyContent: string
   qualityMetrics: QualityMetrics
@@ -61,6 +96,27 @@ export interface ProjectFieldsResponse {
   
 }
 
+export interface QualityAssessment {
+  overallScore: number
+  breakdown?: QualityBreakdown | null
+  
+}
+
+export interface QualityBreakdown {
+  clearThreeActProgression?: QualityMetric | null
+  strongCharacterArcs?: QualityMetric | null
+  compellingStoryBeats?: QualityMetric | null
+  effectiveSubplotIntegration?: QualityMetric | null
+  cinematicPotential?: QualityMetric | null
+  
+}
+
+export interface QualityMetric {
+  score: number
+  justification?: string | null
+  
+}
+
 export interface QualityMetrics {
   overallQuality: number
   structureScore: number
@@ -72,5 +128,49 @@ export interface QualityMetrics {
   audienceEngagement: number
   visualStorytelling: number
   productionReadiness: number
+  
+}
+
+export interface StoryBeat {
+  beatId?: number | null
+  beat: string
+  timestamp?: string | null
+  timing?: number | null
+  description: string
+  charactersPresent?: string[] | null
+  characters?: string[] | null
+  emotionalTone: string
+  
+}
+
+export interface StoryStructureResponse {
+  actStructure?: ActStructure | null
+  threeActStructure?: ActStructure | null
+  storyBeats: StoryBeat[]
+  characterArcs: CharacterArc[]
+  subplots: Subplot[]
+  qualityScore?: number | null
+  qualityAssessment?: QualityAssessment | null
+  generationNotes?: string | null
+  
+}
+
+export interface StructureValidationResponse {
+  isReady: boolean
+  overallScore: number
+  strengths: string[]
+  weaknesses: string[]
+  recommendations: string[]
+  criticalIssues: string[]
+  
+}
+
+export interface Subplot {
+  subplotName?: string | null
+  name?: string | null
+  description: string
+  resolution: string
+  charactersInvolved?: string[] | null
+  involvedCharacters?: string[] | null
   
 }

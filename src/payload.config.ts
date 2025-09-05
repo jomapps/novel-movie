@@ -15,6 +15,7 @@ import { MovieStyles } from './collections/MovieStyles'
 import { Series } from './collections/Series'
 
 import { Stories } from './collections/Stories'
+import StoryStructures from './collections/StoryStructures'
 import { FundamentalData } from './collections/FundamentalData'
 import { Genres } from './collections/Genres'
 import { AudienceDemographics } from './collections/AudienceDemographics'
@@ -42,6 +43,7 @@ export default buildConfig({
     Series,
 
     Stories,
+    StoryStructures,
     FundamentalData,
     Genres,
     AudienceDemographics,

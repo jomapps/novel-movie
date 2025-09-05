@@ -74,6 +74,7 @@ export interface Config {
     'movie-styles': MovieStyle;
     series: Series;
     stories: Story;
+    'story-structures': StoryStructure;
     'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
@@ -94,6 +95,7 @@ export interface Config {
     'movie-styles': MovieStylesSelect<false> | MovieStylesSelect<true>;
     series: SeriesSelect<false> | SeriesSelect<true>;
     stories: StoriesSelect<false> | StoriesSelect<true>;
+    'story-structures': StoryStructuresSelect<false> | StoryStructuresSelect<true>;
     'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
@@ -982,6 +984,202 @@ export interface Story {
   createdAt: string;
 }
 /**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "story-structures".
+ */
+export interface StoryStructure {
+  id: string;
+  /**
+   * Associated project for this story structure
+   */
+  project: string | Project;
+  /**
+   * Auto-populated from project name
+   */
+  projectName?: string | null;
+  /**
+   * Associated story that this structure is based on
+   */
+  story: string | Story;
+  /**
+   * Traditional three-act story structure breakdown
+   */
+  actStructure?: {
+    act1?: {
+      /**
+       * Opening setup and world establishment
+       */
+      setup?: string | null;
+      /**
+       * The event that sets the story in motion
+       */
+      incitingIncident?: string | null;
+      /**
+       * Major turning point that launches Act 2
+       */
+      plotPoint1?: string | null;
+      /**
+       * Estimated duration in minutes
+       */
+      duration?: number | null;
+    };
+    act2?: {
+      /**
+       * Main conflict and obstacles
+       */
+      confrontation?: string | null;
+      /**
+       * Major revelation or turning point at story center
+       */
+      midpoint?: string | null;
+      /**
+       * Crisis that launches the final act
+       */
+      plotPoint2?: string | null;
+      /**
+       * Estimated duration in minutes
+       */
+      duration?: number | null;
+    };
+    act3?: {
+      /**
+       * Final confrontation and peak tension
+       */
+      climax?: string | null;
+      /**
+       * Immediate aftermath of the climax
+       */
+      fallingAction?: string | null;
+      /**
+       * Final resolution and new equilibrium
+       */
+      resolution?: string | null;
+      /**
+       * Estimated duration in minutes
+       */
+      duration?: number | null;
+    };
+  };
+  /**
+   * Detailed story beats and key moments
+   */
+  storyBeats?:
+    | {
+        /**
+         * Name or title of this story beat
+         */
+        beat: string;
+        /**
+         * Approximate timing in minutes from start
+         */
+        timing?: number | null;
+        /**
+         * Detailed description of what happens in this beat
+         */
+        description: string;
+        /**
+         * Characters present in this beat
+         */
+        characters?:
+          | {
+              character?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        emotionalTone?:
+          | ('tense' | 'dramatic' | 'comedic' | 'romantic' | 'action' | 'suspenseful' | 'emotional' | 'mysterious')
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Character development arcs throughout the story
+   */
+  characterArcs?:
+    | {
+        /**
+         * Character name
+         */
+        character: string;
+        /**
+         * Character state at the beginning of the story
+         */
+        startState: string;
+        /**
+         * Character state at the end of the story
+         */
+        endState: string;
+        /**
+         * How and why the character changes
+         */
+        transformation: string;
+        /**
+         * Key moments in this character's arc
+         */
+        keyMoments?:
+          | {
+              moment?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Secondary storylines and subplots
+   */
+  subplots?:
+    | {
+        /**
+         * Subplot name or title
+         */
+        name: string;
+        /**
+         * Detailed description of the subplot
+         */
+        description: string;
+        /**
+         * How this subplot is resolved
+         */
+        resolution?: string | null;
+        /**
+         * Characters involved in this subplot
+         */
+        charactersInvolved?:
+          | {
+              character?: string | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Metadata about the structure generation process
+   */
+  generationMetadata?: {
+    generatedAt?: string | null;
+    /**
+     * Time taken to generate structure (in seconds)
+     */
+    processingTime?: number | null;
+    /**
+     * AI-assessed quality score of the structure
+     */
+    qualityScore?: number | null;
+    /**
+     * Notes from the AI generation process
+     */
+    generationNotes?: string | null;
+  };
+  /**
+   * Current status of the story structure
+   */
+  status: 'generated' | 'reviewed' | 'approved' | 'needs-revision';
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Extended story development data including themes, characters, settings, and references
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1374,6 +1572,10 @@ export interface PayloadLockedDocument {
         value: string | Story;
       } | null)
     | ({
+        relationTo: 'story-structures';
+        value: string | StoryStructure;
+      } | null)
+    | ({
         relationTo: 'fundamental-data';
         value: string | FundamentalDatum;
       } | null)
@@ -1645,6 +1847,98 @@ export interface StoriesSelect<T extends boolean = true> {
         lastProcessedStep?: T;
         totalProcessingTime?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "story-structures_select".
+ */
+export interface StoryStructuresSelect<T extends boolean = true> {
+  project?: T;
+  projectName?: T;
+  story?: T;
+  actStructure?:
+    | T
+    | {
+        act1?:
+          | T
+          | {
+              setup?: T;
+              incitingIncident?: T;
+              plotPoint1?: T;
+              duration?: T;
+            };
+        act2?:
+          | T
+          | {
+              confrontation?: T;
+              midpoint?: T;
+              plotPoint2?: T;
+              duration?: T;
+            };
+        act3?:
+          | T
+          | {
+              climax?: T;
+              fallingAction?: T;
+              resolution?: T;
+              duration?: T;
+            };
+      };
+  storyBeats?:
+    | T
+    | {
+        beat?: T;
+        timing?: T;
+        description?: T;
+        characters?:
+          | T
+          | {
+              character?: T;
+              id?: T;
+            };
+        emotionalTone?: T;
+        id?: T;
+      };
+  characterArcs?:
+    | T
+    | {
+        character?: T;
+        startState?: T;
+        endState?: T;
+        transformation?: T;
+        keyMoments?:
+          | T
+          | {
+              moment?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  subplots?:
+    | T
+    | {
+        name?: T;
+        description?: T;
+        resolution?: T;
+        charactersInvolved?:
+          | T
+          | {
+              character?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  generationMetadata?:
+    | T
+    | {
+        generatedAt?: T;
+        processingTime?: T;
+        qualityScore?: T;
+        generationNotes?: T;
+      };
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

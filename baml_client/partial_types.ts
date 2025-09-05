@@ -20,7 +20,7 @@ $ pnpm add @boundaryml/baml
 
 import type { Image, Audio, Pdf, Video } from "@boundaryml/baml"
 import type { Checked, Check } from "./types"
-import type {  InitialStoryResponse,  ProjectFieldsResponse,  QualityMetrics } from "./types"
+import type {  Act,  ActStructure,  CharacterArc,  InitialStoryResponse,  ProjectFieldsResponse,  QualityAssessment,  QualityBreakdown,  QualityMetric,  QualityMetrics,  StoryBeat,  StoryStructureResponse,  StructureValidationResponse,  Subplot } from "./types"
 import type * as types from "./types"
 
 /******************************************************************************
@@ -36,6 +36,35 @@ export interface StreamState<T> {
 }
 
 export namespace partial_types {
+    export interface Act {
+      setup?: string | null
+      incitingIncident?: string | null
+      plotPoint1?: string | null
+      confrontation?: string | null
+      midpoint?: string | null
+      plotPoint2?: string | null
+      climax?: string | null
+      fallingAction?: string | null
+      resolution?: string | null
+      duration?: number | null
+    }
+    export interface ActStructure {
+      act1?: Act | null
+      act2?: Act | null
+      act3?: Act | null
+    }
+    export interface CharacterArc {
+      characterName?: string | null
+      character?: string | null
+      arcDescription?: string | null
+      startingState?: string | null
+      startState?: string | null
+      endingState?: string | null
+      endState?: string | null
+      transformationProcess?: string | null
+      transformation?: string | null
+      keyMoments: string[]
+    }
     export interface InitialStoryResponse {
       storyContent?: string | null
       qualityMetrics?: QualityMetrics | null
@@ -45,6 +74,21 @@ export namespace partial_types {
       projectTitle?: string | null
       shortDescription?: string | null
       longDescription?: string | null
+    }
+    export interface QualityAssessment {
+      overallScore?: number | null
+      breakdown?: QualityBreakdown | null
+    }
+    export interface QualityBreakdown {
+      clearThreeActProgression?: QualityMetric | null
+      strongCharacterArcs?: QualityMetric | null
+      compellingStoryBeats?: QualityMetric | null
+      effectiveSubplotIntegration?: QualityMetric | null
+      cinematicPotential?: QualityMetric | null
+    }
+    export interface QualityMetric {
+      score?: number | null
+      justification?: string | null
     }
     export interface QualityMetrics {
       overallQuality?: number | null
@@ -57,5 +101,41 @@ export namespace partial_types {
       audienceEngagement?: number | null
       visualStorytelling?: number | null
       productionReadiness?: number | null
+    }
+    export interface StoryBeat {
+      beatId?: number | null
+      beat?: string | null
+      timestamp?: string | null
+      timing?: number | null
+      description?: string | null
+      charactersPresent?: string[] | null
+      characters?: string[] | null
+      emotionalTone?: string | null
+    }
+    export interface StoryStructureResponse {
+      actStructure?: ActStructure | null
+      threeActStructure?: ActStructure | null
+      storyBeats: StoryBeat[]
+      characterArcs: CharacterArc[]
+      subplots: Subplot[]
+      qualityScore?: number | null
+      qualityAssessment?: QualityAssessment | null
+      generationNotes?: string | null
+    }
+    export interface StructureValidationResponse {
+      isReady?: boolean | null
+      overallScore?: number | null
+      strengths: string[]
+      weaknesses: string[]
+      recommendations: string[]
+      criticalIssues: string[]
+    }
+    export interface Subplot {
+      subplotName?: string | null
+      name?: string | null
+      description?: string | null
+      resolution?: string | null
+      charactersInvolved?: string[] | null
+      involvedCharacters?: string[] | null
     }
 }
