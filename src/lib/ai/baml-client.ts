@@ -7,7 +7,8 @@ let bamlClient: any = null
 export async function getBamlClient() {
   if (!bamlClient) {
     try {
-      const { b } = await import('baml_client')
+      // Use direct import path that works in Next.js environment
+      const { b } = await import('../../../baml_client')
       bamlClient = b
     } catch (error) {
       console.error('Failed to load BAML client:', error)
