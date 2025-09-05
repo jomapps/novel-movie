@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight, BarChart3, BookOpen, Sparkles, RefreshCw } f
 import { Project, Story } from '@/payload-types'
 import Button from '@/components/ui/Button'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
+import StoryCompletionControls from './StoryCompletionControls'
 
 interface CollapsibleSectionProps {
   title: string
@@ -155,17 +156,15 @@ export default function StoryContent({ project, story, onStoryUpdate }: StoryCon
               Current Step: {story.currentStep}/12 • Status: {story.status}
             </p>
           </div>
-          <div className="flex space-x-3">
-            <Button
-              onClick={handleEnhanceStory}
-              loading={isEnhancing}
-              variant="outline"
-              className="inline-flex items-center"
-            >
-              <RefreshCw className="w-4 h-4 mr-2" />
-              Enhance Story
-            </Button>
-          </div>
+        </div>
+
+        {/* Story Completion Controls */}
+        <div className="mb-8">
+          <StoryCompletionControls
+            story={story}
+            onStoryUpdate={onStoryUpdate}
+            onEnhance={handleEnhanceStory}
+          />
         </div>
 
         {/* Quality Metrics Overview */}

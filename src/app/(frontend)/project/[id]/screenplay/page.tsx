@@ -9,6 +9,28 @@ import ScreenplayStatusSidebar from '@/components/screenplay/ScreenplayStatusSid
 import ScreenplayContent from '@/components/screenplay/ScreenplayContent'
 import { useSelectedProject } from '@/contexts/SelectedProjectContext'
 import { AlertCircle, BookOpen } from 'lucide-react'
+import { isStoryReadyForCompletion, type Story as StoryCompletionType } from '@/lib/story-completion'
+
+// Helper function to convert payload Story to story-completion Story type
+function convertToStoryCompletionType(story: Story): StoryCompletionType {
+  return {
+    currentStep: story.currentStep,
+    status: story.status,
+    currentContent: story.currentContent,
+    qualityMetrics: story.qualityMetrics ? {
+      structureScore: story.qualityMetrics.structureScore ?? undefined,
+      characterDepth: story.qualityMetrics.characterDepth ?? undefined,
+      coherenceScore: story.qualityMetrics.coherenceScore ?? undefined,
+      conflictTension: story.qualityMetrics.conflictTension ?? undefined,
+      dialogueQuality: story.qualityMetrics.dialogueQuality ?? undefined,
+      genreAlignment: story.qualityMetrics.genreAlignment ?? undefined,
+      audienceEngagement: story.qualityMetrics.audienceEngagement ?? undefined,
+      visualStorytelling: story.qualityMetrics.visualStorytelling ?? undefined,
+      productionReadiness: story.qualityMetrics.productionReadiness ?? undefined,
+      overallQuality: story.qualityMetrics.overallQuality ?? undefined,
+    } : undefined
+  }
+}
 
 export default function ScreenplayPage() {
   const params = useParams()
@@ -60,7 +82,12 @@ export default function ScreenplayPage() {
   }, [projectId])
 
   // Check if story is available (prerequisite for screenplay)
-  const hasStory = story && story.currentContent && story.status !== 'in-progress'
+  // Use new completion logic: story is ready if it has content AND meets completion criteria
+  const hasStory = story && story.currentContent && (
+    story.status === 'completed' ||
+    story.status === 'approved' ||
+    isStoryReadyForCompletion(convertToStoryCompletionType(story))
+  )
 
   if (loading) {
     return (

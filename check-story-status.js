@@ -4,7 +4,7 @@
  * Check the specific project and story status for screenplay diagnosis
  */
 
-const projectId = '68b9d1457ae0c1549464f026'
+const projectId = '68ba6d7cab4c03313d505020'
 
 async function checkStoryStatus() {
   console.log('🔍 Diagnosing Screenplay Page Issue...\n')
@@ -71,6 +71,7 @@ async function checkStoryStatus() {
     console.log('   - Current Step:', story.currentStep, '/ 12')
     console.log('   - Content Length:', story.currentContent?.length || 0, 'characters')
     console.log('   - Quality Score:', story.qualityMetrics?.overallQuality || 'N/A')
+    console.log('   - Quality Metrics:', JSON.stringify(story.qualityMetrics, null, 2))
 
     // Analyze screenplay validation logic
     console.log('\n4. Analyzing screenplay validation logic...')

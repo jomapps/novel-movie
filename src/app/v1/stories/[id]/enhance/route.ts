@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getBamlClient } from '@/lib/ai/baml-client'
+import { getStoryCompletionStatus, isStoryReadyForCompletion } from '@/lib/story-completion'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -45,16 +46,23 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       changes: enhancementFocus.description,
     }
 
+    // Determine the new status using improved completion logic
+    const updatedStoryData = {
+      currentContent: enhancedContent,
+      currentStep: nextStep,
+      status: story.status, // Include current status for completion check
+      qualityMetrics: newQualityMetrics,
+    }
+    const newStatus = getStoryCompletionStatus(updatedStoryData)
+
     // Update the story
     const updatedStory = await payload.update({
       collection: 'stories',
       id: storyId,
       data: {
-        currentContent: enhancedContent,
-        currentStep: nextStep,
-        qualityMetrics: newQualityMetrics,
+        ...updatedStoryData,
         enhancementHistory: [...(story.enhancementHistory || []), enhancementEntry],
-        status: nextStep >= 12 ? 'completed' : 'in-progress',
+        status: newStatus,
       },
     })
 
