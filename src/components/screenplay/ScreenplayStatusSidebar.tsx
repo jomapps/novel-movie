@@ -1,6 +1,20 @@
 'use client'
 
-import { Check, X, Loader2, BookOpen, Users, Palette, Target, Lightbulb, Film, FileText, Clapperboard, Video, Package } from 'lucide-react'
+import {
+  Check,
+  X,
+  Loader2,
+  BookOpen,
+  Users,
+  Palette,
+  Target,
+  Lightbulb,
+  Film,
+  FileText,
+  Clapperboard,
+  Video,
+  Package,
+} from 'lucide-react'
 import { Project, Story } from '@/payload-types'
 
 interface ScreenplayStep {
@@ -22,11 +36,7 @@ interface ScreenplayStatusSidebarProps {
   story: Story
 }
 
-export default function ScreenplayStatusSidebar({
-  project,
-  story,
-}: ScreenplayStatusSidebarProps) {
-  
+export default function ScreenplayStatusSidebar({ project, story }: ScreenplayStatusSidebarProps) {
   // Define the screenplay generation workflow steps
   const getScreenplaySteps = (): ScreenplayStep[] => {
     const steps: ScreenplayStep[] = [
@@ -37,10 +47,12 @@ export default function ScreenplayStatusSidebar({
         status: story && story.status === 'completed' ? 'completed' : 'not-started',
         icon: <BookOpen className="w-4 h-4" />,
         estimatedTime: 'Complete',
-        metrics: story ? {
-          score: story.qualityMetrics?.overallQuality ?? undefined,
-          details: `Step ${story.currentStep}/12`
-        } : undefined
+        metrics: story
+          ? {
+              score: story.qualityMetrics?.overallQuality ?? undefined,
+              details: `Step ${story.currentStep}/12`,
+            }
+          : undefined,
       },
       {
         id: 'story-structure',
@@ -113,7 +125,7 @@ export default function ScreenplayStatusSidebar({
         icon: <Package className="w-4 h-4" />,
         dependencies: ['media-generation'],
         estimatedTime: '15-25 min',
-      }
+      },
     ]
 
     return steps
@@ -149,9 +161,9 @@ export default function ScreenplayStatusSidebar({
     if (!step.dependencies || step.dependencies.length === 0) {
       return true
     }
-    
-    return step.dependencies.every(depId => {
-      const depStep = allSteps.find(s => s.id === depId)
+
+    return step.dependencies.every((depId) => {
+      const depStep = allSteps.find((s) => s.id === depId)
       return depStep && depStep.status === 'completed'
     })
   }
@@ -162,7 +174,7 @@ export default function ScreenplayStatusSidebar({
   const progressPercentage = (completedCount / totalCount) * 100
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-xl border-r border-gray-200 overflow-y-auto z-40">
+    <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-xl border-r border-gray-200 overflow-y-auto z-40">
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200">
@@ -174,7 +186,9 @@ export default function ScreenplayStatusSidebar({
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-700">Overall Progress</span>
-            <span className="text-sm text-gray-500">{completedCount}/{totalCount}</span>
+            <span className="text-sm text-gray-500">
+              {completedCount}/{totalCount}
+            </span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
@@ -190,14 +204,12 @@ export default function ScreenplayStatusSidebar({
           {screenplaySteps.map((step, index) => {
             const isAvailable = isStepAvailable(step, screenplaySteps)
             const isDisabled = !isAvailable && step.status === 'not-started'
-            
+
             return (
               <div
                 key={step.id}
                 className={`p-3 rounded-lg border transition-all duration-200 ${
-                  isDisabled 
-                    ? 'bg-gray-50 border-gray-100 opacity-60' 
-                    : getStatusColor(step.status)
+                  isDisabled ? 'bg-gray-50 border-gray-100 opacity-60' : getStatusColor(step.status)
                 } ${isAvailable && step.status === 'not-started' ? 'hover:bg-blue-50 cursor-pointer' : ''}`}
               >
                 <div className="flex items-start justify-between mb-2">
@@ -211,9 +223,9 @@ export default function ScreenplayStatusSidebar({
                   </div>
                   <span className="text-xs text-gray-400 font-mono">{index + 1}</span>
                 </div>
-                
+
                 <p className="text-xs text-gray-600 mb-2 ml-8">{step.description}</p>
-                
+
                 {step.metrics && (
                   <div className="ml-8 text-xs">
                     {step.metrics.score && (
@@ -229,10 +241,13 @@ export default function ScreenplayStatusSidebar({
 
                 {isDisabled && step.dependencies && (
                   <div className="ml-8 mt-2 text-xs text-gray-500">
-                    Requires: {step.dependencies.map(depId => {
-                      const depStep = screenplaySteps.find(s => s.id === depId)
-                      return depStep?.label
-                    }).join(', ')}
+                    Requires:{' '}
+                    {step.dependencies
+                      .map((depId) => {
+                        const depStep = screenplaySteps.find((s) => s.id === depId)
+                        return depStep?.label
+                      })
+                      .join(', ')}
                   </div>
                 )}
               </div>
@@ -243,7 +258,8 @@ export default function ScreenplayStatusSidebar({
         {/* Footer */}
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
           <p className="text-xs text-gray-600 text-center">
-            Each step builds upon the previous ones.<br />
+            Each step builds upon the previous ones.
+            <br />
             Click available steps to begin.
           </p>
         </div>

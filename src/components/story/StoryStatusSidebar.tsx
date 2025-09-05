@@ -274,7 +274,7 @@ export default function StoryStatusSidebar({
   const progressPercentage = (completedCount / totalCount) * 100
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-64 bg-white shadow-xl border-r border-gray-200 overflow-y-auto z-40">
+    <div className="fixed left-0 top-16 h-[calc(100vh-4rem)] w-64 bg-white shadow-xl border-r border-gray-200 overflow-y-auto z-40">
       <div className="flex flex-col h-full">
         {/* Header */}
         <div className="px-6 py-4 border-b border-gray-200">
