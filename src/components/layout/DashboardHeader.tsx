@@ -66,12 +66,6 @@ export default function DashboardHeader({
                     Project
                   </Link>
                   <Link
-                    href={`/project/${selectedProject.id}/initial-concept`}
-                    className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
-                  >
-                    Initial Concept
-                  </Link>
-                  <Link
                     href={`/project/${selectedProject.id}/story`}
                     className="text-gray-700 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors"
                   >
@@ -175,13 +169,6 @@ export default function DashboardHeader({
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Project
-                </Link>
-                <Link
-                  href={`/project/${selectedProject.id}/initial-concept`}
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Initial Concept
                 </Link>
                 <Link
                   href={`/project/${selectedProject.id}/story`}
