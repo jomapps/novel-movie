@@ -280,6 +280,13 @@ export default function ProjectDetailPage() {
               <div className="space-y-4">
                 <h2 className="text-lg font-semibold text-gray-900">Timeline</h2>
 
+                {project.durationUnit && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Duration</dt>
+                    <dd className="text-sm text-gray-900">{project.durationUnit} minutes</dd>
+                  </div>
+                )}
+
                 <div>
                   <dt className="text-sm font-medium text-gray-500">Created</dt>
                   <dd className="text-sm text-gray-900">{formatDate(project.createdAt)}</dd>
