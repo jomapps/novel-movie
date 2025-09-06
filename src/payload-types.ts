@@ -1536,6 +1536,66 @@ export interface Character {
      */
     completeness?: number | null;
   };
+  /**
+   * Character Library service ID for this character
+   */
+  characterLibraryId?: string | null;
+  /**
+   * Status of character in Character Library service
+   */
+  characterLibraryStatus?: ('not_created' | 'creating' | 'created' | 'error') | null;
+  /**
+   * Visual assets and consistency data from Character Library
+   */
+  visualAssets?: {
+    masterReferenceImage?: {
+      /**
+       * Public URL of master reference image
+       */
+      url?: string | null;
+      /**
+       * DINOv3 asset ID for consistency validation
+       */
+      dinoAssetId?: string | null;
+      /**
+       * DINOv3 quality score (0-100)
+       */
+      qualityScore?: number | null;
+    };
+    /**
+     * 360° core reference images
+     */
+    coreReferenceSet?:
+      | {
+          url: string;
+          shotType?:
+            | ('front' | 'back' | 'left_side' | 'right_side' | 'angle_45' | 'angle_135' | 'angle_225' | 'angle_315')
+            | null;
+          consistencyScore?: number | null;
+          id?: string | null;
+        }[]
+      | null;
+    /**
+     * Scene-specific generated images
+     */
+    generatedImages?:
+      | {
+          url: string;
+          /**
+           * Generation prompt used
+           */
+          prompt?: string | null;
+          /**
+           * Scene or context this image was generated for
+           */
+          sceneContext?: string | null;
+          qualityScore?: number | null;
+          consistencyScore?: number | null;
+          generatedAt?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -2466,6 +2526,38 @@ export interface CharactersSelect<T extends boolean = true> {
         generationMethod?: T;
         qualityScore?: T;
         completeness?: T;
+      };
+  characterLibraryId?: T;
+  characterLibraryStatus?: T;
+  visualAssets?:
+    | T
+    | {
+        masterReferenceImage?:
+          | T
+          | {
+              url?: T;
+              dinoAssetId?: T;
+              qualityScore?: T;
+            };
+        coreReferenceSet?:
+          | T
+          | {
+              url?: T;
+              shotType?: T;
+              consistencyScore?: T;
+              id?: T;
+            };
+        generatedImages?:
+          | T
+          | {
+              url?: T;
+              prompt?: T;
+              sceneContext?: T;
+              qualityScore?: T;
+              consistencyScore?: T;
+              generatedAt?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;
