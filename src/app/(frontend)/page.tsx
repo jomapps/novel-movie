@@ -33,6 +33,7 @@ export default async function HomePage() {
           title="Total Projects"
           value={projectsCount.totalDocs}
           change={{ value: '+12%', type: 'increase' }}
+          href="/projects"
           icon={
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 interface StatsCardProps {
   title: string
   value: string | number
@@ -7,9 +9,17 @@ interface StatsCardProps {
   }
   icon?: React.ReactNode
   description?: string
+  href?: string
 }
 
-export default function StatsCard({ title, value, change, icon, description }: StatsCardProps) {
+export default function StatsCard({
+  title,
+  value,
+  change,
+  icon,
+  description,
+  href,
+}: StatsCardProps) {
   const getChangeColor = (type: 'increase' | 'decrease' | 'neutral') => {
     switch (type) {
       case 'increase':
@@ -28,13 +38,23 @@ export default function StatsCard({ title, value, change, icon, description }: S
       case 'increase':
         return (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 17l9.2-9.2M17 17V7H7" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M7 17l9.2-9.2M17 17V7H7"
+            />
           </svg>
         )
       case 'decrease':
         return (
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 7l-9.2 9.2M7 7v10h10" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M17 7l-9.2 9.2M7 7v10h10"
+            />
           </svg>
         )
       case 'neutral':
@@ -48,15 +68,15 @@ export default function StatsCard({ title, value, change, icon, description }: S
     }
   }
 
-  return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+  const cardContent = (
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 p-6 ${href ? 'hover:shadow-md hover:border-gray-300 transition-all duration-200 cursor-pointer' : ''}`}
+    >
       <div className="flex items-center justify-between">
         <div className="flex-1">
           <p className="text-sm font-medium text-gray-600 uppercase tracking-wide">{title}</p>
           <p className="text-3xl font-bold text-gray-900 mt-2">{value}</p>
-          {description && (
-            <p className="text-sm text-gray-500 mt-1">{description}</p>
-          )}
+          {description && <p className="text-sm text-gray-500 mt-1">{description}</p>}
           {change && (
             <div className={`flex items-center mt-2 ${getChangeColor(change.type)}`}>
               {getChangeIcon(change.type)}
@@ -74,4 +94,14 @@ export default function StatsCard({ title, value, change, icon, description }: S
       </div>
     </div>
   )
+
+  if (href) {
+    return (
+      <Link href={href} className="block">
+        {cardContent}
+      </Link>
+    )
+  }
+
+  return cardContent
 }

@@ -17,6 +17,7 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
+  RotateCcw,
 } from 'lucide-react'
 
 interface ScreenplayContentProps {
@@ -106,6 +107,20 @@ function StepContent({
               >
                 <Play className="w-4 h-4 mr-1" />
                 Start
+              </Button>
+            )}
+            {status === 'completed' && (
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onExecute()
+                }}
+                size="sm"
+                variant="outline"
+                className="inline-flex items-center"
+              >
+                <RotateCcw className="w-4 h-4 mr-1" />
+                Regenerate
               </Button>
             )}
           </div>
