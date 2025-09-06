@@ -308,7 +308,7 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="font-medium">Quality Score:</span>{' '}
-                {story.qualityMetrics?.overallQuality || 'N/A'}/100
+                {story.qualityMetrics?.overallQuality || 'N/A'}/10
               </div>
               <div>
                 <span className="font-medium">Enhancement Steps:</span> {story.currentStep}/12

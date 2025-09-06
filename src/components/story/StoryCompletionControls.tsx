@@ -8,7 +8,7 @@ import {
   getEnhancementRecommendation,
   getCompletionReason,
   canContinueEnhancing,
-  type Story as StoryCompletionType
+  type Story as StoryCompletionType,
 } from '@/lib/story-completion'
 
 // Helper function to convert payload Story to story-completion Story type
@@ -17,18 +17,20 @@ function convertToStoryCompletionType(story: Story): StoryCompletionType {
     currentStep: story.currentStep,
     status: story.status,
     currentContent: story.currentContent,
-    qualityMetrics: story.qualityMetrics ? {
-      structureScore: story.qualityMetrics.structureScore ?? undefined,
-      characterDepth: story.qualityMetrics.characterDepth ?? undefined,
-      coherenceScore: story.qualityMetrics.coherenceScore ?? undefined,
-      conflictTension: story.qualityMetrics.conflictTension ?? undefined,
-      dialogueQuality: story.qualityMetrics.dialogueQuality ?? undefined,
-      genreAlignment: story.qualityMetrics.genreAlignment ?? undefined,
-      audienceEngagement: story.qualityMetrics.audienceEngagement ?? undefined,
-      visualStorytelling: story.qualityMetrics.visualStorytelling ?? undefined,
-      productionReadiness: story.qualityMetrics.productionReadiness ?? undefined,
-      overallQuality: story.qualityMetrics.overallQuality ?? undefined,
-    } : undefined
+    qualityMetrics: story.qualityMetrics
+      ? {
+          structureScore: story.qualityMetrics.structureScore ?? undefined,
+          characterDepth: story.qualityMetrics.characterDepth ?? undefined,
+          coherenceScore: story.qualityMetrics.coherenceScore ?? undefined,
+          conflictTension: story.qualityMetrics.conflictTension ?? undefined,
+          dialogueQuality: story.qualityMetrics.dialogueQuality ?? undefined,
+          genreAlignment: story.qualityMetrics.genreAlignment ?? undefined,
+          audienceEngagement: story.qualityMetrics.audienceEngagement ?? undefined,
+          visualStorytelling: story.qualityMetrics.visualStorytelling ?? undefined,
+          productionReadiness: story.qualityMetrics.productionReadiness ?? undefined,
+          overallQuality: story.qualityMetrics.overallQuality ?? undefined,
+        }
+      : undefined,
   }
 }
 
@@ -38,10 +40,10 @@ interface StoryCompletionControlsProps {
   onEnhance: () => void
 }
 
-export default function StoryCompletionControls({ 
-  story, 
-  onStoryUpdate, 
-  onEnhance 
+export default function StoryCompletionControls({
+  story,
+  onStoryUpdate,
+  onEnhance,
 }: StoryCompletionControlsProps) {
   const [isCompleting, setIsCompleting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -73,7 +75,6 @@ export default function StoryCompletionControls({
 
       const result = await response.json()
       onStoryUpdate(result.story)
-      
     } catch (err) {
       console.error('Error completing story:', err)
       setError(err instanceof Error ? err.message : 'Failed to complete story')
@@ -101,29 +102,21 @@ export default function StoryCompletionControls({
   return (
     <div className="space-y-4">
       {/* Status Information */}
-      <div className={`border rounded-lg p-4 ${
-        isReady ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
-      }`}>
+      <div
+        className={`border rounded-lg p-4 ${
+          isReady ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+        }`}
+      >
         <div className="flex items-start">
-          <Info className={`w-5 h-5 mr-2 mt-0.5 ${
-            isReady ? 'text-blue-600' : 'text-gray-500'
-          }`} />
+          <Info className={`w-5 h-5 mr-2 mt-0.5 ${isReady ? 'text-blue-600' : 'text-gray-500'}`} />
           <div className="flex-1">
-            <h3 className={`text-sm font-medium ${
-              isReady ? 'text-blue-800' : 'text-gray-700'
-            }`}>
+            <h3 className={`text-sm font-medium ${isReady ? 'text-blue-800' : 'text-gray-700'}`}>
               Story Status
             </h3>
-            <p className={`text-sm mt-1 ${
-              isReady ? 'text-blue-700' : 'text-gray-600'
-            }`}>
+            <p className={`text-sm mt-1 ${isReady ? 'text-blue-700' : 'text-gray-600'}`}>
               {recommendation.recommendation}
             </p>
-            {isReady && (
-              <p className="text-xs text-blue-600 mt-2">
-                {completionReason}
-              </p>
-            )}
+            {isReady && <p className="text-xs text-blue-600 mt-2">{completionReason}</p>}
           </div>
         </div>
       </div>

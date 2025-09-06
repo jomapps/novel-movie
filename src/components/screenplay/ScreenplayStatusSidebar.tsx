@@ -277,7 +277,7 @@ export default function ScreenplayStatusSidebar({ project, story }: ScreenplaySt
                   <div className="ml-8 text-xs">
                     {step.metrics.score && (
                       <span className="inline-block px-2 py-1 bg-blue-100 text-blue-800 rounded-full mr-2">
-                        Quality: {step.metrics.score}/100
+                        Quality: {step.metrics.score}/10
                       </span>
                     )}
                     {step.metrics.details && (
