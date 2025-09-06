@@ -115,29 +115,33 @@ export const Characters: CollectionConfig = {
       fields: [
         {
           name: 'biography',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 6,
             description: 'Character background and history',
           },
         },
         {
           name: 'personality',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 4,
             description: 'Personality traits and characteristics',
           },
         },
         {
           name: 'motivations',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 4,
             description: 'Character motivations and goals',
           },
         },
         {
           name: 'backstory',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 6,
             description: 'Character backstory and formative experiences',
           },
         },
@@ -220,8 +224,9 @@ export const Characters: CollectionConfig = {
       fields: [
         {
           name: 'description',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 4,
             description: 'Overall physical description',
           },
         },
@@ -255,8 +260,9 @@ export const Characters: CollectionConfig = {
         },
         {
           name: 'clothing',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 3,
             description: 'Typical clothing and style',
           },
         },
@@ -273,8 +279,9 @@ export const Characters: CollectionConfig = {
       fields: [
         {
           name: 'voiceDescription',
-          type: 'richText',
+          type: 'textarea',
           admin: {
+            rows: 4,
             description: 'Character voice and speaking style',
           },
         },

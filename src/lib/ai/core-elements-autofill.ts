@@ -309,20 +309,62 @@ async function convertAudienceNamesToIds(audienceNames: string[]): Promise<strin
       } else {
         // Create new audience record if not found
         try {
+          // Generate a unique slug by checking for duplicates
+          let baseSlug = audienceName
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+
+          let uniqueSlug = baseSlug
+          let counter = 1
+
+          // Check if slug already exists and generate unique one
+          while (true) {
+            const existingSlugCheck = audiences.docs.find((a: any) => a.slug === uniqueSlug)
+            if (!existingSlugCheck) {
+              break // Slug is unique
+            }
+            uniqueSlug = `${baseSlug}-${counter}`
+            counter++
+          }
+
+          // Create a more detailed description based on the audience name
+          let description = `AI-generated audience demographic: ${audienceName}`
+          let ageRange = undefined
+
+          // Try to extract age information and create better descriptions
+          if (audienceName.toLowerCase().includes('teen')) {
+            description =
+              'Adolescents dealing with identity formation, relationships, and preparation for adulthood.'
+            ageRange = { minAge: 13, maxAge: 17, ratingGuideline: 'PG-13' as const }
+          } else if (audienceName.toLowerCase().includes('young adult')) {
+            description =
+              'College-age and early career individuals exploring independence, relationships, and life direction.'
+            ageRange = { minAge: 18, maxAge: 24, ratingGuideline: 'R' as const }
+          } else if (audienceName.toLowerCase().includes('adult')) {
+            description =
+              'Established adults in career-building and family-formation years with diverse interests and responsibilities.'
+            ageRange = { minAge: 25, maxAge: 44, ratingGuideline: 'R' as const }
+          } else if (audienceName.toLowerCase().includes('child')) {
+            description = 'Young children requiring simple narratives and age-appropriate content.'
+            ageRange = { minAge: 4, maxAge: 12, ratingGuideline: 'G' as const }
+          }
+
           const newAudience = await payload.create({
             collection: 'audience-demographics',
             data: {
               name: audienceName,
-              slug: audienceName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
-              description: `AI-generated audience demographic: ${audienceName}`,
+              slug: uniqueSlug,
+              description: description,
               category: 'age', // Use 'age' category since most AI-generated audiences are age-based
+              ...(ageRange && { ageRange }),
               isActive: true,
               sortOrder: 999, // Place AI-generated items at the end
               aiGenerationTags: [{ tag: 'ai-generated' }],
             },
           })
           audienceIds.push(newAudience.id)
-          console.log(`Created new audience demographic: ${audienceName}`)
+          console.log(`Created new audience demographic: ${audienceName} with slug: ${uniqueSlug}`)
         } catch (createError) {
           console.error(`Failed to create audience demographic "${audienceName}":`, createError)
           // Continue with other audiences even if one fails
@@ -368,11 +410,30 @@ async function convertToneNamesToIds(toneNames: string[]): Promise<string[]> {
       } else {
         // Create new tone record if not found
         try {
+          // Generate a unique slug by checking for duplicates
+          let baseSlug = toneName
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+
+          let uniqueSlug = baseSlug
+          let counter = 1
+
+          // Check if slug already exists and generate unique one
+          while (true) {
+            const existingSlugCheck = tones.docs.find((t: any) => t.slug === uniqueSlug)
+            if (!existingSlugCheck) {
+              break // Slug is unique
+            }
+            uniqueSlug = `${baseSlug}-${counter}`
+            counter++
+          }
+
           const newTone = await payload.create({
             collection: 'tone-options',
             data: {
               name: toneName,
-              slug: toneName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+              slug: uniqueSlug,
               description: `AI-generated tone option: ${toneName}`,
               category: 'atmospheric', // Default category for AI-generated tones
               intensity: 'moderate', // Default intensity
@@ -382,7 +443,7 @@ async function convertToneNamesToIds(toneNames: string[]): Promise<string[]> {
             },
           })
           toneIds.push(newTone.id)
-          console.log(`Created new tone option: ${toneName}`)
+          console.log(`Created new tone option: ${toneName} with slug: ${uniqueSlug}`)
         } catch (createError) {
           console.error(`Failed to create tone option "${toneName}":`, createError)
           // Continue with other tones even if one fails
@@ -428,11 +489,30 @@ async function convertMoodNamesToIds(moodNames: string[]): Promise<string[]> {
       } else {
         // Create new mood record if not found
         try {
+          // Generate a unique slug by checking for duplicates
+          let baseSlug = moodName
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/(^-|-$)/g, '')
+
+          let uniqueSlug = baseSlug
+          let counter = 1
+
+          // Check if slug already exists and generate unique one
+          while (true) {
+            const existingSlugCheck = moods.docs.find((m: any) => m.slug === uniqueSlug)
+            if (!existingSlugCheck) {
+              break // Slug is unique
+            }
+            uniqueSlug = `${baseSlug}-${counter}`
+            counter++
+          }
+
           const newMood = await payload.create({
             collection: 'mood-descriptors',
             data: {
               name: moodName,
-              slug: moodName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''),
+              slug: uniqueSlug,
               description: `AI-generated mood descriptor: ${moodName}`,
               category: 'neutral', // Default category for AI-generated moods
               intensity: 'moderate', // Default intensity
@@ -442,7 +522,7 @@ async function convertMoodNamesToIds(moodNames: string[]): Promise<string[]> {
             },
           })
           moodIds.push(newMood.id)
-          console.log(`Created new mood descriptor: ${moodName}`)
+          console.log(`Created new mood descriptor: ${moodName} with slug: ${uniqueSlug}`)
         } catch (createError) {
           console.error(`Failed to create mood descriptor "${moodName}":`, createError)
           // Continue with other moods even if one fails

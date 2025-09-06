@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+
 import { getBamlClient } from '@/lib/ai/baml-client'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -195,7 +196,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         storyStructure: storyStructure.id,
         name: character.name,
         status: 'ready' as const,
-        role: character.role,
+        role: character.role as 'protagonist' | 'antagonist' | 'supporting' | 'minor',
         archetype: character.archetype || '',
         characterDevelopment: {
           biography: character.characterDevelopment.biography,

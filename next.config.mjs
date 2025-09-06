@@ -1,6 +1,9 @@
 import { withSentryConfig } from '@sentry/nextjs'
 import { withPayload } from '@payloadcms/next/withPayload'
 import { withBaml } from '@boundaryml/baml-nextjs-plugin'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -12,6 +15,42 @@ const nextConfig = {
   },
   // Allow cross-origin requests for development assets from these origins
   allowedDevOrigins: ['local.ft.tc', 'novel.ft.tc', 'crew.ft.tc', 'pathrag.ft.tc'],
+
+  // Webpack optimization to prevent cache warnings
+  webpack: (config, { dev, isServer }) => {
+    // Optimize webpack cache for better performance
+    if (dev) {
+      config.cache = {
+        type: 'filesystem',
+        buildDependencies: {
+          config: [__filename],
+        },
+        // Reduce memory usage and improve cache performance
+        compression: 'gzip',
+        maxMemoryGenerations: 1,
+      }
+    }
+
+    // Optimize bundle splitting to prevent large string serializations
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: {
+        ...config.optimization.splitChunks,
+        cacheGroups: {
+          ...config.optimization.splitChunks?.cacheGroups,
+          // Separate large dependencies to prevent cache issues
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendors',
+            chunks: 'all',
+            maxSize: 244000, // 244KB chunks to prevent large serializations
+          },
+        },
+      },
+    }
+
+    return config
+  },
 }
 
 export default withSentryConfig(

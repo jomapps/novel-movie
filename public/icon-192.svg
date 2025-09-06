@@ -1,0 +1,36 @@
+<svg width="192" height="192" viewBox="0 0 192 192" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg192" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a1a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#333333;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background with rounded corners -->
+  <rect x="0" y="0" width="192" height="192" rx="38" ry="38" fill="url(#bg192)"/>
+  
+  <!-- Film reel outer ring -->
+  <circle cx="96" cy="96" r="65" fill="none" stroke="#666" stroke-width="8"/>
+  
+  <!-- Center hub -->
+  <circle cx="96" cy="96" r="20" fill="#666"/>
+  <circle cx="96" cy="96" r="10" fill="#888"/>
+  
+  <!-- Film strip accent -->
+  <rect x="6" y="82" width="180" height="28" fill="#e50914" opacity="0.8"/>
+  
+  <!-- Film perforations -->
+  <rect x="12" y="86" width="8" height="6" fill="#1a1a1a"/>
+  <rect x="12" y="94" width="8" height="6" fill="#1a1a1a"/>
+  <rect x="12" y="102" width="8" height="6" fill="#1a1a1a"/>
+  
+  <rect x="172" y="86" width="8" height="6" fill="#1a1a1a"/>
+  <rect x="172" y="94" width="8" height="6" fill="#1a1a1a"/>
+  <rect x="172" y="102" width="8" height="6" fill="#1a1a1a"/>
+  
+  <!-- Additional film reel spokes -->
+  <line x1="96" y1="31" x2="96" y2="51" stroke="#666" stroke-width="4"/>
+  <line x1="96" y1="141" x2="96" y2="161" stroke="#666" stroke-width="4"/>
+  <line x1="31" y1="96" x2="51" y2="96" stroke="#666" stroke-width="4"/>
+  <line x1="141" y1="96" x2="161" y2="96" stroke="#666" stroke-width="4"/>
+</svg>

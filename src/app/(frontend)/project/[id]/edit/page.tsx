@@ -232,6 +232,11 @@ export default function EditProjectPage() {
 
     if (!formData.durationUnit) {
       newErrors.durationUnit = 'Duration unit is required'
+    } else {
+      const duration = parseFloat(formData.durationUnit)
+      if (isNaN(duration) || duration < 1) {
+        newErrors.durationUnit = 'Duration must be at least 1 minute (60 seconds)'
+      }
     }
 
     if (showSeriesField && !formData.series) {
@@ -435,16 +440,16 @@ export default function EditProjectPage() {
                 label="Duration (Minutes)"
                 required
                 error={errors.durationUnit}
-                description="Suggested duration for this project in minutes"
+                description="Minimum 1 minute (60 seconds) required for story structure generation"
               >
                 <Input
                   type="number"
                   value={formData.durationUnit}
                   onChange={(e) => handleInputChange('durationUnit', e.target.value)}
-                  placeholder="Enter duration in minutes"
+                  placeholder="Enter duration in minutes (minimum 1)"
                   error={!!errors.durationUnit}
                   min="1"
-                  step="1"
+                  step="0.1"
                 />
               </FormField>
             </div>
