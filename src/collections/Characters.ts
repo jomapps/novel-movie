@@ -389,6 +389,136 @@ export const Characters: CollectionConfig = {
         },
       ],
     },
+
+    // Character Library Integration
+    {
+      name: 'characterLibraryId',
+      type: 'text',
+      admin: {
+        description: 'Character Library service ID for this character',
+        readOnly: true,
+      },
+    },
+    {
+      name: 'characterLibraryStatus',
+      type: 'select',
+      options: [
+        { label: 'Not Created', value: 'not_created' },
+        { label: 'Creating', value: 'creating' },
+        { label: 'Created', value: 'created' },
+        { label: 'Error', value: 'error' },
+      ],
+      defaultValue: 'not_created',
+      admin: {
+        description: 'Status of character in Character Library service',
+      },
+    },
+    {
+      name: 'visualAssets',
+      type: 'group',
+      admin: {
+        description: 'Visual assets and consistency data from Character Library',
+      },
+      fields: [
+        {
+          name: 'masterReferenceImage',
+          type: 'group',
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              admin: { description: 'Public URL of master reference image' },
+            },
+            {
+              name: 'dinoAssetId',
+              type: 'text',
+              admin: { description: 'DINOv3 asset ID for consistency validation' },
+            },
+            {
+              name: 'qualityScore',
+              type: 'number',
+              min: 0,
+              max: 100,
+              admin: { description: 'DINOv3 quality score (0-100)' },
+            },
+          ],
+        },
+        {
+          name: 'coreReferenceSet',
+          type: 'array',
+          admin: {
+            description: '360° core reference images',
+          },
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'shotType',
+              type: 'select',
+              options: [
+                { label: 'Front View', value: 'front' },
+                { label: 'Back View', value: 'back' },
+                { label: 'Left Side', value: 'left_side' },
+                { label: 'Right Side', value: 'right_side' },
+                { label: '45° Angle', value: 'angle_45' },
+                { label: '135° Angle', value: 'angle_135' },
+                { label: '225° Angle', value: 'angle_225' },
+                { label: '315° Angle', value: 'angle_315' },
+              ],
+            },
+            {
+              name: 'consistencyScore',
+              type: 'number',
+              min: 0,
+              max: 100,
+            },
+          ],
+        },
+        {
+          name: 'generatedImages',
+          type: 'array',
+          admin: {
+            description: 'Scene-specific generated images',
+          },
+          fields: [
+            {
+              name: 'url',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'prompt',
+              type: 'textarea',
+              admin: { description: 'Generation prompt used' },
+            },
+            {
+              name: 'sceneContext',
+              type: 'text',
+              admin: { description: 'Scene or context this image was generated for' },
+            },
+            {
+              name: 'qualityScore',
+              type: 'number',
+              min: 0,
+              max: 100,
+            },
+            {
+              name: 'consistencyScore',
+              type: 'number',
+              min: 0,
+              max: 100,
+            },
+            {
+              name: 'generatedAt',
+              type: 'date',
+            },
+          ],
+        },
+      ],
+    },
   ],
   hooks: {
     beforeValidate: [
