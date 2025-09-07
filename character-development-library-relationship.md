@@ -1,8 +1,18 @@
-# Character Development & Character Library Service Integration
+# Character Development & Character Library Service Integration - SINGLE SOURCE ARCHITECTURE
 
 ## Overview
 
-This document provides comprehensive documentation for the Character Development step in the Novel Movie screenplay workflow and its integration with the external Character Library Service. The Character Development step creates detailed character profiles, relationships, and dialogue voices based on story structure data and integrates with the Character Library Service for visual asset generation and character consistency management.
+**ARCHITECTURE CHANGE**: This document has been completely updated to reflect the new single-source character architecture where Character Library becomes the authoritative source for all character data, eliminating sync conflicts and data duplication.
+
+## New Single Source Architecture
+
+### Key Principles
+
+1. **Character Library = Single Source of Truth**: All character data lives in Character Library
+2. **Novel Movie = Minimal References**: Only stores character name + library ID
+3. **No Data Duplication**: Character data exists in one place only
+4. **No Sync Conflicts**: No bidirectional sync needed
+5. **Clean Separation**: Character Library handles all character operations
 
 ## 1. Character Fields Analysis
 

@@ -459,7 +459,138 @@ Perform PathRAG knowledge base management operations.
 }
 ```
 
-### 5. Payload CMS REST API
+### 5. Novel Movie Integration API (REQUIRED - NOT YET IMPLEMENTED)
+
+**CRITICAL**: These endpoints are required for Novel Movie single-source character architecture:
+
+#### Novel Movie Character Creation
+```http
+POST /api/v1/characters/novel-movie
+Content-Type: application/json
+
+{
+  "projectId": "string",
+  "projectName": "string",
+  "characterData": {
+    "name": "string",
+    "biography": "RichTextContent",
+    "personality": "RichTextContent",
+    "motivations": "RichTextContent",
+    "backstory": "RichTextContent",
+    "physicalDescription": "RichTextContent",
+    "voiceDescription": "RichTextContent",
+    "clothing": "RichTextContent",
+    "age": "number",
+    "height": "string",
+    "eyeColor": "string",
+    "hairColor": "string",
+    "relationships": "RichTextContent",
+    "skills": [{"skill": "string", "level": "string", "description": "string"}],
+    "novelMovieIntegration": {
+      "projectId": "string",
+      "projectName": "string",
+      "lastSyncAt": "Date",
+      "syncStatus": "synced",
+      "conflictResolution": "auto"
+    }
+  },
+  "sourceApplication": "novel-movie"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "id": "character-library-id",
+  "characterId": "unique-character-identifier"
+}
+```
+
+#### Project Characters Listing
+```http
+GET /api/v1/characters/by-project/:projectId
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "characters": ["RichCharacterData[]"],
+  "count": "number"
+}
+```
+
+#### Character Search
+```http
+POST /api/v1/characters/search
+Content-Type: application/json
+
+{
+  "query": "string",
+  "similarityThreshold": "number",
+  "includePhysical": "boolean",
+  "includePersonality": "boolean",
+  "projectId": "string (optional)"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "matches": [
+    {
+      "character": "RichCharacterData",
+      "similarity": "number",
+      "matchingFields": ["string[]"]
+    }
+  ]
+}
+```
+
+#### Reference Image Management
+```http
+PUT /api/v1/characters/:id/reference-image
+Content-Type: application/json
+
+{
+  "imageUrl": "string",
+  "metadata": {
+    "source": "string",
+    "quality": "number (optional)"
+  }
+}
+```
+
+#### 360° Image Set Generation
+```http
+POST /api/v1/characters/:id/generate-360-set
+Content-Type: application/json
+
+{
+  "style": "string (optional)",
+  "qualityThreshold": "number (optional)",
+  "imageCount": "number (optional)"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "images": [
+    {
+      "url": "string",
+      "angle": "string",
+      "quality": "number"
+    }
+  ],
+  "status": "completed|processing|failed"
+}
+```
+
+### 6. Payload CMS REST API
 
 The application provides full Payload CMS REST API access for all collections:
 

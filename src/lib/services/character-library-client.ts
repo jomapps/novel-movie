@@ -4,13 +4,37 @@ export interface CharacterLibraryCharacter {
   name: string
   characterId: string
   status: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived'
-  biography: string
-  personality: string
-  physicalDescription: string
+  biography: any // RichText object
+  personality: any // RichText object
+  motivations?: any // RichText object
+  backstory?: any // RichText object
+  relationships?: any // RichText object
+  physicalDescription: any // RichText object
+  voiceDescription?: any // RichText object
+  clothing?: any // RichText object
   age?: number
   height?: string
+  weight?: string
   eyeColor?: string
   hairColor?: string
+  skills?: Array<{
+    skill: string
+    level: 'beginner' | 'intermediate' | 'advanced' | 'expert'
+    description: string
+  }>
+  novelMovieIntegration?: {
+    projectId: string
+    projectName: string
+    lastSyncAt: Date
+    syncStatus: 'synced' | 'pending' | 'conflict' | 'error'
+    conflictResolution: 'manual' | 'auto'
+    changeLog: Array<{
+      timestamp: Date
+      source: 'novel-movie' | 'character-library'
+      changes: string[]
+      resolvedBy?: string
+    }>
+  }
 }
 
 export interface SmartImageGenerationRequest {
@@ -101,6 +125,14 @@ export class CharacterLibraryClient {
     return this.makeRequest('POST', endpoint, {})
   }
 
+  async generate360ImageSet(
+    characterId: string,
+    options: { style?: string; qualityThreshold?: number; imageCount?: number } = {},
+  ): Promise<any> {
+    const endpoint = `/api/v1/characters/${characterId}/generate-360-set`
+    return this.makeRequest('POST', endpoint, options)
+  }
+
   async queryCharacters(query: string): Promise<any> {
     return this.makeRequest('POST', '/api/characters/query', { query })
   }
@@ -146,18 +178,145 @@ export class CharacterLibraryClient {
     return this.makeRequest('PUT', endpoint, updateData)
   }
 
-  private mapToCharacterLibraryFormat(character: any, project?: any): CharacterLibraryCharacter {
+  private mapToCharacterLibraryFormat(character: any, project?: any): any {
+    // Helper function to convert RichText to Character Library format
+    const convertRichText = (richTextData: any): any => {
+      if (!richTextData)
+        return {
+          root: {
+            children: [
+              {
+                children: [
+                  {
+                    detail: 0,
+                    format: 0,
+                    mode: 'normal',
+                    style: '',
+                    text: '',
+                    type: 'text',
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                type: 'paragraph',
+                version: 1,
+              },
+            ],
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            type: 'root',
+            version: 1,
+          },
+        }
+
+      // If it's already a RichText object, return as-is
+      if (richTextData.root) return richTextData
+
+      // If it's a string, convert to RichText format
+      if (typeof richTextData === 'string') {
+        return {
+          root: {
+            children: [
+              {
+                children: [
+                  {
+                    detail: 0,
+                    format: 0,
+                    mode: 'normal',
+                    style: '',
+                    text: richTextData,
+                    type: 'text',
+                    version: 1,
+                  },
+                ],
+                direction: 'ltr',
+                format: '',
+                indent: 0,
+                type: 'paragraph',
+                version: 1,
+              },
+            ],
+            direction: 'ltr',
+            format: '',
+            indent: 0,
+            type: 'root',
+            version: 1,
+          },
+        }
+      }
+
+      return richTextData
+    }
+
+    // Map comprehensive character data to Character Library format
     return {
       name: character.name,
       characterId: character.characterId || this.generateUniqueCharacterId(character.name, project),
       status: 'in_development' as const,
-      biography: character.characterDevelopment?.biography || '',
-      personality: character.characterDevelopment?.personality || '',
-      physicalDescription: character.physicalDescription?.description || '',
-      age: character.physicalDescription?.age,
-      height: character.physicalDescription?.height,
-      eyeColor: character.physicalDescription?.eyeColor,
-      hairColor: character.physicalDescription?.hairColor,
+
+      // Core character development (convert to RichText)
+      biography: convertRichText(character.characterDevelopment?.biography),
+      personality: convertRichText(character.characterDevelopment?.personality),
+      motivations: convertRichText(character.characterDevelopment?.motivations),
+      backstory: convertRichText(character.characterDevelopment?.backstory),
+
+      // Physical description (convert to RichText)
+      physicalDescription: convertRichText(character.physicalDescription?.description),
+      voiceDescription: convertRichText(character.dialogueVoice?.voiceDescription),
+      clothing: convertRichText(character.physicalDescription?.clothing),
+
+      // Physical attributes
+      age: character.physicalDescription?.age || null,
+      height: character.physicalDescription?.height || '',
+      weight: '', // Not currently tracked in Novel Movie
+      eyeColor: character.physicalDescription?.eyeColor || '',
+      hairColor: character.physicalDescription?.hairColor || '',
+
+      // Relationships (convert to RichText)
+      relationships: convertRichText(
+        character.relationships
+          ?.map(
+            (rel: any) =>
+              `${rel.characterName}: ${rel.relationshipType} - ${rel.relationshipDynamic}`,
+          )
+          .join('\n\n') || '',
+      ),
+
+      // Skills (map from character psychology/traits)
+      skills: character.characterDevelopment?.psychology
+        ? [
+            {
+              skill: 'Core Motivation',
+              level: 'advanced' as const,
+              description: character.characterDevelopment.psychology.motivation || '',
+            },
+            {
+              skill: 'Character Strengths',
+              level: 'intermediate' as const,
+              description: character.characterDevelopment.psychology.desires || '',
+            },
+          ]
+        : [],
+
+      // Novel Movie integration metadata
+      novelMovieIntegration: {
+        projectId: project?.id || '',
+        projectName: project?.name || '',
+        lastSyncAt: new Date(),
+        syncStatus: 'synced' as const,
+        conflictResolution: 'auto' as const,
+        changeLog: [
+          {
+            timestamp: new Date(),
+            source: 'novel-movie' as const,
+            changes: ['Initial character creation from Novel Movie'],
+            resolvedBy: 'system',
+          },
+        ],
+      },
     }
   }
 

@@ -1,51 +1,65 @@
-# Character Development Implementation
+# Character Development Implementation - Single Source Architecture
 
 ## Overview
 
-The Character Development step has been successfully implemented as part of the Novel Movie screenplay generation workflow. This step creates detailed character profiles based on existing story structure data and integrates seamlessly with the incremental screenplay development process.
+**ARCHITECTURE CHANGE**: The Character Development implementation has been completely redesigned to use a single-source architecture where Character Library becomes the authoritative source for all character data.
 
-## Implementation Status
+## New Implementation Status
 
-✅ **Character Schema Created** - Complete PayloadCMS collection with comprehensive character fields
-✅ **API Endpoints Implemented** - Full CRUD operations for character development
-✅ **UI Integration Complete** - Screenplay page shows character development step with status and results
-✅ **Database Integration** - Characters are properly stored and retrieved from MongoDB
-✅ **Testing Complete** - Comprehensive test suite validates all functionality
+🔄 **Architecture Redesigned** - Single-source approach with Character Library as authority
+🔄 **Character Collection Replaced** - Minimal reference collection (2 fields only)
+🔄 **API Endpoints Updated** - Direct integration with Character Library
+🔄 **No Data Migration** - Complete replacement, clean slate approach
+🔄 **Character Library Integration** - All character operations through external service
 
-## Architecture
+## New Architecture (Single Source)
 
-### 1. Character Collection Schema (`src/collections/Characters.ts`)
+### 1. Character References Collection (`src/collections/CharacterReferences.ts`)
 
-The character collection includes:
-- **Basic Information**: Name, role, status, archetype
+**REPLACED**: Complex 400+ line character collection
+**WITH**: Minimal reference collection with only:
+- **projectCharacterName**: Character name in this project
+- **libraryCharacterId**: Reference to Character Library
+- **project**: Project relationship
+- **characterRole**: Role in this project
+- **generationStatus**: Generation workflow status
+
+### 2. Character Library as Single Source
+
+All character data now lives in Character Library:
 - **Character Development**: Biography, personality, motivations, backstory, psychology
-- **Character Arc**: Start state, transformation, end state
 - **Physical Description**: Appearance details, age, height, eye/hair color, clothing
 - **Dialogue Voice**: Speaking style, patterns, vocabulary
 - **Relationships**: Connections with other characters
+- **Images**: Reference images and 360° sets
 - **Generation Metadata**: Quality scores, completeness, generation method
 
-### 2. API Endpoints (`src/app/v1/projects/[id]/character-development/route.ts`)
+### 3. API Endpoints (`src/app/v1/projects/[id]/character-development/route.ts`)
 
-- **POST**: Create characters from story structure data
-- **GET**: Retrieve existing characters with summary metrics
-- **PUT**: Enhance characters (placeholder for future BAML integration)
+**UPDATED ENDPOINTS**:
+- **POST**: Generate characters with BAML and store in Character Library
+- **GET**: Retrieve character references and enrich with Character Library data
 
-### 3. UI Components
+### 4. Character Generation Service (`src/lib/services/character-generation-service.ts`)
 
-- **ScreenplayContent**: Shows character development step with execution and results
-- **ScreenplayStatusSidebar**: Displays character development status and metrics
+**NEW SERVICE** handles complete character workflow:
+- BAML character generation
+- Character Library creation
+- Reference image generation
+- 360° image set creation
+- Novel Movie reference storage
 
-## Current Implementation
+## New Implementation Workflow
 
 ### Character Generation Method
 
-Currently uses **story structure extraction** approach:
-1. Extracts character information from existing story structure
-2. Maps character arcs to detailed character profiles
-3. Assigns roles (protagonist, antagonist, supporting) based on order
-4. Generates basic character development information
-5. Creates comprehensive character records in database
+**NEW APPROACH** - Single-source with Character Library:
+1. **Generate**: Create rich character data using BAML
+2. **Store**: Push complete character to Character Library
+3. **Reference**: Generate reference image in Character Library
+4. **360° Set**: Create full image portfolio in Character Library
+5. **Link**: Store minimal reference (name + ID) in Novel Movie
+6. **Display**: Fetch character data from Character Library for UI
 
 ### Quality Metrics
 

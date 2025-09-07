@@ -75,7 +75,7 @@ export interface Config {
     series: Series;
     stories: Story;
     'story-structures': StoryStructure;
-    characters: Character;
+    'character-references': CharacterReference;
     'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
@@ -97,7 +97,7 @@ export interface Config {
     series: SeriesSelect<false> | SeriesSelect<true>;
     stories: StoriesSelect<false> | StoriesSelect<true>;
     'story-structures': StoryStructuresSelect<false> | StoryStructuresSelect<true>;
-    characters: CharactersSelect<false> | CharactersSelect<true>;
+    'character-references': CharacterReferencesSelect<false> | CharacterReferencesSelect<true>;
     'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
@@ -1356,167 +1356,35 @@ export interface StoryStructure {
   createdAt: string;
 }
 /**
+ * Character references linking to Character Library - Single Source Architecture
+ *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "characters".
+ * via the `definition` "character-references".
  */
-export interface Character {
+export interface CharacterReference {
   id: string;
   /**
-   * Associated project for this character
+   * Project this character belongs to
    */
   project: string | Project;
   /**
-   * Auto-populated from project name
+   * Character name as used in this specific project
    */
-  projectName?: string | null;
+  projectCharacterName: string;
   /**
-   * Associated story structure for character arc development
+   * Unique Character Library ID for this character
    */
-  storyStructure?: (string | null) | StoryStructure;
+  libraryCharacterId: string;
   /**
-   * Character name
+   * Character role in this project
    */
-  name: string;
+  characterRole?: ('protagonist' | 'antagonist' | 'supporting' | 'minor') | null;
   /**
-   * Character development status
+   * Character generation and setup status
    */
-  status: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived';
+  generationStatus?: ('pending' | 'generated' | 'images_created' | 'complete' | 'failed') | null;
   /**
-   * Character role in the story
-   */
-  role: 'protagonist' | 'antagonist' | 'supporting' | 'minor';
-  /**
-   * Character archetype (e.g., Hero, Mentor, Trickster)
-   */
-  archetype?: string | null;
-  /**
-   * Core character development information
-   */
-  characterDevelopment?: {
-    /**
-     * Character background and history
-     */
-    biography?: string | null;
-    /**
-     * Personality traits and characteristics
-     */
-    personality?: string | null;
-    /**
-     * Character motivations and goals
-     */
-    motivations?: string | null;
-    /**
-     * Character backstory and formative experiences
-     */
-    backstory?: string | null;
-    psychology?: {
-      /**
-       * Primary motivation driving the character
-       */
-      motivation?: string | null;
-      /**
-       * Character fears and anxieties
-       */
-      fears?: string | null;
-      /**
-       * Character desires and wants
-       */
-      desires?: string | null;
-      /**
-       * Character flaws and weaknesses
-       */
-      flaws?: string | null;
-    };
-  };
-  /**
-   * Character transformation throughout the story
-   */
-  characterArc?: {
-    /**
-     * Character state at the beginning of the story
-     */
-    startState?: string | null;
-    /**
-     * How the character changes throughout the story
-     */
-    transformation?: string | null;
-    /**
-     * Character state at the end of the story
-     */
-    endState?: string | null;
-  };
-  /**
-   * Character physical appearance
-   */
-  physicalDescription?: {
-    /**
-     * Overall physical description
-     */
-    description?: string | null;
-    /**
-     * Character age
-     */
-    age?: number | null;
-    /**
-     * Character height
-     */
-    height?: string | null;
-    /**
-     * Eye color
-     */
-    eyeColor?: string | null;
-    /**
-     * Hair color
-     */
-    hairColor?: string | null;
-    /**
-     * Typical clothing and style
-     */
-    clothing?: string | null;
-  };
-  /**
-   * Character dialogue style and voice
-   */
-  dialogueVoice?: {
-    /**
-     * Character voice and speaking style
-     */
-    voiceDescription?: string | null;
-    /**
-     * Dialogue style (formal, casual, etc.)
-     */
-    style?: string | null;
-    /**
-     * Speech patterns and mannerisms
-     */
-    patterns?: string | null;
-    /**
-     * Vocabulary level and word choices
-     */
-    vocabulary?: string | null;
-  };
-  /**
-   * Character relationships with other characters
-   */
-  relationships?:
-    | {
-        /**
-         * Related character
-         */
-        character?: (string | null) | Character;
-        /**
-         * Type of relationship (friend, enemy, family, etc.)
-         */
-        relationship?: string | null;
-        /**
-         * Relationship dynamic and interaction style
-         */
-        dynamic?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * AI generation metadata and quality metrics
+   * Character generation tracking information
    */
   generationMetadata?: {
     /**
@@ -1524,77 +1392,13 @@ export interface Character {
      */
     generatedAt?: string | null;
     /**
-     * How this character was created
+     * When character images were last updated
      */
-    generationMethod?: ('ai_generated' | 'user_created' | 'hybrid') | null;
+    lastImageUpdate?: string | null;
     /**
-     * Character development quality score (0-100)
+     * Error message if generation failed
      */
-    qualityScore?: number | null;
-    /**
-     * Character profile completeness percentage
-     */
-    completeness?: number | null;
-  };
-  /**
-   * Character Library service ID for this character
-   */
-  characterLibraryId?: string | null;
-  /**
-   * Status of character in Character Library service
-   */
-  characterLibraryStatus?: ('not_created' | 'creating' | 'created' | 'updated' | 'error') | null;
-  /**
-   * Visual assets and consistency data from Character Library
-   */
-  visualAssets?: {
-    masterReferenceImage?: {
-      /**
-       * Public URL of master reference image
-       */
-      url?: string | null;
-      /**
-       * DINOv3 asset ID for consistency validation
-       */
-      dinoAssetId?: string | null;
-      /**
-       * DINOv3 quality score (0-100)
-       */
-      qualityScore?: number | null;
-    };
-    /**
-     * 360° core reference images
-     */
-    coreReferenceSet?:
-      | {
-          url: string;
-          shotType?:
-            | ('front' | 'back' | 'left_side' | 'right_side' | 'angle_45' | 'angle_135' | 'angle_225' | 'angle_315')
-            | null;
-          consistencyScore?: number | null;
-          id?: string | null;
-        }[]
-      | null;
-    /**
-     * Scene-specific generated images
-     */
-    generatedImages?:
-      | {
-          url: string;
-          /**
-           * Generation prompt used
-           */
-          prompt?: string | null;
-          /**
-           * Scene or context this image was generated for
-           */
-          sceneContext?: string | null;
-          qualityScore?: number | null;
-          consistencyScore?: number | null;
-          generatedAt?: string | null;
-          id?: string | null;
-        }[]
-      | null;
+    errorMessage?: string | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -1996,8 +1800,8 @@ export interface PayloadLockedDocument {
         value: string | StoryStructure;
       } | null)
     | ({
-        relationTo: 'characters';
-        value: string | Character;
+        relationTo: 'character-references';
+        value: string | CharacterReference;
       } | null)
     | ({
         relationTo: 'fundamental-data';
@@ -2460,104 +2264,20 @@ export interface StoryStructuresSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "characters_select".
+ * via the `definition` "character-references_select".
  */
-export interface CharactersSelect<T extends boolean = true> {
+export interface CharacterReferencesSelect<T extends boolean = true> {
   project?: T;
-  projectName?: T;
-  storyStructure?: T;
-  name?: T;
-  status?: T;
-  role?: T;
-  archetype?: T;
-  characterDevelopment?:
-    | T
-    | {
-        biography?: T;
-        personality?: T;
-        motivations?: T;
-        backstory?: T;
-        psychology?:
-          | T
-          | {
-              motivation?: T;
-              fears?: T;
-              desires?: T;
-              flaws?: T;
-            };
-      };
-  characterArc?:
-    | T
-    | {
-        startState?: T;
-        transformation?: T;
-        endState?: T;
-      };
-  physicalDescription?:
-    | T
-    | {
-        description?: T;
-        age?: T;
-        height?: T;
-        eyeColor?: T;
-        hairColor?: T;
-        clothing?: T;
-      };
-  dialogueVoice?:
-    | T
-    | {
-        voiceDescription?: T;
-        style?: T;
-        patterns?: T;
-        vocabulary?: T;
-      };
-  relationships?:
-    | T
-    | {
-        character?: T;
-        relationship?: T;
-        dynamic?: T;
-        id?: T;
-      };
+  projectCharacterName?: T;
+  libraryCharacterId?: T;
+  characterRole?: T;
+  generationStatus?: T;
   generationMetadata?:
     | T
     | {
         generatedAt?: T;
-        generationMethod?: T;
-        qualityScore?: T;
-        completeness?: T;
-      };
-  characterLibraryId?: T;
-  characterLibraryStatus?: T;
-  visualAssets?:
-    | T
-    | {
-        masterReferenceImage?:
-          | T
-          | {
-              url?: T;
-              dinoAssetId?: T;
-              qualityScore?: T;
-            };
-        coreReferenceSet?:
-          | T
-          | {
-              url?: T;
-              shotType?: T;
-              consistencyScore?: T;
-              id?: T;
-            };
-        generatedImages?:
-          | T
-          | {
-              url?: T;
-              prompt?: T;
-              sceneContext?: T;
-              qualityScore?: T;
-              consistencyScore?: T;
-              generatedAt?: T;
-              id?: T;
-            };
+        lastImageUpdate?: T;
+        errorMessage?: T;
       };
   updatedAt?: T;
   createdAt?: T;
