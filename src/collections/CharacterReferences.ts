@@ -4,7 +4,14 @@ export const CharacterReferences: CollectionConfig = {
   slug: 'character-references',
   admin: {
     useAsTitle: 'projectCharacterName',
-    defaultColumns: ['projectCharacterName', 'libraryCharacterId', 'project', 'characterRole', 'generationStatus', 'createdAt'],
+    defaultColumns: [
+      'projectCharacterName',
+      'libraryCharacterId',
+      'project',
+      'characterRole',
+      'generationStatus',
+      'createdAt',
+    ],
     group: 'Content',
     description: 'Character references linking to Character Library - Single Source Architecture',
   },
@@ -99,6 +106,41 @@ export const CharacterReferences: CollectionConfig = {
             condition: (data) => data.generationStatus === 'failed',
           },
         },
+        {
+          name: 'generationMethod',
+          type: 'text',
+          admin: {
+            description: 'Method used to generate character (e.g., BAML DevelopCharacters)',
+          },
+        },
+        {
+          name: 'qualityScore',
+          type: 'number',
+          admin: {
+            description: 'AI-generated quality score for the character',
+          },
+        },
+        {
+          name: 'completeness',
+          type: 'number',
+          admin: {
+            description: 'AI-generated completeness score for the character',
+          },
+        },
+        {
+          name: 'characterLibraryStatus',
+          type: 'text',
+          admin: {
+            description: 'Status of Character Library integration',
+          },
+        },
+        {
+          name: 'bamlData',
+          type: 'json',
+          admin: {
+            description: 'Full BAML response data for character generation',
+          },
+        },
       ],
     },
   ],
@@ -106,7 +148,9 @@ export const CharacterReferences: CollectionConfig = {
     afterChange: [
       async ({ doc, operation, req }) => {
         if (operation === 'create') {
-          console.log(`✅ Character reference created: ${doc.projectCharacterName} -> ${doc.libraryCharacterId}`)
+          console.log(
+            `✅ Character reference created: ${doc.projectCharacterName} -> ${doc.libraryCharacterId}`,
+          )
         }
         if (operation === 'update' && doc.generationStatus === 'complete') {
           console.log(`🎭 Character generation complete: ${doc.projectCharacterName}`)

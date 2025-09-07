@@ -1399,6 +1399,34 @@ export interface CharacterReference {
      * Error message if generation failed
      */
     errorMessage?: string | null;
+    /**
+     * Method used to generate character (e.g., BAML DevelopCharacters)
+     */
+    generationMethod?: string | null;
+    /**
+     * AI-generated quality score for the character
+     */
+    qualityScore?: number | null;
+    /**
+     * AI-generated completeness score for the character
+     */
+    completeness?: number | null;
+    /**
+     * Status of Character Library integration
+     */
+    characterLibraryStatus?: string | null;
+    /**
+     * Full BAML response data for character generation
+     */
+    bamlData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
   };
   updatedAt: string;
   createdAt: string;
@@ -2278,6 +2306,11 @@ export interface CharacterReferencesSelect<T extends boolean = true> {
         generatedAt?: T;
         lastImageUpdate?: T;
         errorMessage?: T;
+        generationMethod?: T;
+        qualityScore?: T;
+        completeness?: T;
+        characterLibraryStatus?: T;
+        bamlData?: T;
       };
   updatedAt?: T;
   createdAt?: T;
