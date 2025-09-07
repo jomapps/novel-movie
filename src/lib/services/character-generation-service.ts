@@ -1,7 +1,9 @@
-import { characterLibraryClient } from './character-library-client'
+import { CharacterLibraryClient } from './character-library-client'
 import { getBamlClient } from '@/lib/ai/baml-client'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+
+const characterLibraryClient = new CharacterLibraryClient()
 
 export interface CharacterGenerationResult {
   success: boolean
@@ -29,16 +31,22 @@ export class CharacterGenerationService {
       const characterData = await this.generateCharacterWithBAML(projectData, characterName)
       console.log(`✅ Character data generated for: ${characterName}`)
 
-      // 2. Store character data directly in Novel Movie (bypass Character Library for now)
-      const payload = await this.getPayloadInstance()
+      // 2. Create character in Character Library
 
-      // Create character record in the characters collection
+      const libraryResponse = await characterLibraryClient.createNovelMovieCharacter(
+        characterData,
+        projectData,
+      )
+      console.log(`✅ Character created in Character Library: ${libraryResponse.characterId}`)
+
+      // 3. Store character reference in Novel Movie database
+      const payload = await this.getPayloadInstance()
       const character = await payload.create({
         collection: 'character-references',
         data: {
           project: projectId,
           projectCharacterName: characterName,
-          libraryCharacterId: `local-${Date.now()}-${characterName.toLowerCase().replace(/\s+/g, '-')}`, // Generate local ID
+          libraryCharacterId: libraryResponse.characterId,
           characterRole,
           generationStatus: 'complete',
           generationMetadata: {
@@ -47,20 +55,21 @@ export class CharacterGenerationService {
             qualityScore: characterData.generationMetadata?.qualityScore || 85,
             completeness: characterData.generationMetadata?.completeness || 90,
             bamlData: characterData, // Store full BAML response for reference
-            characterLibraryStatus: 'offline', // Character Library is offline
+            characterLibraryStatus: 'created', // Character successfully created in library
           },
         },
       })
-      console.log(`✅ Character stored locally: ${character.id}`)
+      console.log(`✅ Character reference stored: ${character.id}`)
 
       return {
         success: true,
-        libraryCharacterId: null, // Character Library is offline
+        libraryCharacterId: libraryResponse.characterId,
         characterReferenceId: character.id,
         status: 'complete',
       }
     } catch (error) {
       console.error(`❌ Character generation failed for ${characterName}:`, error)
+      console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
 
       return {
         success: false,
@@ -197,7 +206,14 @@ export class CharacterGenerationService {
     })
 
     // Return character data in format expected by the screenplay component
-    return characterRefs.docs.map((ref) => {
+    // Filter out incomplete characters and prioritize those with BAML data
+    const validCharacters = characterRefs.docs.filter((ref) => {
+      const bamlData = ref.generationMetadata?.bamlData
+      // Only include characters that have BAML data OR are the only character with that name
+      return bamlData && bamlData.name
+    })
+
+    return validCharacters.map((ref) => {
       const bamlData = ref.generationMetadata?.bamlData
 
       // If we have BAML data, use it directly (it's already in the right format)
@@ -208,7 +224,9 @@ export class CharacterGenerationService {
           referenceId: ref.id,
           projectName: ref.projectCharacterName,
           libraryId: ref.libraryCharacterId,
+          characterLibraryId: ref.libraryCharacterId, // For component compatibility
           status: ref.generationStatus || 'offline',
+          characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
           generatedAt: ref.generationMetadata?.generatedAt,
           lastImageUpdate: ref.generationMetadata?.lastImageUpdate,
         }
@@ -222,7 +240,9 @@ export class CharacterGenerationService {
         referenceId: ref.id,
         projectName: ref.projectCharacterName,
         libraryId: ref.libraryCharacterId,
+        characterLibraryId: ref.libraryCharacterId, // For component compatibility
         status: ref.generationStatus || 'offline',
+        characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
         generatedAt: ref.generationMetadata?.generatedAt,
         lastImageUpdate: ref.generationMetadata?.lastImageUpdate,
       }

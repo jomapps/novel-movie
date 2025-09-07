@@ -556,7 +556,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                       {characters.characters?.[0]?.characterLibraryStatus === 'updated' && (
                         <span className="text-blue-600">✓ Updated</span>
                       )}
-                      {characters.characters?.[0]?.characterLibraryStatus === 'error' && (
+                      {(characters.characters?.[0]?.characterLibraryStatus === 'error' ||
+                        characters.characters?.[0]?.characterLibraryStatus === 'offline') && (
                         <span className="text-orange-600">⚠ Offline</span>
                       )}
                       {!characters.characters?.[0]?.characterLibraryStatus && (
@@ -788,7 +789,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                                       {char.characterLibraryStatus === 'updated' && (
                                         <span className="text-blue-600">✓ Updated</span>
                                       )}
-                                      {char.characterLibraryStatus === 'error' && (
+                                      {(char.characterLibraryStatus === 'error' ||
+                                        char.characterLibraryStatus === 'offline') && (
                                         <span className="text-orange-600">⚠ Offline</span>
                                       )}
                                       {!char.characterLibraryStatus && (

@@ -83,15 +83,17 @@ export class CharacterLibraryClient {
   }
 
   async createNovelMovieCharacter(character: any, project: any): Promise<any> {
+    const characterData = this.mapToCharacterLibraryFormat(character, project)
     const payload = {
       novelMovieProjectId: project.id,
       projectName: project.name,
-      characterData: this.mapToCharacterLibraryFormat(character, project),
+      characterData,
       syncSettings: {
         autoSync: true,
         conflictResolution: 'novel-movie-wins',
       },
     }
+
     return this.makeRequest(
       'POST',
       CHARACTER_LIBRARY_CONFIG.endpoints.novelMovieCharacters,
@@ -262,72 +264,18 @@ export class CharacterLibraryClient {
       return richTextData
     }
 
-    // Map comprehensive character data to Character Library format
+    // Map to Character Library format
     return {
       name: character.name,
       characterId: character.characterId || this.generateUniqueCharacterId(character.name, project),
       status: 'in_development' as const,
-
-      // Core character development (convert to RichText)
-      biography: convertRichText(character.characterDevelopment?.biography),
-      personality: convertRichText(character.characterDevelopment?.personality),
-      motivations: convertRichText(character.characterDevelopment?.motivations),
-      backstory: convertRichText(character.characterDevelopment?.backstory),
-
-      // Physical description (convert to RichText)
-      physicalDescription: convertRichText(character.physicalDescription?.description),
-      voiceDescription: convertRichText(character.dialogueVoice?.voiceDescription),
-      clothing: convertRichText(character.physicalDescription?.clothing),
-
-      // Physical attributes
+      biography: character.characterDevelopment?.biography || '',
+      personality: character.characterDevelopment?.personality || '',
+      physicalDescription: character.physicalDescription?.description || '',
       age: character.physicalDescription?.age || null,
       height: character.physicalDescription?.height || '',
-      weight: '', // Not currently tracked in Novel Movie
       eyeColor: character.physicalDescription?.eyeColor || '',
       hairColor: character.physicalDescription?.hairColor || '',
-
-      // Relationships (convert to RichText)
-      relationships: convertRichText(
-        character.relationships
-          ?.map(
-            (rel: any) =>
-              `${rel.characterName}: ${rel.relationshipType} - ${rel.relationshipDynamic}`,
-          )
-          .join('\n\n') || '',
-      ),
-
-      // Skills (map from character psychology/traits)
-      skills: character.characterDevelopment?.psychology
-        ? [
-            {
-              skill: 'Core Motivation',
-              level: 'advanced' as const,
-              description: character.characterDevelopment.psychology.motivation || '',
-            },
-            {
-              skill: 'Character Strengths',
-              level: 'intermediate' as const,
-              description: character.characterDevelopment.psychology.desires || '',
-            },
-          ]
-        : [],
-
-      // Novel Movie integration metadata
-      novelMovieIntegration: {
-        projectId: project?.id || '',
-        projectName: project?.name || '',
-        lastSyncAt: new Date(),
-        syncStatus: 'synced' as const,
-        conflictResolution: 'auto' as const,
-        changeLog: [
-          {
-            timestamp: new Date(),
-            source: 'novel-movie' as const,
-            changes: ['Initial character creation from Novel Movie'],
-            resolvedBy: 'system',
-          },
-        ],
-      },
     }
   }
 
@@ -403,7 +351,9 @@ export class CharacterLibraryClient {
         })
 
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+          const errorText = await response.text()
+          console.error(`Character Library API error response:`, errorText)
+          throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`)
         }
 
         return await response.json()
