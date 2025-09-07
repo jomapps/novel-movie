@@ -5,7 +5,7 @@ const openrouter = new OpenAI({
   baseURL: process.env.OPENROUTER_BASE_URL,
   apiKey: process.env.OPENROUTER_API_KEY,
   defaultHeaders: {
-    'HTTP-Referer': process.env.SITE_URL || 'https://localhost:3000',
+    'HTTP-Referer': process.env.SITE_URL || 'https://localhost:3001',
     'X-Title': 'Novel Movie',
   },
 })
@@ -33,15 +33,17 @@ export async function POST(request: NextRequest) {
       prompt,
       result,
       usage: completion.usage,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     })
-
   } catch (error) {
     console.error('OpenRouter test error:', error)
-    return NextResponse.json({
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      timestamp: new Date().toISOString()
-    }, { status: 500 })
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString(),
+      },
+      { status: 500 },
+    )
   }
 }

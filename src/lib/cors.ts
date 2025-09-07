@@ -16,8 +16,10 @@ export interface CORSOptions {
  * Get allowed origins from environment or default
  */
 export function getAllowedOrigins(): string[] {
-  const origins = process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://local.ft.tc'
-  return origins.split(',').map(origin => origin.trim())
+  const origins =
+    process.env.CORS_ALLOWED_ORIGINS ||
+    'http://localhost:3001,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://local.ft.tc'
+  return origins.split(',').map((origin) => origin.trim())
 }
 
 /**
@@ -25,15 +27,17 @@ export function getAllowedOrigins(): string[] {
  */
 export function getAllowedMethods(): string[] {
   const methods = process.env.CORS_ALLOWED_METHODS || 'GET,POST,PUT,DELETE,OPTIONS,PATCH'
-  return methods.split(',').map(method => method.trim())
+  return methods.split(',').map((method) => method.trim())
 }
 
 /**
  * Get allowed headers from environment or default
  */
 export function getAllowedHeaders(): string[] {
-  const headers = process.env.CORS_ALLOWED_HEADERS || 'Content-Type,Authorization,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers'
-  return headers.split(',').map(header => header.trim())
+  const headers =
+    process.env.CORS_ALLOWED_HEADERS ||
+    'Content-Type,Authorization,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers'
+  return headers.split(',').map((header) => header.trim())
 }
 
 /**
@@ -48,7 +52,7 @@ export function allowCredentials(): boolean {
  */
 export function isOriginAllowed(origin: string | null): boolean {
   if (!origin) return true
-  
+
   const allowedOrigins = getAllowedOrigins()
   return allowedOrigins.includes('*') || allowedOrigins.includes(origin)
 }

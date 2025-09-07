@@ -46,6 +46,7 @@ export class CharacterLibraryClient {
   private baseUrl: string
   private timeout: number
   private retryAttempts: number
+  private characterIdCounter: number = 0
 
   constructor() {
     this.baseUrl = CHARACTER_LIBRARY_CONFIG.baseUrl
@@ -62,7 +63,7 @@ export class CharacterLibraryClient {
     const payload = {
       novelMovieProjectId: project.id,
       projectName: project.name,
-      characterData: this.mapToCharacterLibraryFormat(character),
+      characterData: this.mapToCharacterLibraryFormat(character, project),
       syncSettings: {
         autoSync: true,
         conflictResolution: 'novel-movie-wins',
@@ -117,12 +118,12 @@ export class CharacterLibraryClient {
     return this.makeRequest('POST', endpoint, payload)
   }
 
-  async bulkCreateCharacters(projectId: string, characters: any[]): Promise<any> {
+  async bulkCreateCharacters(projectId: string, characters: any[], project?: any): Promise<any> {
     const endpoint = '/api/v1/characters/bulk/novel-movie'
     const payload = {
       projectId,
       characters: characters.map((character) => ({
-        characterData: this.mapToCharacterLibraryFormat(character),
+        characterData: this.mapToCharacterLibraryFormat(character, project),
       })),
       operation: 'create',
       syncSettings: {
@@ -145,12 +146,10 @@ export class CharacterLibraryClient {
     return this.makeRequest('PUT', endpoint, updateData)
   }
 
-  private mapToCharacterLibraryFormat(character: any): CharacterLibraryCharacter {
+  private mapToCharacterLibraryFormat(character: any, project?: any): CharacterLibraryCharacter {
     return {
       name: character.name,
-      characterId:
-        character.characterId ||
-        `${character.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+      characterId: character.characterId || this.generateUniqueCharacterId(character.name, project),
       status: 'in_development' as const,
       biography: character.characterDevelopment?.biography || '',
       personality: character.characterDevelopment?.personality || '',
@@ -160,6 +159,50 @@ export class CharacterLibraryClient {
       eyeColor: character.physicalDescription?.eyeColor,
       hairColor: character.physicalDescription?.hairColor,
     }
+  }
+
+  /**
+   * Generate a unique character ID using multiple entropy sources
+   * Format: {project-prefix}-{name-slug}-{timestamp}-{random}-{counter}
+   */
+  private generateUniqueCharacterId(characterName: string, project?: any): string {
+    // Add project prefix for additional uniqueness across projects
+    const projectPrefix = project?.id ? project.id.substring(0, 8) : 'nm'
+    // Create a clean slug from character name
+    const nameSlug = characterName
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+      .substring(0, 20) // Limit length
+
+    // High-resolution timestamp (microseconds)
+    const timestamp = Date.now()
+    const microTime = performance.now().toString().replace('.', '')
+
+    // Crypto-strong random component (8 characters)
+    const randomBytes = new Uint8Array(4)
+    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+      crypto.getRandomValues(randomBytes)
+    } else {
+      // Fallback for environments without crypto
+      for (let i = 0; i < 4; i++) {
+        randomBytes[i] = Math.floor(Math.random() * 256)
+      }
+    }
+    const randomHex = Array.from(randomBytes)
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('')
+
+    // Process-level counter for additional uniqueness
+    if (!this.characterIdCounter) {
+      this.characterIdCounter = Math.floor(Math.random() * 1000)
+    }
+    this.characterIdCounter++
+
+    // Combine all entropy sources with project prefix
+    return `${projectPrefix}-${nameSlug}-${timestamp}-${microTime.substring(0, 6)}-${randomHex}-${this.characterIdCounter.toString().padStart(3, '0')}`
   }
 
   private getDefaultValidationRules(): any[] {
@@ -182,6 +225,11 @@ export class CharacterLibraryClient {
           },
           body: data ? JSON.stringify(data) : undefined,
           signal: AbortSignal.timeout(this.timeout),
+          // @ts-ignore - Node.js specific option to ignore SSL certificate errors
+          agent:
+            process.env.NODE_ENV === 'development'
+              ? new (require('https').Agent)({ rejectUnauthorized: false })
+              : undefined,
         })
 
         if (!response.ok) {

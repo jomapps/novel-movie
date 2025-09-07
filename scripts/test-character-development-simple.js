@@ -6,7 +6,7 @@
  */
 
 // Test configuration
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'http://localhost:3001'
 const TEST_PROJECT_ID = '68b9d1457ae0c1549464f026' // Use the existing project ID
 
 // Helper functions

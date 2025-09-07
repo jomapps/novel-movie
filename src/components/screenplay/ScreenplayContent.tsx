@@ -529,9 +529,12 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
         >
           {characters && (
             <div className="mt-4 space-y-4">
+              {/* Summary Section */}
               <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <h4 className="font-medium text-green-800 mb-2">Character Development Complete</h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <h4 className="font-medium text-green-800 mb-3">
+                  Character Development Complete ✓
+                </h4>
+                <div className="grid grid-cols-3 gap-4 text-sm">
                   <div>
                     <span className="text-green-700">Total Characters:</span>
                     <span className="ml-2 font-medium">
@@ -539,30 +542,284 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                     </span>
                   </div>
                   <div>
-                    <span className="text-green-700">Average Quality:</span>
+                    <span className="text-green-700">Overall Quality:</span>
                     <span className="ml-2 font-medium">
-                      {characters.summary?.averageQuality ||
-                        characters.qualityMetrics?.overallQuality ||
-                        'N/A'}
+                      {characters.qualityMetrics?.overallQuality || 'N/A'}/100
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-green-700">Character Library:</span>
+                    <span className="ml-2 font-medium">
+                      {characters.characters?.[0]?.characterLibraryStatus === 'created' && (
+                        <span className="text-green-600">✓ Synced</span>
+                      )}
+                      {characters.characters?.[0]?.characterLibraryStatus === 'updated' && (
+                        <span className="text-blue-600">✓ Updated</span>
+                      )}
+                      {characters.characters?.[0]?.characterLibraryStatus === 'error' && (
+                        <span className="text-orange-600">⚠ Offline</span>
+                      )}
+                      {!characters.characters?.[0]?.characterLibraryStatus && (
+                        <span className="text-gray-500">N/A</span>
+                      )}
                     </span>
                   </div>
                 </div>
-                {characters.characters && characters.characters.length > 0 && (
-                  <div className="mt-3">
-                    <span className="text-green-700 text-sm">Characters:</span>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {characters.characters.map((char: any, index: number) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                        >
-                          {char.name} ({char.role})
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {/* Detailed Character Profiles */}
+              {characters.characters && characters.characters.length > 0 && (
+                <div className="space-y-4">
+                  {characters.characters.map((char: any, index: number) => (
+                    <div key={index} className="bg-white border border-gray-200 rounded-lg p-6">
+                      {/* Character Header */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <span className="text-blue-600 font-semibold text-lg">
+                              {char.name?.charAt(0) || '?'}
+                            </span>
+                          </div>
+                          <div>
+                            <h5 className="text-lg font-semibold text-gray-900">{char.name}</h5>
+                            <div className="flex items-center space-x-2">
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                {char.role}
+                              </span>
+                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                {char.archetype}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm text-gray-500">Quality Score</div>
+                          <div className="text-lg font-semibold text-gray-900">
+                            {char.generationMetadata?.qualityScore || 'N/A'}/100
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Character Details Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Biography & Personality */}
+                        <div className="space-y-4">
+                          {char.characterDevelopment?.biography && (
+                            <div>
+                              <h6 className="text-sm font-medium text-gray-700 mb-2">Biography</h6>
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {char.characterDevelopment.biography}
+                              </p>
+                            </div>
+                          )}
+
+                          {char.characterDevelopment?.personality && (
+                            <div>
+                              <h6 className="text-sm font-medium text-gray-700 mb-2">
+                                Personality
+                              </h6>
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {char.characterDevelopment.personality}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Psychology & Motivations */}
+                        <div className="space-y-4">
+                          {char.characterDevelopment?.psychology && (
+                            <div>
+                              <h6 className="text-sm font-medium text-gray-700 mb-2">Psychology</h6>
+                              <div className="text-sm text-gray-600 space-y-1">
+                                {char.characterDevelopment.psychology.motivation && (
+                                  <div>
+                                    <strong>Motivation:</strong>{' '}
+                                    {char.characterDevelopment.psychology.motivation}
+                                  </div>
+                                )}
+                                {char.characterDevelopment.psychology.fears && (
+                                  <div>
+                                    <strong>Fears:</strong>{' '}
+                                    {char.characterDevelopment.psychology.fears}
+                                  </div>
+                                )}
+                                {char.characterDevelopment.psychology.desires && (
+                                  <div>
+                                    <strong>Desires:</strong>{' '}
+                                    {char.characterDevelopment.psychology.desires}
+                                  </div>
+                                )}
+                                {char.characterDevelopment.psychology.flaws && (
+                                  <div>
+                                    <strong>Flaws:</strong>{' '}
+                                    {char.characterDevelopment.psychology.flaws}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {char.characterDevelopment?.motivations && (
+                            <div>
+                              <h6 className="text-sm font-medium text-gray-700 mb-2">
+                                Core Motivations
+                              </h6>
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                {char.characterDevelopment.motivations}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Character Arc */}
+                      {char.characterArc && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <h6 className="text-sm font-medium text-gray-700 mb-3">Character Arc</h6>
+                          <div className="flex items-center space-x-4 text-sm">
+                            <div className="flex-1">
+                              <div className="text-xs text-gray-500 mb-1">Start State</div>
+                              <div className="text-gray-700">{char.characterArc.startState}</div>
+                            </div>
+                            <div className="text-gray-400">→</div>
+                            <div className="flex-1">
+                              <div className="text-xs text-gray-500 mb-1">Transformation</div>
+                              <div className="text-gray-700">
+                                {char.characterArc.transformation}
+                              </div>
+                            </div>
+                            <div className="text-gray-400">→</div>
+                            <div className="flex-1">
+                              <div className="text-xs text-gray-500 mb-1">End State</div>
+                              <div className="text-gray-700">{char.characterArc.endState}</div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Dialogue Voice & Physical Description */}
+                      <div className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {char.dialogueVoice && (
+                          <div>
+                            <h6 className="text-sm font-medium text-gray-700 mb-2">
+                              Dialogue Voice
+                            </h6>
+                            <div className="text-sm text-gray-600 space-y-1">
+                              {char.dialogueVoice.style && (
+                                <div>
+                                  <strong>Style:</strong> {char.dialogueVoice.style}
+                                </div>
+                              )}
+                              {char.dialogueVoice.patterns && (
+                                <div>
+                                  <strong>Patterns:</strong> {char.dialogueVoice.patterns}
+                                </div>
+                              )}
+                              {char.dialogueVoice.vocabulary && (
+                                <div>
+                                  <strong>Vocabulary:</strong> {char.dialogueVoice.vocabulary}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {char.physicalDescription && (
+                          <div>
+                            <h6 className="text-sm font-medium text-gray-700 mb-2">
+                              Physical Description
+                            </h6>
+                            <div className="text-sm text-gray-600 space-y-1">
+                              {char.physicalDescription.age && (
+                                <div>
+                                  <strong>Age:</strong> {char.physicalDescription.age}
+                                </div>
+                              )}
+                              {char.physicalDescription.height && (
+                                <div>
+                                  <strong>Height:</strong> {char.physicalDescription.height}
+                                </div>
+                              )}
+                              {char.physicalDescription.eyeColor && (
+                                <div>
+                                  <strong>Eyes:</strong> {char.physicalDescription.eyeColor}
+                                </div>
+                              )}
+                              {char.physicalDescription.hairColor && (
+                                <div>
+                                  <strong>Hair:</strong> {char.physicalDescription.hairColor}
+                                </div>
+                              )}
+                              {char.physicalDescription.description && (
+                                <div className="mt-2">{char.physicalDescription.description}</div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Generation Metadata */}
+                      {char.generationMetadata && (
+                        <div className="mt-4 pt-4 border-t border-gray-200">
+                          <div className="flex items-center justify-between text-xs text-gray-500">
+                            <div>
+                              Generated:{' '}
+                              {new Date(char.generationMetadata.generatedAt).toLocaleString()}
+                            </div>
+                            <div>
+                              Method: {char.generationMetadata.generationMethod || 'AI Generated'}
+                            </div>
+                            <div>
+                              Completeness: {char.generationMetadata.completeness || 'N/A'}%
+                            </div>
+                          </div>
+
+                          {/* Character Library Connection */}
+                          {(char.characterLibraryId || char.characterLibraryStatus) && (
+                            <div className="mt-2 pt-2 border-t border-gray-100">
+                              <div className="flex items-center justify-between text-xs">
+                                <div className="flex items-center space-x-4">
+                                  <div>
+                                    <span className="text-gray-600">Library Status:</span>
+                                    <span className="ml-1">
+                                      {char.characterLibraryStatus === 'created' && (
+                                        <span className="text-green-600">✓ Synced</span>
+                                      )}
+                                      {char.characterLibraryStatus === 'updated' && (
+                                        <span className="text-blue-600">✓ Updated</span>
+                                      )}
+                                      {char.characterLibraryStatus === 'error' && (
+                                        <span className="text-orange-600">⚠ Offline</span>
+                                      )}
+                                      {!char.characterLibraryStatus && (
+                                        <span className="text-gray-500">N/A</span>
+                                      )}
+                                    </span>
+                                  </div>
+                                  {char.characterLibraryId && (
+                                    <div>
+                                      <span className="text-gray-600">Library ID:</span>
+                                      <a
+                                        href={`https://character.ft.tc/dashboard/character-profile/${char.characterLibraryId}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ml-1 text-blue-600 hover:text-blue-800 underline font-mono text-xs"
+                                        title="View in Character Library"
+                                      >
+                                        {char.characterLibraryId}
+                                      </a>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
         </StepContent>

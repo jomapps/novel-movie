@@ -51,7 +51,7 @@ async function debugToneValidation() {
   try {
     // Test 1: Check if tone-options collection exists and has data
     logInfo('Checking tone-options collection...')
-    const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+    const baseUrl = process.env.SITE_URL || 'http://localhost:3001'
     const toneOptionsResponse = await fetch(`${baseUrl}/v1/config/tone-options`)
 
     if (!toneOptionsResponse.ok) {

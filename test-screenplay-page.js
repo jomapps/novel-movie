@@ -11,9 +11,9 @@ async function testScreenplayPageAPIs() {
   try {
     // Test 1: Check if project exists
     console.log('1. Testing project API...')
-    const projectResponse = await fetch(`http://localhost:3000/v1/projects/${projectId}`)
+    const projectResponse = await fetch(`http://localhost:3001/v1/projects/${projectId}`)
     const projectData = await projectResponse.json()
-    
+
     if (projectData.success) {
       console.log('✅ Project API working - Project found:', projectData.data.name)
     } else {
@@ -23,9 +23,11 @@ async function testScreenplayPageAPIs() {
 
     // Test 2: Check if stories API is working
     console.log('\n2. Testing stories API...')
-    const storiesResponse = await fetch(`http://localhost:3000/v1/stories?where[project][equals]=${projectId}&limit=1`)
+    const storiesResponse = await fetch(
+      `http://localhost:3001/v1/stories?where[project][equals]=${projectId}&limit=1`,
+    )
     const storiesData = await storiesResponse.json()
-    
+
     if (storiesResponse.ok) {
       console.log('✅ Stories API working')
       if (storiesData.docs && storiesData.docs.length > 0) {
@@ -44,18 +46,17 @@ async function testScreenplayPageAPIs() {
     const hasStory = storiesData.docs && storiesData.docs.length > 0
     const story = hasStory ? storiesData.docs[0] : null
     const hasValidStory = story && story.currentContent && story.status !== 'in-progress'
-    
+
     console.log(`   - Has story: ${hasStory}`)
     console.log(`   - Story status: ${story?.status || 'N/A'}`)
     console.log(`   - Has content: ${!!story?.currentContent}`)
     console.log(`   - Valid for screenplay: ${hasValidStory}`)
-    
+
     if (hasValidStory) {
       console.log('✅ Page should load screenplay interface')
     } else {
       console.log('ℹ️  Page should show "Story Required" message')
     }
-
   } catch (error) {
     console.error('❌ Test failed with error:', error.message)
   }

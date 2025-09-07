@@ -8,7 +8,7 @@
 // Use built-in fetch (Node.js 18+) or import fetch
 const fetch = globalThis.fetch || (await import('node-fetch')).default
 
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'http://localhost:3001'
 const PROJECT_ID = '68b2cc1491e1bd4a09118274'
 
 async function testProjectDetailAPI() {

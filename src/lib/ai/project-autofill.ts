@@ -5,7 +5,7 @@ const openrouter = new OpenAI({
   baseURL: process.env.OPENROUTER_BASE_URL,
   apiKey: process.env.OPENROUTER_API_KEY,
   defaultHeaders: {
-    'HTTP-Referer': process.env.SITE_URL || 'https://localhost:3000',
+    'HTTP-Referer': process.env.SITE_URL || 'https://localhost:3001',
     'X-Title': 'Novel Movie',
   },
 })

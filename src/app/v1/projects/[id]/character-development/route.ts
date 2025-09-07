@@ -352,130 +352,48 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
     console.log('🤖 Generating characters using BAML AI functions...')
 
-    let characterResult
-    try {
-      // Get BAML client
-      const bamlClient = await getBamlClient()
+    // Get BAML client
+    const bamlClient = await getBamlClient()
 
-      // Prepare data for BAML character generation
-      const movieFormatName =
-        typeof project.movieFormat === 'string'
-          ? project.movieFormat
-          : project.movieFormat?.name || 'feature-film'
+    // Prepare data for BAML character generation
+    const movieFormatName =
+      typeof project.movieFormat === 'string'
+        ? project.movieFormat
+        : project.movieFormat?.name || 'feature-film'
 
-      const movieStyleName =
-        typeof project.movieStyle === 'string'
-          ? project.movieStyle
-          : project.movieStyle?.name || 'dramatic'
+    const movieStyleName =
+      typeof project.movieStyle === 'string'
+        ? project.movieStyle
+        : project.movieStyle?.name || 'dramatic'
 
-      const primaryGenreNames = Array.isArray(project.primaryGenres)
-        ? project.primaryGenres.map((genre: any) =>
-            typeof genre === 'string' ? genre : genre?.name || 'drama',
-          )
-        : ['drama']
+    const primaryGenreNames = Array.isArray(project.primaryGenres)
+      ? project.primaryGenres.map((genre: any) =>
+          typeof genre === 'string' ? genre : genre?.name || 'drama',
+        )
+      : ['drama']
 
-      const targetAudienceNames = Array.isArray(project.targetAudience)
-        ? project.targetAudience.map((audience: any) =>
-            typeof audience === 'string' ? audience : audience?.name || 'general',
-          )
-        : ['general']
+    const targetAudienceNames = Array.isArray(project.targetAudience)
+      ? project.targetAudience.map((audience: any) =>
+          typeof audience === 'string' ? audience : audience?.name || 'general',
+        )
+      : ['general']
 
-      // Generate characters using BAML
-      characterResult = await bamlClient.DevelopCharacters({
-        storyContent: story.currentContent,
-        projectName: project.name || 'Untitled Project',
-        movieFormat: movieFormatName,
-        movieStyle: movieStyleName,
-        durationUnit: project.durationUnit || 90,
-        primaryGenres: primaryGenreNames,
-        targetAudience: targetAudienceNames,
-        characterArcs: characterArcs,
-        storyBeats: storyBeats,
-      })
+    // Generate characters using BAML - NO FALLBACK MECHANISM
+    const characterResult = await bamlClient.DevelopCharacters(
+      story.currentContent,
+      project.name || 'Untitled Project',
+      movieFormatName,
+      movieStyleName,
+      project.durationUnit || 90,
+      primaryGenreNames,
+      targetAudienceNames,
+      characterArcs,
+      storyBeats,
+    )
 
-      console.log(
-        `✅ BAML character generation completed. Generated ${characterResult.characters?.length || 0} characters`,
-      )
-    } catch (error) {
-      console.error(
-        '❌ BAML character generation failed, falling back to story structure extraction:',
-        error,
-      )
-
-      // Fallback to story structure extraction
-      characterResult = {
-        characters:
-          storyStructure.characterArcs?.map((arc: any, index: number) => {
-            const characterName = arc.character || arc.characterName || `Character ${index + 1}`
-            const role = index === 0 ? 'protagonist' : index === 1 ? 'antagonist' : 'supporting'
-
-            return {
-              name: characterName,
-              role: role,
-              archetype:
-                role === 'protagonist' ? 'Hero' : role === 'antagonist' ? 'Villain' : 'Ally',
-              characterDevelopment: {
-                biography: `${characterName} is a key character in this ${typeof project.movieFormat === 'string' ? project.movieFormat : project.movieFormat?.name || 'story'}.`,
-                personality: `${characterName} exhibits traits consistent with their role as the ${role} of the story.`,
-                motivations:
-                  arc.transformation ||
-                  `${characterName} is motivated by the central conflict of the story.`,
-                backstory: `${characterName}'s background shapes their journey from ${arc.startState || 'their initial state'} to ${arc.endState || 'their final state'}.`,
-                psychology: {
-                  motivation: arc.transformation || "Driven by the story's central conflict",
-                  fears: 'Fears failure and loss',
-                  desires: 'Seeks resolution and growth',
-                  flaws: 'Has personal weaknesses to overcome',
-                },
-              },
-              characterArc: {
-                startState: arc.startState || arc.startingState || 'Initial character state',
-                transformation:
-                  arc.transformation ||
-                  arc.arcDescription ||
-                  'Character undergoes significant change',
-                endState: arc.endState || arc.endingState || 'Final character state',
-              },
-              physicalDescription: {
-                description: `${characterName} has a distinctive appearance that reflects their role in the story.`,
-                age: null,
-                height: '',
-                eyeColor: '',
-                hairColor: '',
-                clothing: 'Clothing appropriate to their character and story setting',
-              },
-              dialogueVoice: {
-                voiceDescription: `${characterName} speaks in a manner consistent with their personality and background.`,
-                style:
-                  role === 'protagonist'
-                    ? 'Determined and heroic'
-                    : role === 'antagonist'
-                      ? 'Commanding and threatening'
-                      : 'Supportive and wise',
-                patterns: 'Speech patterns reflect character background',
-                vocabulary: 'Vocabulary appropriate to character education and social status',
-              },
-              relationships: [],
-              generationMetadata: {
-                generatedAt: new Date().toISOString(),
-                generationMethod: 'story_structure_extraction',
-                qualityScore: 75,
-                completeness: 80,
-              },
-            }
-          }) || [],
-        qualityMetrics: {
-          overallQuality: 75,
-          characterDepth: 70,
-          arcConsistency: 85,
-          relationshipClarity: 60,
-          dialogueDistinction: 65,
-          psychologicalRealism: 70,
-        },
-        generationNotes:
-          'Characters extracted from existing story structure (BAML generation failed). External Character Library Service integration available for future enhancement.',
-      }
-    }
+    console.log(
+      `✅ BAML character generation completed. Generated ${characterResult.characters?.length || 0} characters`,
+    )
 
     // Generate character relationships
     const charactersWithRelationships = await generateCharacterRelationships(

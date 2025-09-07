@@ -46,7 +46,7 @@ function logWarning(message) {
 
 async function checkCollection(name, endpoint, minExpected = 1) {
   try {
-    const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+    const baseUrl = process.env.SITE_URL || 'http://localhost:3001'
     const response = await fetch(`${baseUrl}${endpoint}`)
 
     if (!response.ok) {
@@ -79,7 +79,7 @@ async function checkDatabaseSeed() {
   log('\n🗄️  Checking Database Seed Status', colors.magenta)
   log('='.repeat(50), colors.white)
 
-  const baseUrl = process.env.SITE_URL || 'http://localhost:3000'
+  const baseUrl = process.env.SITE_URL || 'http://localhost:3001'
   logInfo(`Testing connection to: ${baseUrl}`)
 
   // Test basic connectivity first

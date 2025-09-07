@@ -6,14 +6,16 @@
  * instead of the removed initial-concept collection.
  */
 
-const API_BASE = 'http://localhost:3000'
+const API_BASE = 'http://localhost:3001'
 
 // Test project data with all required and optional fields
 const TEST_PROJECT_DATA = {
   name: 'Test Adventure Story',
   projectTitle: 'The Crystal Quest',
-  shortDescription: 'A young hero discovers a magical crystal that holds the key to saving their world.',
-  longDescription: 'In a world where magic is fading, a reluctant young hero must embark on a perilous journey to find the legendary Crystal of Eternity. Along the way, they discover hidden powers, forge unlikely alliances, and confront an ancient evil that threatens to plunge the world into eternal darkness.',
+  shortDescription:
+    'A young hero discovers a magical crystal that holds the key to saving their world.',
+  longDescription:
+    'In a world where magic is fading, a reluctant young hero must embark on a perilous journey to find the legendary Crystal of Eternity. Along the way, they discover hidden powers, forge unlikely alliances, and confront an ancient evil that threatens to plunge the world into eternal darkness.',
   movieFormat: 'feature-film',
   movieStyle: 'cinematic',
   durationUnit: 120,
@@ -22,12 +24,12 @@ const TEST_PROJECT_DATA = {
   primaryGenres: [],
   corePremise: '',
   targetAudience: [],
-  tone: []
+  tone: [],
 }
 
 async function testStoryGeneration() {
   console.log('🧪 Starting Story Generation End-to-End Test')
-  console.log('=' .repeat(60))
+  console.log('='.repeat(60))
 
   try {
     // Step 1: Create a test project with comprehensive data
@@ -64,8 +66,8 @@ async function testStoryGeneration() {
           primaryGenres: [],
           corePremise: '',
           targetAudience: [],
-          tone: []
-        }
+          tone: [],
+        },
       }),
     })
 
@@ -76,7 +78,7 @@ async function testStoryGeneration() {
     } else {
       const autofillResult = await autofillResponse.json()
       console.log('✅ AI autofill completed')
-      
+
       // Update project with generated values
       const updateResponse = await fetch(`${API_BASE}/v1/projects/${project.id}`, {
         method: 'PATCH',
@@ -100,7 +102,8 @@ async function testStoryGeneration() {
     }
 
     const updatedProjectResult = await updatedProjectResponse.json()
-    const updatedProject = updatedProjectResult.data || updatedProjectResult.doc || updatedProjectResult
+    const updatedProject =
+      updatedProjectResult.data || updatedProjectResult.doc || updatedProjectResult
 
     // Verify project has required fields
     const validation = validateProjectData(updatedProject)
@@ -113,10 +116,10 @@ async function testStoryGeneration() {
       name: updatedProject.name,
       movieFormat: updatedProject.movieFormat?.name || updatedProject.movieFormat,
       movieStyle: updatedProject.movieStyle?.name || updatedProject.movieStyle,
-      primaryGenres: updatedProject.primaryGenres?.map(g => g.name || g) || [],
+      primaryGenres: updatedProject.primaryGenres?.map((g) => g.name || g) || [],
       corePremise: updatedProject.corePremise ? 'Present' : 'Missing',
-      targetAudience: updatedProject.targetAudience?.map(a => a.name || a) || [],
-      tone: updatedProject.tone?.map(t => t.name || t) || []
+      targetAudience: updatedProject.targetAudience?.map((a) => a.name || a) || [],
+      tone: updatedProject.tone?.map((t) => t.name || t) || [],
     })
 
     // Step 4: Generate story using the new API
@@ -144,7 +147,7 @@ async function testStoryGeneration() {
       currentStep: story.currentStep,
       status: story.status,
       contentLength: story.currentContent?.length || 0,
-      overallQuality: story.qualityMetrics?.overallQuality || 'N/A'
+      overallQuality: story.qualityMetrics?.overallQuality || 'N/A',
     })
 
     // Step 5: Verify story content quality and completeness
@@ -161,7 +164,7 @@ async function testStoryGeneration() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          focusArea: 'character-development'
+          focusArea: 'character-development',
         }),
       })
 
@@ -189,12 +192,11 @@ async function testStoryGeneration() {
     }
 
     console.log('\n🎉 Story Generation Test PASSED!')
-    console.log('=' .repeat(60))
+    console.log('='.repeat(60))
     console.log('✅ All story generation functionality working correctly')
     console.log('✅ Project data properly utilized for story generation')
     console.log('✅ BAML integration functional (or fallback working)')
     console.log('✅ Quality metrics calculated correctly')
-
   } catch (error) {
     console.error('\n❌ Story Generation Test FAILED!')
     console.error('Error:', error.message)
@@ -205,12 +207,13 @@ async function testStoryGeneration() {
 
 async function updateProjectWithManualValues(projectId) {
   console.log('📝 Setting manual test values...')
-  
+
   const manualValues = {
     primaryGenres: ['adventure', 'fantasy'],
-    corePremise: 'A young hero must find a magical crystal to save their world from an ancient evil.',
+    corePremise:
+      'A young hero must find a magical crystal to save their world from an ancient evil.',
     targetAudience: ['young-adults', 'fantasy-fans'],
-    tone: ['heroic', 'adventurous']
+    tone: ['heroic', 'adventurous'],
   }
 
   const updateResponse = await fetch(`${API_BASE}/v1/projects/${projectId}`, {
@@ -224,44 +227,49 @@ async function updateProjectWithManualValues(projectId) {
   if (!updateResponse.ok) {
     throw new Error(`Failed to update project with manual values: ${updateResponse.status}`)
   }
-  
+
   console.log('✅ Manual values set')
 }
 
 function validateProjectData(project) {
   const missingFields = []
-  
+
   if (!project.name) missingFields.push('name')
   if (!project.movieFormat) missingFields.push('movieFormat')
   if (!project.movieStyle) missingFields.push('movieStyle')
-  
+
   return {
     isValid: missingFields.length === 0,
     missingFields,
-    hasOptionalFields: project.primaryGenres?.length > 0 && project.corePremise && project.targetAudience?.length > 0
+    hasOptionalFields:
+      project.primaryGenres?.length > 0 &&
+      project.corePremise &&
+      project.targetAudience?.length > 0,
   }
 }
 
 function analyzeStoryContent(story, project) {
   const content = story.currentContent || ''
   const projectData = {
-    genres: project.primaryGenres?.map(g => g.name || g) || [],
+    genres: project.primaryGenres?.map((g) => g.name || g) || [],
     premise: project.corePremise || '',
-    audience: project.targetAudience?.map(a => a.name || a) || [],
-    tone: project.tone?.map(t => t.name || t) || []
+    audience: project.targetAudience?.map((a) => a.name || a) || [],
+    tone: project.tone?.map((t) => t.name || t) || [],
   }
 
   return {
     contentLength: content.length,
     hasProjectTitle: content.includes(project.projectTitle || project.name),
-    hasGenreReferences: projectData.genres.some(genre => 
-      content.toLowerCase().includes(genre.toLowerCase())
+    hasGenreReferences: projectData.genres.some((genre) =>
+      content.toLowerCase().includes(genre.toLowerCase()),
     ),
-    hasPremiseElements: projectData.premise ? 
-      content.toLowerCase().includes(projectData.premise.toLowerCase().substring(0, 20)) : false,
-    hasStructuredFormat: content.includes('Act I') && content.includes('Act II') && content.includes('Act III'),
+    hasPremiseElements: projectData.premise
+      ? content.toLowerCase().includes(projectData.premise.toLowerCase().substring(0, 20))
+      : false,
+    hasStructuredFormat:
+      content.includes('Act I') && content.includes('Act II') && content.includes('Act III'),
     qualityMetrics: story.qualityMetrics || {},
-    generationParameters: story.generationParameters || {}
+    generationParameters: story.generationParameters || {},
   }
 }
 

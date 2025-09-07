@@ -91,7 +91,7 @@ function DevelopCharacters(
   characterArcs: string[], // From story structure
   storyBeats: string[] // Key story beats for character presence
 ) -> CharacterDevelopmentResponse {
-  client OpenRouterAdvanced
+  client OpenRouterClient
   prompt #"
     You are a master character development specialist and psychology expert with deep understanding of character creation, personality development, and dramatic storytelling. Your task is to create comprehensive, psychologically realistic character profiles based on the provided story content and structure, optimized for the specific duration format.
 
@@ -233,7 +233,80 @@ function DevelopCharacters(
 
     Generate comprehensive character profiles that will serve as the foundation for screenplay development. Focus on creating characters that are memorable, relatable, and dramatically compelling.
 
-    Return your response in the exact JSON format specified by the CharacterDevelopmentResponse class.
+    CRITICAL RESPONSE FORMAT REQUIREMENTS:
+    You MUST return ONLY a valid JSON object with EXACTLY these three fields:
+    - "characters" (array)
+    - "qualityMetrics" (object)
+    - "generationNotes" (string)
+
+    DO NOT use "characterProfiles" - use "characters"
+    DO NOT add any extra fields or text outside the JSON
+
+    EXACT REQUIRED FORMAT:
+    {
+      "characters": [
+        {
+          "name": "string",
+          "role": "string",
+          "archetype": "string",
+          "characterDevelopment": {
+            "biography": "string",
+            "personality": "string",
+            "motivations": "string",
+            "backstory": "string",
+            "psychology": {
+              "motivation": "string",
+              "fears": "string",
+              "desires": "string",
+              "flaws": "string"
+            }
+          },
+          "characterArc": {
+            "startState": "string",
+            "transformation": "string",
+            "endState": "string"
+          },
+          "physicalDescription": {
+            "description": "string",
+            "age": number,
+            "height": "string",
+            "eyeColor": "string",
+            "hairColor": "string",
+            "clothing": "string"
+          },
+          "dialogueVoice": {
+            "voiceDescription": "string",
+            "style": "string",
+            "patterns": "string",
+            "vocabulary": "string"
+          },
+          "relationships": [
+            {
+              "character": "string",
+              "relationship": "string",
+              "dynamic": "string"
+            }
+          ],
+          "generationMetadata": {
+            "generatedAt": "string",
+            "generationMethod": "string",
+            "qualityScore": number,
+            "completeness": number
+          }
+        }
+      ],
+      "qualityMetrics": {
+        "overallQuality": number,
+        "characterDepth": number,
+        "arcConsistency": number,
+        "relationshipClarity": number,
+        "dialogueDistinction": number,
+        "psychologicalRealism": number
+      },
+      "generationNotes": "string describing the character development process and key insights"
+    }
+
+    Return ONLY the JSON object above with no additional text, explanations, or formatting.
   "#
 }
 
@@ -243,7 +316,7 @@ function EnhanceCharacterProfiles(
   storyContent: string,
   focusAreas: string[] // Areas to enhance: dialogue, relationships, psychology, etc.
 ) -> CharacterDevelopmentResponse {
-  client OpenRouterAdvanced
+  client OpenRouterClient
   prompt #"
     You are a character development specialist focused on enhancing and deepening existing character profiles. Your task is to take the provided character data and enhance specific areas to create more compelling, three-dimensional characters.
 
@@ -269,22 +342,30 @@ function EnhanceCharacterProfiles(
 
     Focus particularly on the specified enhancement areas while maintaining consistency with the existing character foundation.
 
-    REQUIRED RESPONSE FORMAT:
-    You must return a JSON object with exactly these fields:
+    CRITICAL RESPONSE FORMAT REQUIREMENTS:
+    You MUST return ONLY a valid JSON object with EXACTLY these three fields:
+    - "characters" (array)
+    - "qualityMetrics" (object)
+    - "generationNotes" (string)
+
+    DO NOT use "characterProfiles" - use "characters"
+    DO NOT add any extra fields or text outside the JSON
+
+    EXACT REQUIRED FORMAT:
     {
-      "characters": [array of enhanced character objects],
+      "characters": [array of enhanced character objects with full structure],
       "qualityMetrics": {
-        "overallQuality": number (1-100),
-        "characterDepth": number (1-100),
-        "arcConsistency": number (1-100),
-        "relationshipClarity": number (1-100),
-        "dialogueDistinction": number (1-100),
-        "psychologicalRealism": number (1-100)
+        "overallQuality": number,
+        "characterDepth": number,
+        "arcConsistency": number,
+        "relationshipClarity": number,
+        "dialogueDistinction": number,
+        "psychologicalRealism": number
       },
       "generationNotes": "string describing the enhancements made"
     }
 
-    Return enhanced character profiles in the exact JSON format specified by the CharacterDevelopmentResponse class.
+    Return ONLY the JSON object above with no additional text, explanations, or formatting.
   "#
 }
 
@@ -294,7 +375,7 @@ function ValidateCharacterConsistency(
   storyBeats: string[], // Story beats to check against
   storyContent: string
 ) -> CharacterQualityMetrics {
-  client OpenRouterAdvanced
+  client OpenRouterClient
   prompt #"
     You are a character consistency analyst with expertise in narrative coherence and character development. Your task is to evaluate how well the developed characters align with their presence and behavior in the story content and beats.
 
