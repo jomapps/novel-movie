@@ -340,7 +340,7 @@ node scripts/test-enhanced-character-development.js
 
 ```env
 # Character Library Service
-CHARACTER_LIBRARY_API_URL=https://character-library.ft.tc
+CHARACTER_LIBRARY_API_URL=https://character.ft.tc
 CHARACTER_LIBRARY_TIMEOUT=60000
 CHARACTER_LIBRARY_RETRY_ATTEMPTS=3
 

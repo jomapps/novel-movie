@@ -6,7 +6,7 @@ This document explains the Cross-Origin Resource Sharing (CORS) configuration fo
 
 The application supports multiple domains and ports for development and production environments:
 
-- `http://localhost:3000` - Default Next.js development port
+- `http://localhost:3001` - Default Next.js development port
 - `http://localhost:3001` - Alternative development port
 - `http://localhost:3002` - Alternative development port  
 - `http://localhost:3003` - Alternative development port
@@ -20,7 +20,7 @@ Add these variables to your `.env` file:
 
 ```env
 # CORS Configuration
-CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://local.ft.tc,https://crew.ft.tc,https://pathrag.ft.tc
+CORS_ALLOWED_ORIGINS=http://localhost:3001,http://localhost:3001,http://localhost:3002,http://localhost:3003,https://local.ft.tc,https://crew.ft.tc,https://pathrag.ft.tc
 CORS_ALLOW_CREDENTIALS=true
 CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS,PATCH
 CORS_ALLOWED_HEADERS=Content-Type,Authorization,X-Requested-With,Accept,Origin,Access-Control-Request-Method,Access-Control-Request-Headers
@@ -150,14 +150,14 @@ fetch('http://localhost:3001/v1/projects/123', {
 ```bash
 # Test preflight request
 curl -X OPTIONS \
-  -H "Origin: http://localhost:3000" \
+  -H "Origin: http://localhost:3001" \
   -H "Access-Control-Request-Method: GET" \
   -H "Access-Control-Request-Headers: Content-Type" \
   http://localhost:3001/v1/projects/123
 
 # Test actual request
 curl -X GET \
-  -H "Origin: http://localhost:3000" \
+  -H "Origin: http://localhost:3001" \
   -H "Content-Type: application/json" \
   http://localhost:3001/v1/projects/123
 ```

@@ -21,7 +21,7 @@ The Character Library is a state-of-the-art Digital Asset Management system for 
 
 ## Base URL and Authentication
 
-**Base URL**: `http://localhost:3000` (development) or your deployed domain
+**Base URL**: `http://localhost:3001` (development) or your deployed domain
 
 **Authentication**: The API uses Payload CMS's built-in authentication system. Most endpoints are currently configured with open access (`read: () => true`), but this can be configured based on your security requirements.
 
@@ -326,7 +326,7 @@ interface Character {
 ```javascript
 // Query character knowledge
 const queryCharacters = async (query) => {
-  const response = await fetch('http://localhost:3000/api/characters/query', {
+  const response = await fetch('http://localhost:3001/api/characters/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -346,7 +346,7 @@ const queryCharacters = async (query) => {
 
 // Generate character image
 const generateImage = async (characterId, prompt) => {
-  const response = await fetch(`http://localhost:3000/api/characters/${characterId}/generate-image`, {
+  const response = await fetch(`http://localhost:3001/api/characters/${characterId}/generate-image`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -362,7 +362,7 @@ const generateImage = async (characterId, prompt) => {
 
 // Get all characters
 const getCharacters = async () => {
-  const response = await fetch('http://localhost:3000/api/characters');
+  const response = await fetch('http://localhost:3001/api/characters');
   return await response.json();
 };
 ```
@@ -373,7 +373,7 @@ import requests
 import json
 
 class CharacterLibraryClient:
-    def __init__(self, base_url="http://localhost:3000"):
+    def __init__(self, base_url="http://localhost:3001"):
         self.base_url = base_url
     
     def query_characters(self, query, response_type="Multiple Paragraphs"):
@@ -463,19 +463,19 @@ print(result['data']['result'])
 
 1. **Query character knowledge**:
 ```bash
-curl -X POST http://localhost:3000/api/characters/query \
+curl -X POST http://localhost:3001/api/characters/query \
   -H "Content-Type: application/json" \
   -d '{"query": "Tell me about characters with magical abilities"}'
 ```
 
 2. **Get all characters**:
 ```bash
-curl http://localhost:3000/api/characters
+curl http://localhost:3001/api/characters
 ```
 
 3. **Generate character image**:
 ```bash
-curl -X POST http://localhost:3000/api/characters/CHARACTER_ID/generate-image \
+curl -X POST http://localhost:3001/api/characters/CHARACTER_ID/generate-image \
   -H "Content-Type: application/json" \
   -d '{"prompt": "Character in battle armor"}'
 ```

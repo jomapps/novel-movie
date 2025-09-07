@@ -252,32 +252,35 @@ async function testAPIEndpoint() {
   log('🌐 Testing API endpoint directly...', colors.cyan)
 
   try {
-    const response = await fetch('http://localhost:3001/v1/initial-concepts/ai-autofill', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        projectName: 'Credit Check Test',
-        movieFormat: 'short-film',
-        movieStyle: 'cinematic-realism',
-        durationUnit: 5,
-        formData: {
-          primaryGenres: ['Drama'],
-          corePremise: 'A simple test story',
-          targetAudience: {
-            demographics: ['General'],
-            psychographics: 'Family-friendly',
-          },
-          themes: {
-            centralThemes: ['Friendship'],
-          },
-          visualStyle: {
-            cinematographyStyle: 'Natural lighting',
-          },
+    const response = await fetch(
+      `${process.env.SITE_URL || 'http://localhost:3001'}/v1/initial-concepts/ai-autofill`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }),
-    })
+        body: JSON.stringify({
+          projectName: 'Credit Check Test',
+          movieFormat: 'short-film',
+          movieStyle: 'cinematic-realism',
+          durationUnit: 5,
+          formData: {
+            primaryGenres: ['Drama'],
+            corePremise: 'A simple test story',
+            targetAudience: {
+              demographics: ['General'],
+              psychographics: 'Family-friendly',
+            },
+            themes: {
+              centralThemes: ['Friendship'],
+            },
+            visualStyle: {
+              cinematographyStyle: 'Natural lighting',
+            },
+          },
+        }),
+      },
+    )
 
     const data = await response.json()
 

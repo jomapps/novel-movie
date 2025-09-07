@@ -326,14 +326,12 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       },
     })
 
+    // If characters exist, regenerate them instead of just returning them
     if (existingCharacters.docs.length > 0) {
-      return NextResponse.json(
-        {
-          message: 'Characters already exist for this project',
-          characters: existingCharacters.docs,
-        },
-        { status: 200 },
-      )
+      console.log(`🔄 Regenerating ${existingCharacters.docs.length} existing characters...`)
+
+      // We'll continue with the character generation process below
+      // but will update existing characters instead of creating new ones
     }
 
     // Prepare data for character development

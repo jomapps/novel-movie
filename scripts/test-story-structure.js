@@ -1,7 +1,18 @@
+#!/usr/bin/env node
+
 /**
  * Test script for story structure planning functionality
  * Tests the API endpoint directly without importing payload config
  */
+
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+import dotenv from 'dotenv'
+
+// Load environment variables
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+dotenv.config({ path: resolve(__dirname, '../.env') })
 
 async function testStoryStructurePlanning() {
   console.log('🎬 Testing Story Structure Planning API...\n')
@@ -9,10 +20,12 @@ async function testStoryStructurePlanning() {
   try {
     // First, get a list of projects to find one with a story
     console.log('📋 Finding projects...')
-    const projectsResponse = await fetch('http://localhost:3000/api/projects?limit=10')
+    const projectsResponse = await fetch(
+      `${process.env.SITE_URL || 'http://localhost:3001'}/api/projects?limit=10`,
+    )
 
     if (!projectsResponse.ok) {
-      console.log('❌ Failed to fetch projects. Make sure the server is running on port 3000.')
+      console.log('❌ Failed to fetch projects. Make sure the server is running.')
       return
     }
 
@@ -29,7 +42,7 @@ async function testStoryStructurePlanning() {
     // Check if this project has a story
     console.log('📚 Checking for existing story...')
     const storiesResponse = await fetch(
-      `http://localhost:3000/api/stories?where[project][equals]=${project.id}`,
+      `${process.env.SITE_URL || 'http://localhost:3001'}/api/stories?where[project][equals]=${project.id}`,
     )
 
     if (!storiesResponse.ok) {
@@ -51,7 +64,7 @@ async function testStoryStructurePlanning() {
     // Check if story structure already exists
     console.log('🔍 Checking for existing story structure...')
     const existingResponse = await fetch(
-      `http://localhost:3000/v1/projects/${project.id}/story-structure`,
+      `${process.env.SITE_URL || 'http://localhost:3001'}/v1/projects/${project.id}/story-structure`,
     )
 
     if (existingResponse.ok) {
@@ -67,7 +80,7 @@ async function testStoryStructurePlanning() {
     // Test the API endpoint
     console.log('\n🚀 Testing story structure generation API...')
 
-    const apiUrl = `http://localhost:3000/v1/projects/${project.id}/story-structure`
+    const apiUrl = `${process.env.SITE_URL || 'http://localhost:3001'}/v1/projects/${project.id}/story-structure`
     console.log(`📡 Making POST request to: ${apiUrl}`)
 
     const response = await fetch(apiUrl, {

@@ -91,7 +91,7 @@ Leave all optional fields (including tone) empty.
 #### Test 3: Verify Database Content
 ```bash
 # Check that tone options exist
-curl http://localhost:3000/v1/config/tone-options
+curl http://localhost:3001/v1/config/tone-options
 
 # Should return JSON with tone options like:
 # {

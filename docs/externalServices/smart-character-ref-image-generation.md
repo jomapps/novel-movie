@@ -89,7 +89,7 @@
      • ✅ Documentation Created - Complete API documentation available
 
    📖 Usage Example:
-   curl -X POST http://localhost:3000/api/characters/[character-id]/generate-smart-image \
+   curl -X POST http://localhost:3001/api/characters/[character-id]/generate-smart-image \
      -H "Content-Type: application/json" \
      -d '{
        "prompt": "full body action pose, jumping through the air",

@@ -5,12 +5,20 @@
  * Tests the complete character development functionality including API endpoints and BAML integration
  */
 
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+import dotenv from 'dotenv'
 import { getPayload } from 'payload'
 import config from '../src/payload.config.ts'
 
+// Load environment variables
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+dotenv.config({ path: resolve(__dirname, '../.env') })
+
 // Test configuration
 const TEST_PROJECT_NAME = 'Character Development Test Project'
-const BASE_URL = 'http://localhost:3000'
+const BASE_URL = process.env.SITE_URL || 'http://localhost:3001'
 
 // Helper functions
 function logStep(step, message) {

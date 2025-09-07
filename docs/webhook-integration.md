@@ -576,7 +576,7 @@ export async function testLocalWebhook() {
   const testPayload = WebhookTester.generateTestPayload('fal', 'generation.completed')
   
   const result = await WebhookTester.testWebhook(
-    'http://localhost:3000/api/v1/webhooks/fal',
+    'http://localhost:3001/api/v1/webhooks/fal',
     testPayload,
     {
       'x-fal-signature': generateWebhookSignature(

@@ -102,7 +102,7 @@ export const CHARACTER_LIBRARY_CONFIG = {
 Required environment variables in `.env.local`:
 
 ```env
-CHARACTER_LIBRARY_API_URL=https://character-library.ft.tc
+CHARACTER_LIBRARY_API_URL=https://character.ft.tc
 CHARACTER_LIBRARY_TIMEOUT=60000
 CHARACTER_LIBRARY_RETRY_ATTEMPTS=3
 ```
@@ -372,7 +372,7 @@ interface EnhancedCharacterData {
 
 ### Phase 1: Character Library Service Enhancements (External App)
 
-The Character Library Service at `https://character-library.ft.tc` requires several enhancements to support seamless integration with Novel Movie's character development workflow.
+The Character Library Service at `https://character.ft.tc` requires several enhancements to support seamless integration with Novel Movie's character development workflow.
 
 #### Required API Endpoints
 

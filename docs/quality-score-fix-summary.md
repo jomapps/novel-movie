@@ -127,7 +127,7 @@ pnpm run test:quality-score
 # Start development server
 pnpm run dev
 
-# Navigate to: http://localhost:3000/project/{projectId}/initial-concept
+# Navigate to: http://localhost:3001/project/{projectId}/initial-concept
 # Click "Quality Score" button - should work with mock data
 ```
 

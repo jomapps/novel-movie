@@ -1793,7 +1793,7 @@ describe('Character Development Workflow E2E', () => {
     })
 
     // 3. Generate story structure
-    const response = await fetch(`http://localhost:3000/v1/projects/${project.id}/story-structure`, {
+    const response = await fetch(`http://localhost:3001/v1/projects/${project.id}/story-structure`, {
       method: 'POST'
     })
 
@@ -1802,7 +1802,7 @@ describe('Character Development Workflow E2E', () => {
     expect(storyStructure.id).toBeDefined()
 
     // 4. Generate characters with Character Library integration
-    const charResponse = await fetch(`http://localhost:3000/v1/projects/${project.id}/character-development`, {
+    const charResponse = await fetch(`http://localhost:3001/v1/projects/${project.id}/character-development`, {
       method: 'POST'
     })
 

@@ -5,6 +5,15 @@
  * Run this after starting the development server
  */
 
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+import dotenv from 'dotenv'
+
+// Load environment variables
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+dotenv.config({ path: resolve(__dirname, '../.env') })
+
 const colors = {
   red: '\x1b[31m',
   green: '\x1b[32m',
@@ -13,7 +22,7 @@ const colors = {
   magenta: '\x1b[35m',
   cyan: '\x1b[36m',
   white: '\x1b[37m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 }
 
 function log(message, color = colors.white) {
@@ -39,7 +48,9 @@ async function testScreenplayPage() {
   try {
     // Test 1: Check if server is running
     logInfo('Testing server connectivity...')
-    const healthResponse = await fetch('http://localhost:3000/api/health')
+    const healthResponse = await fetch(
+      `${process.env.SITE_URL || 'http://localhost:3001'}/api/health`,
+    )
     if (healthResponse.ok) {
       logSuccess('Development server is running')
     } else {
@@ -48,14 +59,16 @@ async function testScreenplayPage() {
 
     // Test 2: Get a project with story data
     logInfo('Fetching projects with story data...')
-    const projectsResponse = await fetch('http://localhost:3000/v1/projects?limit=10')
+    const projectsResponse = await fetch(
+      `${process.env.SITE_URL || 'http://localhost:3001'}/v1/projects?limit=10`,
+    )
     if (!projectsResponse.ok) {
       throw new Error('Failed to fetch projects')
     }
-    
+
     const projectsData = await projectsResponse.json()
     const projects = projectsData.docs || []
-    
+
     if (projects.length === 0) {
       logError('No projects found. Please create a project first.')
       return
@@ -66,7 +79,9 @@ async function testScreenplayPage() {
     // Test 3: Find a project with story data
     let projectWithStory = null
     for (const project of projects) {
-      const storyResponse = await fetch(`http://localhost:3000/v1/stories?where[project][equals]=${project.id}&limit=1`)
+      const storyResponse = await fetch(
+        `http://localhost:3001/v1/stories?where[project][equals]=${project.id}&limit=1`,
+      )
       if (storyResponse.ok) {
         const storyData = await storyResponse.json()
         if (storyData.docs && storyData.docs.length > 0) {
@@ -88,8 +103,8 @@ async function testScreenplayPage() {
 
     // Test 4: Test screenplay page accessibility
     logInfo(`Testing screenplay page for project: ${projectWithStory.name}`)
-    const screenplayUrl = `http://localhost:3000/project/${projectWithStory.id}/screenplay`
-    
+    const screenplayUrl = `http://localhost:3001/project/${projectWithStory.id}/screenplay`
+
     try {
       const screenplayResponse = await fetch(screenplayUrl)
       if (screenplayResponse.ok) {
@@ -126,7 +141,6 @@ async function testScreenplayPage() {
     if (projectWithStory) {
       log(`\n🔗 Direct link to test: ${screenplayUrl}`, colors.cyan)
     }
-
   } catch (error) {
     logError(`Test failed: ${error.message}`)
     logInfo('Make sure your development server is running with: npm run dev')

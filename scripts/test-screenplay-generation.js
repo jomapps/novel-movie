@@ -5,6 +5,15 @@
  * Tests all external services step-by-step for screenplay generation
  */
 
+import { fileURLToPath } from 'url'
+import { dirname, resolve } from 'path'
+import dotenv from 'dotenv'
+
+// Load environment variables
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+dotenv.config({ path: resolve(__dirname, '../.env') })
+
 const colors = {
   red: '\x1b[31m',
   green: '\x1b[32m',
@@ -13,7 +22,7 @@ const colors = {
   magenta: '\x1b[35m',
   cyan: '\x1b[36m',
   white: '\x1b[37m',
-  reset: '\x1b[0m'
+  reset: '\x1b[0m',
 }
 
 function log(message, color = colors.white) {
@@ -44,18 +53,34 @@ async function testServiceHealth() {
   log('=' * 50, colors.white)
 
   const services = [
-    { name: 'Novel Movie API', url: 'http://localhost:3000/api/health', required: true },
-    { name: 'CrewAI Server', url: 'http://localhost:5001/health', required: true },
-    { name: 'PathRAG Service', url: 'http://movie.ft.tc:5000/health', required: true },
-    { name: 'DINOv3 Service', url: 'http://movie.ft.tc:5000/health', required: false },
-    { name: 'Redis', url: 'redis://localhost:6379', required: true }
+    {
+      name: 'Novel Movie API',
+      url: `${process.env.SITE_URL || 'http://localhost:3001'}/api/health`,
+      required: true,
+    },
+    {
+      name: 'CrewAI Server',
+      url: `${process.env.CREW_AI || 'http://localhost:5001'}/health`,
+      required: true,
+    },
+    {
+      name: 'PathRAG Service',
+      url: `${process.env.PATHRAG_API_URL || 'http://movie.ft.tc:5000'}/health`,
+      required: true,
+    },
+    {
+      name: 'DINOv3 Service',
+      url: `${process.env.PATHRAG_API_URL || 'http://movie.ft.tc:5000'}/health`,
+      required: false,
+    },
+    { name: 'Redis', url: process.env.REDIS_URL || 'redis://localhost:6379', required: true },
   ]
 
   const results = []
 
   for (const service of services) {
     logStep('1.1', `Testing ${service.name}`)
-    
+
     try {
       if (service.name === 'Redis') {
         // Test Redis connection
@@ -68,11 +93,11 @@ async function testServiceHealth() {
         results.push({ service: service.name, status: 'healthy' })
       } else {
         // Test HTTP services
-        const response = await fetch(service.url, { 
+        const response = await fetch(service.url, {
           method: 'GET',
-          timeout: 10000 
+          timeout: 10000,
         })
-        
+
         if (response.ok) {
           logSuccess(`${service.name} is healthy`)
           results.push({ service: service.name, status: 'healthy' })
@@ -109,23 +134,23 @@ async function configureDigitalAssetDetection() {
       enabled_services: ['character_detection'],
       disabled_services: [
         'object_detection',
-        'scene_analysis', 
+        'scene_analysis',
         'quality_analysis',
         'similarity_matching',
-        'video_shot_analysis'
+        'video_shot_analysis',
       ],
       character_detection: {
         enabled: true,
         confidence_threshold: 0.7,
-        max_detections: 10
-      }
+        max_detections: 10,
+      },
     }
 
     // Apply configuration to DINOv3 service
     const response = await fetch('http://movie.ft.tc:5000/api/v1/config', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dinoConfig)
+      body: JSON.stringify(dinoConfig),
     })
 
     if (response.ok) {
@@ -153,13 +178,13 @@ async function testIndividualServices() {
   // Test 3.1: BAML Service
   logStep('3.1', 'Testing BAML AI Generation')
   try {
-    const bamlTest = await fetch('http://localhost:3000/api/test/baml', {
+    const bamlTest = await fetch('http://localhost:3001/api/test/baml', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Generate a simple test story premise',
-        function: 'GenerateCorePremise'
-      })
+        function: 'GenerateCorePremise',
+      }),
     })
 
     if (bamlTest.ok) {
@@ -177,13 +202,13 @@ async function testIndividualServices() {
   // Test 3.2: OpenRouter API
   logStep('3.2', 'Testing OpenRouter API')
   try {
-    const openRouterTest = await fetch('http://localhost:3000/api/test/openrouter', {
+    const openRouterTest = await fetch('http://localhost:3001/api/test/openrouter', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         prompt: 'Say "OpenRouter test successful"',
-        model: 'anthropic/claude-sonnet-4'
-      })
+        model: 'anthropic/claude-sonnet-4',
+      }),
     })
 
     if (openRouterTest.ok) {
@@ -202,7 +227,7 @@ async function testIndividualServices() {
   logStep('3.3', 'Testing PathRAG Service')
   try {
     const pathragTest = await fetch('http://movie.ft.tc:5000/api/v1/health', {
-      method: 'GET'
+      method: 'GET',
     })
 
     if (pathragTest.ok) {
@@ -220,7 +245,7 @@ async function testIndividualServices() {
   logStep('3.4', 'Testing CrewAI Server')
   try {
     const crewaiTest = await fetch('http://localhost:5001/health', {
-      method: 'GET'
+      method: 'GET',
     })
 
     if (crewaiTest.ok) {
@@ -260,10 +285,10 @@ async function testScreenplayWorkflow(projectId) {
   // Test 4.1: Story Generation
   logStep('4.1', 'Testing Story Generation')
   try {
-    const storyResponse = await fetch('http://localhost:3000/api/stories/generate', {
+    const storyResponse = await fetch('http://localhost:3001/api/stories/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ projectId })
+      body: JSON.stringify({ projectId }),
     })
 
     if (storyResponse.ok) {
@@ -290,10 +315,10 @@ async function testScreenplayWorkflow(projectId) {
         user_id: 'test-user',
         input_data: {
           story_text: 'Test story for architect crew',
-          preferences: { style: 'cinematic' }
+          preferences: { style: 'cinematic' },
         },
-        config: { temperature: 0.7, verbose: true }
-      })
+        config: { temperature: 0.7, verbose: true },
+      }),
     })
 
     if (architectResponse.ok) {
@@ -320,10 +345,10 @@ async function testScreenplayWorkflow(projectId) {
         user_id: 'test-user',
         input_data: {
           story_text: 'Test story for director crew',
-          preferences: { style: 'cinematic' }
+          preferences: { style: 'cinematic' },
         },
-        config: { temperature: 0.7, verbose: true }
-      })
+        config: { temperature: 0.7, verbose: true },
+      }),
     })
 
     if (directorResponse.ok) {
@@ -351,13 +376,13 @@ async function runScreenplayTests() {
   try {
     // Phase 1: Service Health
     const healthResults = await testServiceHealth()
-    
+
     // Phase 2: Configure Digital Assets
     const configResults = await configureDigitalAssetDetection()
-    
+
     // Phase 3: Individual Services
     const serviceResults = await testIndividualServices()
-    
+
     // Phase 4: Workflow Testing (requires existing project)
     const projectId = process.argv[2] || 'test-project-id'
     const workflowResults = await testScreenplayWorkflow(projectId)
@@ -365,15 +390,20 @@ async function runScreenplayTests() {
     // Generate final report
     log('\n📊 Final Test Report', colors.magenta)
     log('=' * 50, colors.white)
-    
-    console.log(JSON.stringify({
-      timestamp: new Date().toISOString(),
-      health_check: healthResults,
-      digital_asset_config: configResults,
-      service_tests: serviceResults,
-      workflow_tests: workflowResults
-    }, null, 2))
 
+    console.log(
+      JSON.stringify(
+        {
+          timestamp: new Date().toISOString(),
+          health_check: healthResults,
+          digital_asset_config: configResults,
+          service_tests: serviceResults,
+          workflow_tests: workflowResults,
+        },
+        null,
+        2,
+      ),
+    )
   } catch (error) {
     logError(`Test suite failed: ${error.message}`)
     process.exit(1)
@@ -389,5 +419,5 @@ module.exports = {
   testServiceHealth,
   configureDigitalAssetDetection,
   testIndividualServices,
-  testScreenplayWorkflow
+  testScreenplayWorkflow,
 }

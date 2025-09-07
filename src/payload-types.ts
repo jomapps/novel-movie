@@ -1543,7 +1543,7 @@ export interface Character {
   /**
    * Status of character in Character Library service
    */
-  characterLibraryStatus?: ('not_created' | 'creating' | 'created' | 'error') | null;
+  characterLibraryStatus?: ('not_created' | 'creating' | 'created' | 'updated' | 'error') | null;
   /**
    * Visual assets and consistency data from Character Library
    */

@@ -19,7 +19,7 @@ dotenv.config({ path: resolve(__dirname, '../.env') })
 // Test configuration
 const TEST_CONFIG = {
   projectId: '68ac4bc92381660fefe1e54d', // From the URL you provided
-  apiUrl: 'http://localhost:3000',
+  apiUrl: process.env.SITE_URL || 'http://localhost:3001',
   verbose: true,
 }
 

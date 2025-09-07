@@ -61,7 +61,7 @@ CHARACTER_LIBRARY_RETRY_ATTEMPTS=3
 ```
 
 ### **Testing the Integration**
-1. **Health Check**: `curl http://localhost:3000/v1/character-library/health`
+1. **Health Check**: `curl http://localhost:3001/v1/character-library/health`
 2. **Character Development**: Use existing workflow - Character Library integration is automatic
 3. **Integration Test**: `node scripts/test-character-library-integration.js`
 
