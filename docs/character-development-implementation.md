@@ -166,9 +166,9 @@ docs/
 ### Character Library Service
 - **Service URL**: `https://character.ft.tc`
 - **Connectivity**: ✅ Service is accessible
-- **Health Check**: ✅ `/health` endpoint working
-- **API Endpoints**: ⚠️ Expected endpoints (`/api/characters`) not available
-- **Status**: Ready for integration once API structure is clarified
+- **Health Check**: ✅ `/api/health` endpoint working
+- **API Endpoints**: ✅ All v1 endpoints available (`/api/v1/characters/*`)
+- **Status**: ✅ Ready for integration with updated API structure
 
 ## Next Steps
 

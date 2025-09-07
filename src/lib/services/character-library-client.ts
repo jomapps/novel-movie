@@ -79,11 +79,10 @@ export class CharacterLibraryClient {
   }
 
   async createCharacter(character: CharacterLibraryCharacter): Promise<any> {
-    return this.makeRequest('POST', '/api/characters', character)
+    return this.makeRequest('POST', CHARACTER_LIBRARY_CONFIG.endpoints.characters, character)
   }
 
   async createNovelMovieCharacter(character: any, project: any): Promise<any> {
-    const endpoint = '/api/v1/characters/novel-movie'
     const payload = {
       novelMovieProjectId: project.id,
       projectName: project.name,
@@ -93,19 +92,29 @@ export class CharacterLibraryClient {
         conflictResolution: 'novel-movie-wins',
       },
     }
-    return this.makeRequest('POST', endpoint, payload)
+    return this.makeRequest(
+      'POST',
+      CHARACTER_LIBRARY_CONFIG.endpoints.novelMovieCharacters,
+      payload,
+    )
   }
 
   async generateSmartImage(
     characterId: string,
     request: SmartImageGenerationRequest,
   ): Promise<SmartImageGenerationResponse> {
-    const endpoint = `/api/characters/${characterId}/generate-smart-image`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.generateSmartImage.replace(
+      '{id}',
+      characterId,
+    )
     return this.makeRequest('POST', endpoint, request)
   }
 
   async generateSceneSpecificImage(characterId: string, sceneContext: any): Promise<any> {
-    const endpoint = `/api/v1/characters/${characterId}/generate-scene-image`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.generateSceneImage.replace(
+      '{id}',
+      characterId,
+    )
     const payload = {
       sceneContext: sceneContext.description,
       sceneType: sceneContext.type || 'dialogue',
@@ -116,12 +125,12 @@ export class CharacterLibraryClient {
   }
 
   async generateInitialImage(characterId: string, prompt: string): Promise<any> {
-    const endpoint = `/api/characters/${characterId}/generate-initial-image`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.generateInitial.replace('{id}', characterId)
     return this.makeRequest('POST', endpoint, { prompt })
   }
 
   async generateCoreSet(characterId: string): Promise<any> {
-    const endpoint = `/api/characters/${characterId}/generate-core-set`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.generateCoreSet.replace('{id}', characterId)
     return this.makeRequest('POST', endpoint, {})
   }
 
@@ -129,16 +138,15 @@ export class CharacterLibraryClient {
     characterId: string,
     options: { style?: string; qualityThreshold?: number; imageCount?: number } = {},
   ): Promise<any> {
-    const endpoint = `/api/v1/characters/${characterId}/generate-360-set`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.generate360Set.replace('{id}', characterId)
     return this.makeRequest('POST', endpoint, options)
   }
 
   async queryCharacters(query: string): Promise<any> {
-    return this.makeRequest('POST', '/api/characters/query', { query })
+    return this.makeRequest('POST', CHARACTER_LIBRARY_CONFIG.endpoints.query, { query })
   }
 
   async validateProjectConsistency(projectId: string): Promise<any> {
-    const endpoint = '/api/v1/characters/validate-project-consistency'
     const payload = {
       projectId,
       includeVisualValidation: true,
@@ -147,11 +155,14 @@ export class CharacterLibraryClient {
       qualityThreshold: 70,
       consistencyThreshold: 85,
     }
-    return this.makeRequest('POST', endpoint, payload)
+    return this.makeRequest(
+      'POST',
+      CHARACTER_LIBRARY_CONFIG.endpoints.validateProjectConsistency,
+      payload,
+    )
   }
 
   async bulkCreateCharacters(projectId: string, characters: any[], project?: any): Promise<any> {
-    const endpoint = '/api/v1/characters/bulk/novel-movie'
     const payload = {
       projectId,
       characters: characters.map((character) => ({
@@ -163,18 +174,18 @@ export class CharacterLibraryClient {
         conflictResolution: 'novel-movie-wins',
       },
     }
-    return this.makeRequest('POST', endpoint, payload)
+    return this.makeRequest('POST', CHARACTER_LIBRARY_CONFIG.endpoints.bulkNovelMovie, payload)
   }
 
   // Get existing character data
   async getCharacter(characterId: string): Promise<any> {
-    const endpoint = `/api/v1/characters/${characterId}`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.characters + `/${characterId}`
     return this.makeRequest('GET', endpoint)
   }
 
   // Update existing Novel Movie character with incremental enhancement
   async updateNovelMovieCharacter(characterId: string, updateData: any): Promise<any> {
-    const endpoint = `/api/v1/characters/${characterId}/novel-movie-sync`
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.characterSync.replace('{id}', characterId)
     return this.makeRequest('PUT', endpoint, updateData)
   }
 
