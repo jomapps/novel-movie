@@ -5,14 +5,95 @@ import config from '@payload-config'
 import { getBamlClient } from '@/lib/ai/baml-client'
 import { characterLibraryClient } from '@/lib/services/character-library-client'
 import { checkCharacterLibraryHealth } from '@/lib/services/character-library-health'
+import { CharacterDevelopmentService } from '@/lib/services/character-development-service'
 
-// Helper function to create character in Character Library
-async function createCharacterInLibrary(
+const characterDevelopmentService = new CharacterDevelopmentService()
+
+// Helper function to generate character relationships
+async function generateCharacterRelationships(
+  characters: any[],
+  storyStructure: any,
+  storyContent: string,
+): Promise<any[]> {
+  if (characters.length < 2) {
+    return characters // No relationships to generate for single character
+  }
+
+  console.log('🔗 Generating character relationships...')
+
+  // Analyze story beats for character interactions
+  const characterInteractions: { [key: string]: string[] } = {}
+
+  // Extract character interactions from story beats
+  storyStructure.storyBeats?.forEach((beat: any) => {
+    const beatCharacters = beat.characters?.map((c: any) => c.character || c.characterName) || []
+
+    beatCharacters.forEach((char1: string) => {
+      beatCharacters.forEach((char2: string) => {
+        if (char1 !== char2) {
+          if (!characterInteractions[char1]) {
+            characterInteractions[char1] = []
+          }
+          if (!characterInteractions[char1].includes(char2)) {
+            characterInteractions[char1].push(char2)
+          }
+        }
+      })
+    })
+  })
+
+  // Generate relationships for each character
+  const enhancedCharacters = characters.map((character) => {
+    const relationships: any[] = []
+    const interactsWith = characterInteractions[character.name] || []
+
+    interactsWith.forEach((otherCharName) => {
+      const otherChar = characters.find((c) => c.name === otherCharName)
+      if (otherChar) {
+        // Determine relationship type based on character roles
+        let relationshipType = 'ally'
+        let dynamic = 'supportive'
+
+        if (character.role === 'protagonist' && otherChar.role === 'antagonist') {
+          relationshipType = 'enemy'
+          dynamic = 'conflicted and opposing'
+        } else if (character.role === 'antagonist' && otherChar.role === 'protagonist') {
+          relationshipType = 'enemy'
+          dynamic = 'antagonistic and challenging'
+        } else if (character.role === 'protagonist' && otherChar.role === 'supporting') {
+          relationshipType = 'ally'
+          dynamic = 'supportive and collaborative'
+        } else if (character.role === 'supporting' && otherChar.role === 'protagonist') {
+          relationshipType = 'mentor'
+          dynamic = 'guiding and supportive'
+        }
+
+        relationships.push({
+          character: otherChar.name,
+          relationship: relationshipType,
+          dynamic: dynamic,
+        })
+      }
+    })
+
+    return {
+      ...character,
+      relationships: relationships,
+    }
+  })
+
+  console.log(`✅ Generated relationships for ${enhancedCharacters.length} characters`)
+  return enhancedCharacters
+}
+
+// Helper function to sync character with Character Library (create or update)
+async function syncCharacterWithLibrary(
   character: any,
   project: any,
+  existingCharacterLibraryId?: string | null,
 ): Promise<{
   characterLibraryId: string | null
-  status: 'created' | 'error'
+  status: 'created' | 'updated' | 'error'
   error?: string
 }> {
   try {
@@ -23,7 +104,62 @@ async function createCharacterInLibrary(
       return { characterLibraryId: null, status: 'error', error: healthCheck.error }
     }
 
-    // Create character in Character Library
+    // If character already exists in Character Library, update it
+    if (existingCharacterLibraryId) {
+      console.log(`🔄 Updating existing character ${character.name} in Character Library`)
+
+      try {
+        // Get existing character data to preserve immutable fields
+        const existingCharacter = await characterLibraryClient.getCharacter(
+          existingCharacterLibraryId,
+        )
+
+        // Prepare update data - preserve existing physical characteristics if they exist
+        const updateData = {
+          // Always update these fields (they can evolve)
+          biography:
+            character.characterDevelopment?.biography || existingCharacter?.biography || '',
+          personality:
+            character.characterDevelopment?.personality || existingCharacter?.personality || '',
+
+          // Preserve existing physical characteristics, only add if missing
+          physicalDescription:
+            existingCharacter?.physicalDescription ||
+            character.physicalDescription?.description ||
+            '',
+          age: existingCharacter?.age || character.physicalDescription?.age,
+          height: existingCharacter?.height || character.physicalDescription?.height,
+          eyeColor: existingCharacter?.eyeColor || character.physicalDescription?.eyeColor,
+          hairColor: existingCharacter?.hairColor || character.physicalDescription?.hairColor,
+
+          // Update status and metadata
+          status: 'in_development' as const,
+          lastModified: new Date().toISOString(),
+          changeSet: ['biography', 'personality'], // Track what was updated
+        }
+
+        const response = await characterLibraryClient.updateNovelMovieCharacter(
+          existingCharacterLibraryId,
+          updateData,
+        )
+
+        if (response.success !== false) {
+          return {
+            characterLibraryId: existingCharacterLibraryId,
+            status: 'updated',
+          }
+        } else {
+          throw new Error(response.error || 'Update failed')
+        }
+      } catch (updateError) {
+        console.warn('Failed to update existing character, will create new:', updateError)
+        // Fall through to create new character
+      }
+    }
+
+    // Create new character in Character Library
+    console.log(`✨ Creating new character ${character.name} in Character Library`)
+
     const characterLibraryData = {
       name: character.name,
       characterId: `${project.id}-${character.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
@@ -37,7 +173,10 @@ async function createCharacterInLibrary(
       hairColor: character.physicalDescription?.hairColor,
     }
 
-    const response = await characterLibraryClient.createCharacter(characterLibraryData)
+    const response = await characterLibraryClient.createNovelMovieCharacter(
+      characterLibraryData,
+      project,
+    )
 
     if (response.success !== false) {
       return {
@@ -52,7 +191,7 @@ async function createCharacterInLibrary(
       }
     }
   } catch (error) {
-    console.error('Error creating character in Character Library:', error)
+    console.error('Error syncing character with Character Library:', error)
     return {
       characterLibraryId: null,
       status: 'error',
@@ -210,90 +349,167 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           `Beat ${beat.beat}: ${beat.description} (Characters: ${beat.characters?.map((c: any) => c.character).join(', ') || 'None'})`,
       ) || []
 
-    // Generate characters using existing story structure data
+    // Generate characters using BAML AI functions
     const startTime = Date.now()
 
-    // Extract character information from story structure
-    const characterResult = {
-      characters:
-        storyStructure.characterArcs?.map((arc: any, index: number) => {
-          const characterName = arc.character || arc.characterName || `Character ${index + 1}`
-          const role = index === 0 ? 'protagonist' : index === 1 ? 'antagonist' : 'supporting'
+    console.log('🤖 Generating characters using BAML AI functions...')
 
-          return {
-            name: characterName,
-            role: role,
-            archetype: role === 'protagonist' ? 'Hero' : role === 'antagonist' ? 'Villain' : 'Ally',
-            characterDevelopment: {
-              biography: `${characterName} is a key character in this ${typeof project.movieFormat === 'string' ? project.movieFormat : project.movieFormat?.name || 'story'}.`,
-              personality: `${characterName} exhibits traits consistent with their role as the ${role} of the story.`,
-              motivations:
-                arc.transformation ||
-                `${characterName} is motivated by the central conflict of the story.`,
-              backstory: `${characterName}'s background shapes their journey from ${arc.startState || 'their initial state'} to ${arc.endState || 'their final state'}.`,
-              psychology: {
-                motivation: arc.transformation || "Driven by the story's central conflict",
-                fears: 'Fears failure and loss',
-                desires: 'Seeks resolution and growth',
-                flaws: 'Has personal weaknesses to overcome',
+    let characterResult
+    try {
+      // Get BAML client
+      const bamlClient = await getBamlClient()
+
+      // Prepare data for BAML character generation
+      const movieFormatName =
+        typeof project.movieFormat === 'string'
+          ? project.movieFormat
+          : project.movieFormat?.name || 'feature-film'
+
+      const movieStyleName =
+        typeof project.movieStyle === 'string'
+          ? project.movieStyle
+          : project.movieStyle?.name || 'dramatic'
+
+      const primaryGenreNames = Array.isArray(project.primaryGenres)
+        ? project.primaryGenres.map((genre: any) =>
+            typeof genre === 'string' ? genre : genre?.name || 'drama',
+          )
+        : ['drama']
+
+      const targetAudienceNames = Array.isArray(project.targetAudience)
+        ? project.targetAudience.map((audience: any) =>
+            typeof audience === 'string' ? audience : audience?.name || 'general',
+          )
+        : ['general']
+
+      // Generate characters using BAML
+      characterResult = await bamlClient.DevelopCharacters({
+        storyContent: story.currentContent,
+        projectName: project.name || 'Untitled Project',
+        movieFormat: movieFormatName,
+        movieStyle: movieStyleName,
+        durationUnit: project.durationUnit || 90,
+        primaryGenres: primaryGenreNames,
+        targetAudience: targetAudienceNames,
+        characterArcs: characterArcs,
+        storyBeats: storyBeats,
+      })
+
+      console.log(
+        `✅ BAML character generation completed. Generated ${characterResult.characters?.length || 0} characters`,
+      )
+    } catch (error) {
+      console.error(
+        '❌ BAML character generation failed, falling back to story structure extraction:',
+        error,
+      )
+
+      // Fallback to story structure extraction
+      characterResult = {
+        characters:
+          storyStructure.characterArcs?.map((arc: any, index: number) => {
+            const characterName = arc.character || arc.characterName || `Character ${index + 1}`
+            const role = index === 0 ? 'protagonist' : index === 1 ? 'antagonist' : 'supporting'
+
+            return {
+              name: characterName,
+              role: role,
+              archetype:
+                role === 'protagonist' ? 'Hero' : role === 'antagonist' ? 'Villain' : 'Ally',
+              characterDevelopment: {
+                biography: `${characterName} is a key character in this ${typeof project.movieFormat === 'string' ? project.movieFormat : project.movieFormat?.name || 'story'}.`,
+                personality: `${characterName} exhibits traits consistent with their role as the ${role} of the story.`,
+                motivations:
+                  arc.transformation ||
+                  `${characterName} is motivated by the central conflict of the story.`,
+                backstory: `${characterName}'s background shapes their journey from ${arc.startState || 'their initial state'} to ${arc.endState || 'their final state'}.`,
+                psychology: {
+                  motivation: arc.transformation || "Driven by the story's central conflict",
+                  fears: 'Fears failure and loss',
+                  desires: 'Seeks resolution and growth',
+                  flaws: 'Has personal weaknesses to overcome',
+                },
               },
-            },
-            characterArc: {
-              startState: arc.startState || arc.startingState || 'Initial character state',
-              transformation:
-                arc.transformation ||
-                arc.arcDescription ||
-                'Character undergoes significant change',
-              endState: arc.endState || arc.endingState || 'Final character state',
-            },
-            physicalDescription: {
-              description: `${characterName} has a distinctive appearance that reflects their role in the story.`,
-              age: null,
-              height: '',
-              eyeColor: '',
-              hairColor: '',
-              clothing: 'Clothing appropriate to their character and story setting',
-            },
-            dialogueVoice: {
-              voiceDescription: `${characterName} speaks in a manner consistent with their personality and background.`,
-              style:
-                role === 'protagonist'
-                  ? 'Determined and heroic'
-                  : role === 'antagonist'
-                    ? 'Commanding and threatening'
-                    : 'Supportive and wise',
-              patterns: 'Speech patterns reflect character background',
-              vocabulary: 'Vocabulary appropriate to character education and social status',
-            },
-            relationships: [],
-            generationMetadata: {
-              generatedAt: new Date().toISOString(),
-              generationMethod: 'story_structure_extraction',
-              qualityScore: 75, // Base quality score for extracted characters
-              completeness: 80,
-            },
-          }
-        }) || [],
-      qualityMetrics: {
-        overallQuality: 75,
-        characterDepth: 70,
-        arcConsistency: 85,
-        relationshipClarity: 60,
-        dialogueDistinction: 65,
-        psychologicalRealism: 70,
-      },
-      generationNotes:
-        'Characters extracted from existing story structure and enhanced with basic development information. External Character Library Service integration available for future enhancement.',
+              characterArc: {
+                startState: arc.startState || arc.startingState || 'Initial character state',
+                transformation:
+                  arc.transformation ||
+                  arc.arcDescription ||
+                  'Character undergoes significant change',
+                endState: arc.endState || arc.endingState || 'Final character state',
+              },
+              physicalDescription: {
+                description: `${characterName} has a distinctive appearance that reflects their role in the story.`,
+                age: null,
+                height: '',
+                eyeColor: '',
+                hairColor: '',
+                clothing: 'Clothing appropriate to their character and story setting',
+              },
+              dialogueVoice: {
+                voiceDescription: `${characterName} speaks in a manner consistent with their personality and background.`,
+                style:
+                  role === 'protagonist'
+                    ? 'Determined and heroic'
+                    : role === 'antagonist'
+                      ? 'Commanding and threatening'
+                      : 'Supportive and wise',
+                patterns: 'Speech patterns reflect character background',
+                vocabulary: 'Vocabulary appropriate to character education and social status',
+              },
+              relationships: [],
+              generationMetadata: {
+                generatedAt: new Date().toISOString(),
+                generationMethod: 'story_structure_extraction',
+                qualityScore: 75,
+                completeness: 80,
+              },
+            }
+          }) || [],
+        qualityMetrics: {
+          overallQuality: 75,
+          characterDepth: 70,
+          arcConsistency: 85,
+          relationshipClarity: 60,
+          dialogueDistinction: 65,
+          psychologicalRealism: 70,
+        },
+        generationNotes:
+          'Characters extracted from existing story structure (BAML generation failed). External Character Library Service integration available for future enhancement.',
+      }
     }
+
+    // Generate character relationships
+    const charactersWithRelationships = await generateCharacterRelationships(
+      characterResult.characters,
+      storyStructure,
+      story.currentContent,
+    )
 
     const processingTime = Math.round((Date.now() - startTime) / 1000)
 
     // Create character records in the database with Character Library integration
     const createdCharacters = []
 
-    for (const character of characterResult.characters) {
-      // Create character in Character Library first
-      const libraryResult = await createCharacterInLibrary(character, project)
+    for (const character of charactersWithRelationships) {
+      // Get existing character library ID if character already exists
+      const existingCharacters = await payload.find({
+        collection: 'characters',
+        where: {
+          and: [{ project: { equals: projectId } }, { name: { equals: character.name } }],
+        },
+        limit: 1,
+      })
+
+      const existingCharacterLibraryId = existingCharacters.docs[0]?.characterLibraryId || null
+
+      // Sync character with Character Library (create or update)
+      console.log(`🔗 Syncing character ${character.name} with Character Library...`)
+      const libraryResult = await syncCharacterWithLibrary(
+        character,
+        project,
+        existingCharacterLibraryId,
+      )
 
       // Prepare character data for local database
       const characterData = {
@@ -307,7 +523,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
         // Character Library integration fields
         characterLibraryId: libraryResult.characterLibraryId,
-        characterLibraryStatus: libraryResult.status,
+        characterLibraryStatus: libraryResult.status as 'created' | 'updated' | 'error',
 
         characterDevelopment: {
           biography: character.characterDevelopment.biography,
@@ -366,14 +582,61 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         },
       }
 
-      // Create character in local database
-      const createdCharacter = await payload.create({
-        collection: 'characters',
-        data: characterData,
-      })
+      // Create or update character in local database
+      let createdCharacter
+      if (existingCharacters.docs.length > 0) {
+        // Update existing character with enhanced data
+        const existingCharacter = existingCharacters.docs[0]
 
-      // Generate visual assets if Character Library creation was successful
-      if (libraryResult.status === 'created' && libraryResult.characterLibraryId) {
+        // Merge data preserving immutable fields
+        const mergedData = {
+          ...characterData,
+          // Preserve existing physical characteristics if they exist
+          physicalDescription: {
+            ...characterData.physicalDescription,
+            age:
+              existingCharacter.physicalDescription?.age || characterData.physicalDescription.age,
+            height:
+              existingCharacter.physicalDescription?.height ||
+              characterData.physicalDescription.height,
+            eyeColor:
+              existingCharacter.physicalDescription?.eyeColor ||
+              characterData.physicalDescription.eyeColor,
+            hairColor:
+              existingCharacter.physicalDescription?.hairColor ||
+              characterData.physicalDescription.hairColor,
+          },
+          // Preserve existing visual assets
+          visualAssets: existingCharacter.visualAssets || characterData.visualAssets,
+          // Cast the status to avoid TypeScript issues
+          characterLibraryStatus: characterData.characterLibraryStatus as
+            | 'created'
+            | 'updated'
+            | 'error',
+        }
+
+        createdCharacter = await payload.update({
+          collection: 'characters',
+          id: existingCharacter.id,
+          data: mergedData as any, // Type assertion to handle 'updated' status
+        })
+
+        console.log(`✅ Updated existing character: ${character.name}`)
+      } else {
+        // Create new character
+        createdCharacter = await payload.create({
+          collection: 'characters',
+          data: characterData as any, // Type assertion to handle 'updated' status
+        })
+
+        console.log(`✅ Created new character: ${character.name}`)
+      }
+
+      // Generate visual assets if Character Library sync was successful
+      if (
+        (libraryResult.status === 'created' || libraryResult.status === 'updated') &&
+        libraryResult.characterLibraryId
+      ) {
         console.log(`🎨 Generating visual assets for ${character.name}...`)
 
         const visualsResult = await generateCharacterVisuals(
@@ -489,7 +752,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const payload = await getPayload({ config })
     const resolvedParams = await params
     const projectId = resolvedParams.id
-    const { action, characterId } = await request.json()
+    const { action, characterId, focusAreas } = await request.json()
 
     if (action === 'enhance') {
       // Enhance specific character or all characters
@@ -502,36 +765,121 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
         return NextResponse.json({ error: 'No characters found to enhance' }, { status: 404 })
       }
 
-      // Get story content for enhancement
-      const storyQuery = await payload.find({
-        collection: 'stories',
-        where: { project: { equals: projectId } },
-      })
+      console.log(
+        `🚀 Enhancing ${characters.docs.length} character(s) with focus areas: ${focusAreas?.join(', ') || 'all areas'}`,
+      )
 
-      if (storyQuery.docs.length === 0) {
-        return NextResponse.json({ error: 'Story not found for enhancement' }, { status: 400 })
-      }
+      const enhancementResults = []
+      const errors = []
 
-      const story = storyQuery.docs[0]
+      // Enhance each character
+      for (const character of characters.docs) {
+        try {
+          const result = await characterDevelopmentService.enhanceCharacterProfile(
+            character.id,
+            focusAreas || ['dialogue', 'psychology', 'relationships', 'backstory'],
+          )
 
-      // Enhance characters (placeholder implementation)
-      const enhancementResult = {
-        message: 'Character enhancement completed',
-        enhancedCharacters: characters.docs.length,
-        focusAreas: ['dialogue', 'psychology', 'relationships'],
-        qualityImprovement: 10,
+          if (result.success) {
+            enhancementResults.push({
+              characterId: character.id,
+              characterName: character.name,
+              qualityImprovement: result.qualityMetrics?.overallQuality || 0,
+              enhancedAreas: focusAreas || ['dialogue', 'psychology', 'relationships', 'backstory'],
+            })
+          } else {
+            errors.push(`${character.name}: ${result.error}`)
+          }
+        } catch (error) {
+          errors.push(
+            `${character.name}: ${error instanceof Error ? error.message : 'Enhancement failed'}`,
+          )
+        }
       }
 
       return NextResponse.json(
         {
-          message: 'Characters enhanced successfully',
-          enhancementResult,
+          message: 'Character enhancement completed',
+          enhancedCharacters: enhancementResults.length,
+          results: enhancementResults,
+          errors: errors,
+          totalProcessed: characters.docs.length,
         },
         { status: 200 },
       )
     }
 
-    return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
+    if (action === 'validate') {
+      // Validate character consistency
+      const characters = await payload.find({
+        collection: 'characters',
+        where: characterId ? { id: { equals: characterId } } : { project: { equals: projectId } },
+      })
+
+      if (characters.docs.length === 0) {
+        return NextResponse.json({ error: 'No characters found to validate' }, { status: 404 })
+      }
+
+      console.log(`🔍 Validating ${characters.docs.length} character(s) for consistency`)
+
+      const validationResults = []
+      const errors = []
+
+      // Validate each character
+      for (const character of characters.docs) {
+        try {
+          const result = await characterDevelopmentService.validateCharacterConsistency(
+            character.id,
+          )
+
+          if (result.success) {
+            validationResults.push({
+              characterId: character.id,
+              characterName: character.name,
+              qualityMetrics: result.qualityMetrics,
+              recommendations: result.recommendations,
+            })
+          } else {
+            errors.push(`${character.name}: ${result.error}`)
+          }
+        } catch (error) {
+          errors.push(
+            `${character.name}: ${error instanceof Error ? error.message : 'Validation failed'}`,
+          )
+        }
+      }
+
+      return NextResponse.json(
+        {
+          message: 'Character validation completed',
+          validatedCharacters: validationResults.length,
+          results: validationResults,
+          errors: errors,
+          totalProcessed: characters.docs.length,
+        },
+        { status: 200 },
+      )
+    }
+
+    if (action === 'sync') {
+      // Sync characters with Character Library
+      console.log(`🔄 Syncing characters for project ${projectId}`)
+
+      const syncResult = await characterDevelopmentService.syncProjectCharacters(projectId)
+
+      return NextResponse.json(
+        {
+          message: 'Character synchronization completed',
+          syncResult,
+        },
+        { status: 200 },
+      )
+    }
+
+    return NextResponse.json(
+      { error: 'Invalid action. Supported actions: enhance, validate, sync' },
+      { status: 400 },
+    )
   } catch (error) {
     console.error('Error updating characters:', error)
     return NextResponse.json({ error: 'Failed to update characters' }, { status: 500 })

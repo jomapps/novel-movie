@@ -406,6 +406,7 @@ export const Characters: CollectionConfig = {
         { label: 'Not Created', value: 'not_created' },
         { label: 'Creating', value: 'creating' },
         { label: 'Created', value: 'created' },
+        { label: 'Updated', value: 'updated' },
         { label: 'Error', value: 'error' },
       ],
       defaultValue: 'not_created',

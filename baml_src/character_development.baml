@@ -269,6 +269,21 @@ function EnhanceCharacterProfiles(
 
     Focus particularly on the specified enhancement areas while maintaining consistency with the existing character foundation.
 
+    REQUIRED RESPONSE FORMAT:
+    You must return a JSON object with exactly these fields:
+    {
+      "characters": [array of enhanced character objects],
+      "qualityMetrics": {
+        "overallQuality": number (1-100),
+        "characterDepth": number (1-100),
+        "arcConsistency": number (1-100),
+        "relationshipClarity": number (1-100),
+        "dialogueDistinction": number (1-100),
+        "psychologicalRealism": number (1-100)
+      },
+      "generationNotes": "string describing the enhancements made"
+    }
+
     Return enhanced character profiles in the exact JSON format specified by the CharacterDevelopmentResponse class.
   "#
 }
@@ -303,6 +318,17 @@ function ValidateCharacterConsistency(
     6. OVERALL QUALITY (1-100): Composite score of character development quality
 
     Analyze each character against these criteria and provide detailed scoring with justification.
+
+    REQUIRED RESPONSE FORMAT:
+    You must return a JSON object with exactly these fields:
+    {
+      "overallQuality": number (1-100),
+      "characterDepth": number (1-100),
+      "arcConsistency": number (1-100),
+      "relationshipClarity": number (1-100),
+      "dialogueDistinction": number (1-100),
+      "psychologicalRealism": number (1-100)
+    }
 
     Return your assessment in the exact JSON format specified by the CharacterQualityMetrics class.
   "#
