@@ -854,7 +854,7 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                                     <div>
                                       <span className="text-gray-600">Library ID:</span>
                                       <a
-                                        href={`https://character.ft.tc/dashboard/character-profile/${char.characterLibraryId}`}
+                                        href={`https://character.ft.tc/dashboard/character-profile/${char.libraryDbId || char.characterLibraryId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="ml-1 text-blue-600 hover:text-blue-800 underline font-mono text-xs"

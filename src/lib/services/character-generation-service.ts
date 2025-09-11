@@ -286,7 +286,8 @@ export class CharacterGenerationService {
           referenceId: ref.id,
           projectName: ref.projectCharacterName,
           libraryId: ref.libraryCharacterId,
-          characterLibraryId: ref.libraryCharacterId, // For component compatibility
+          characterLibraryId: ref.libraryCharacterId, // For component compatibility (business ID)
+          libraryDbId: ref.libraryDbId, // MongoDB ObjectId for dashboard/API links
           status: ref.generationStatus || 'offline',
           characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
           generatedAt: ref.generationMetadata?.generatedAt,
@@ -302,7 +303,8 @@ export class CharacterGenerationService {
         referenceId: ref.id,
         projectName: ref.projectCharacterName,
         libraryId: ref.libraryCharacterId,
-        characterLibraryId: ref.libraryCharacterId, // For component compatibility
+        characterLibraryId: ref.libraryCharacterId, // For component compatibility (business ID)
+        libraryDbId: ref.libraryDbId, // MongoDB ObjectId for dashboard/API links
         status: ref.generationStatus || 'offline',
         characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
         generatedAt: ref.generationMetadata?.generatedAt,
