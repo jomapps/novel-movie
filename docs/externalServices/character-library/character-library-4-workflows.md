@@ -25,8 +25,12 @@
 
 4. Optional: Initial Image Generation
    POST /api/v1/characters/{id}/generate-initial-image
-   ├── Creates first reference image
-   ├── Updates character record
+   ├── Uses exact user prompt (no modifications)
+   ├── Generates image via Fal.ai nano-banana model
+   ├── Uploads to R2 storage
+   ├── Processes with DINOv3 for feature extraction
+   ├── Assigns unique DINOv3 asset ID
+   ├── Updates character record with master reference
    └── Triggers quality recalculation
 ```
 
@@ -76,6 +80,37 @@
    ├── Context-aware generation
    ├── Mood and lighting adaptation
    └── Scene-specific variations
+```
+
+### Master Reference Reset Workflow
+```
+⚠️ CRITICAL OPERATION: Complete Character Reset
+
+1. Delete Master Reference
+   DELETE /api/v1/characters/{id}/reference-image
+   ├── Removes master reference image
+   ├── Resets processing status
+   └── Clears quality metrics
+
+2. Cascade Reset (Automatic)
+   ├── Core set generation status → false
+   ├── Image gallery → cleared
+   ├── Quality metrics → reset
+   ├── Scene context images → cleared
+   └── Validation history → cleared
+
+3. Character State After Reset
+   ├── Character data preserved (name, bio, etc.)
+   ├── Novel Movie integration preserved
+   ├── Relationships preserved
+   └── All visual content removed
+
+4. Recovery Path
+   Must restart image generation workflow:
+   ├── POST /api/v1/characters/{id}/generate-initial-image
+   ├── PUT /api/v1/characters/{id}/reference-image
+   ├── POST /api/v1/characters/{id}/generate-360-set
+   └── POST /api/v1/characters/{id}/generate-scene-image
 ```
 
 ### Image Quality Workflow
@@ -282,4 +317,397 @@
    ├── Issue identification and flagging
    ├── Suggested resolution actions
    └── Manual review workflows
+```
+
+## 9. ID Consistency & Data Integrity Workflows
+
+### ID Type Management
+```
+1. Character Identification
+   ├── MongoDB ObjectId (id) → Database operations (24-char hex: 68c07c4305803df129909509)
+   ├── Business ID (characterId) → Human-readable references (68bc1741-leo-1757445189931-190445-8a70d8f1-389)
+   ├── External Service IDs → DINOv3, PathRAG, FAL.ai
+   └── Project IDs → Novel Movie integration
+
+2. API Response Consistency
+   All character endpoints return:
+   ├── id: MongoDB ObjectId (for database operations)
+   ├── characterId: Business identifier (for display/search)
+   ├── External service IDs when applicable
+   └── Proper error handling for ID mismatches
+
+3. Service Integration ID Mapping
+   ├── DINOv3: dinoAssetId for media assets
+   ├── PathRAG: characterId (business ID) for knowledge base
+   ├── FAL.ai: Request IDs for image generation
+   └── Novel Movie: projectId for project association
+
+4. UI/API Consistency Rules
+   ├── Character Profile shows both "CharacterID" and "DB ID"
+   ├── API testing forms specify which ID type to use
+   ├── Documentation examples use real MongoDB ObjectId format
+   └── Error messages guide users to correct ID type
+```
+
+### Data Integrity Validation
+```
+1. ID Consistency Checks
+   ├── Validate MongoDB ObjectId format
+   ├── Verify characterId uniqueness
+   ├── Check external service ID mapping
+   └── Ensure relationship ID validity
+
+2. Cascade Validation
+   When master reference deleted:
+   ├── Verify all dependent data cleared
+   ├── Check external service cleanup
+   ├── Validate relationship integrity
+   └── Confirm quality metric reset
+
+3. Recovery Procedures
+   ├── ID mismatch resolution
+   ├── Orphaned reference cleanup
+   ├── Service synchronization repair
+   └── Data consistency restoration
+```
+
+## 8. DINOv3 Integration Workflow
+
+### Image Processing Pipeline
+```
+1. Image Generation Complete
+   ├── Image stored in R2 with public URL
+   ├── Image buffer available for processing
+   └── Character record updated with media reference
+
+2. DINOv3 Upload Process
+   POST https://dino.ft.tc/api/v1/upload-media
+   ├── Download image from R2 public URL
+   ├── Validate image format and integrity
+   ├── Upload to DINOv3 service
+   └── Receive unique asset ID
+
+3. Feature Extraction
+   DINOv3 Processing Pipeline:
+   ├── Image analysis and feature extraction
+   ├── Quality assessment and validation
+   ├── Similarity vector generation
+   └── Asset metadata creation
+
+4. Integration Complete
+   ├── Update media record with DINOv3 asset ID
+   ├── Store DINOv3 media URL (if provided)
+   ├── Enable similarity matching capabilities
+   └── Ready for smart reference selection
+```
+
+### Error Handling & Recovery
+```
+1. Upload Failures
+   ├── Invalid image format detection
+   ├── Corrupted file handling
+   ├── Network timeout recovery
+   └── Retry mechanism with exponential backoff
+
+2. Processing Failures
+   ├── DINOv3 service unavailable
+   ├── Feature extraction errors
+   ├── Asset ID assignment failures
+   └── Graceful degradation to PayloadCMS URLs
+
+3. URL Prioritization System
+   Priority 1: DINOv3 media URL
+   ├── Best performance and features
+   └── Direct access to processed assets
+
+   Priority 2: PayloadCMS URL
+   ├── Reliable fallback option
+   └── Standard media delivery
+
+   Priority 3: Constructed fallback URL
+   ├── Emergency access method
+   └── Ensures image availability
+```
+
+## 9. Prompt Control System Workflow
+
+### Exact Prompt Processing
+```
+1. User Prompt Received
+   ├── Original prompt logged for tracking
+   ├── Style parameter set to 'none' (automatic)
+   └── No modifications applied
+
+2. Image Generation Request
+   POST Fal.ai nano-banana model
+   ├── Exact user prompt sent to AI model
+   ├── No style-based enhancements added
+   ├── No reference sheet formatting applied
+   └── Pure user intent preserved
+
+3. Detailed Logging
+   Console Output:
+   ├── "Original user prompt: [exact text]"
+   ├── "🚫 PROMPT MODIFICATION DISABLED"
+   ├── "🎨 FINAL PROMPT SENT TO FAL.AI: [exact text]"
+   └── Full request parameters logged
+
+4. Quality Assurance
+   ├── Prompt integrity verification
+   ├── Character encoding preservation
+   ├── Special character handling
+   └── Length validation (within model limits)
+```
+
+### Legacy Compatibility
+```
+For other endpoints (non-initial image generation):
+├── Standard prompt enhancement still available
+├── Style-based modifications preserved
+├── Reference sheet formatting maintained
+└── Backward compatibility ensured
+```
+
+## 10. Migration & Upgrade Workflow
+
+### For Existing Users
+```
+Migration Path (No Breaking Changes):
+1. Existing Functionality Preserved
+   ├── All current API endpoints work unchanged
+   ├── Existing prompt enhancement behavior maintained
+   ├── Current image generation workflows continue
+   └── No code changes required
+
+2. Enhanced Features Available
+   ├── Improved error handling and recovery
+   ├── Better DINOv3 integration reliability
+   ├── Enhanced logging for troubleshooting
+   └── Opt-in prompt control features
+
+3. UI Improvements
+   ├── Character Profile shows both ID types clearly
+   ├── API testing forms include helpful guidance
+   ├── Search functionality clarified
+   └── Error messages provide actionable guidance
+```
+
+### For Developers
+```
+Development Workflow Updates:
+1. New Style Option Available
+   ├── Use style: 'none' for unmodified prompts
+   ├── Automatic application for initial image generation
+   ├── Detailed logging for prompt transformation
+   └── Backward compatibility maintained
+
+2. Enhanced Debugging Capabilities
+   ├── Comprehensive request/response logging
+   ├── DINOv3 processing status tracking
+   ├── Step-by-step prompt modification logs
+   └── Rich error context with actionable information
+
+3. DINOv3 Integration Benefits
+   ├── Automatic asset ID management
+   ├── Improved upload success rates (100%)
+   ├── Quality validation and error handling
+   └── Intelligent URL prioritization system
+```
+
+## 11. Future Enhancement Roadmap
+
+### Planned Features
+```
+Short-term (Next Quarter):
+├── Batch image processing with DINOv3
+├── Advanced similarity matching algorithms
+├── Custom prompt enhancement profiles
+└── Real-time processing status updates
+
+Medium-term (6 months):
+├── Enhanced quality metrics integration
+├── DINOv3 processing metrics dashboard
+├── Prompt modification analytics
+└── Image quality trend analysis
+
+Long-term (1 year):
+├── Error rate monitoring and alerting
+├── Advanced workflow automation
+├── Multi-model image generation support
+└── Enhanced relationship visualization
+```
+
+### Monitoring & Observability
+```
+Planned Monitoring Features:
+├── DINOv3 processing metrics dashboard
+├── Prompt modification analytics
+├── Image quality trend analysis
+├── Error rate monitoring and alerting
+├── Performance metrics tracking
+└── User workflow analytics
+```
+
+## 12. Project Data Management Workflow
+
+### Safe Project Cleanup Process
+```
+1. Preview Deletion (Dry Run)
+   ├── GET /api/v1/characters/projects/{projectId}
+   ├── Review characters and media count
+   ├── Verify project scope is correct
+   └── Confirm deletion is intended
+
+2. Execute Deletion
+   ├── DELETE /api/v1/characters/projects/{projectId}
+   ├── Characters deleted from database
+   ├── Media files removed from storage
+   ├── PathRAG entities cleaned up
+   └── Detailed summary provided
+
+3. Verification
+   ├── Check deletion summary for errors
+   ├── Verify character count is zero
+   ├── Confirm media cleanup completed
+   └── Validate PathRAG cleanup success
+```
+
+### Project Cleanup Use Cases
+```
+Development Cleanup:
+├── Remove corrupted test data
+├── Clean up failed experiments
+├── Reset development environment
+└── Remove abandoned prototypes
+
+Production Maintenance:
+├── Archive completed projects
+├── Remove deprecated characters
+├── Clean up unused media assets
+└── Maintain database hygiene
+
+Emergency Recovery:
+├── Remove corrupted project data
+├── Clean up after failed imports
+├── Reset project to known good state
+└── Recover from data corruption
+```
+
+### Safety Features
+```
+Built-in Protections:
+├── Preview mode shows exact deletion scope
+├── Detailed logging of all operations
+├── Error handling with partial success reporting
+├── No cascading deletions beyond project scope
+└── Comprehensive operation summary
+
+Best Practices:
+├── Always preview before deletion
+├── Backup critical projects before cleanup
+├── Use during low-traffic periods
+├── Monitor logs for any errors
+└── Verify results after completion
+```
+
+## 13. Voice & Dialogue Management Workflow
+
+### Character Voice Development Process
+```
+1. Character Creation with Voice Profile
+   ├── Define basic character traits
+   ├── Set narrative role and archetype
+   ├── Establish psychology and character arc
+   └── Create initial voice description
+
+2. Dialogue Voice Profile Setup
+   ├── POST /api/v1/characters/novel-movie
+   ├── Define voice style and characteristics
+   ├── Set speech patterns and vocabulary
+   └── Document voice description details
+
+3. Voice Model Integration
+   ├── Add voice models (ElevenLabs, OpenAI TTS)
+   ├── Set voice IDs for each model
+   ├── Upload voice samples to media collection
+   └── Link samples to voice models
+
+4. Voice Sample Management
+   ├── Upload audio files via media collection
+   ├── Associate samples with voice models
+   ├── Test voice generation with different models
+   └── Refine voice IDs based on results
+```
+
+### Voice Generation Workflow
+```
+Voice Model Setup:
+├── Character created with dialogueVoice profile
+├── Voice models added with model names
+├── Voice IDs configured for each model
+├── Voice samples uploaded and linked
+└── Ready for TTS integration
+
+TTS Integration Process:
+├── Select appropriate voice model
+├── Use voice ID for generation
+├── Apply speech patterns from profile
+├── Generate audio with character voice
+└── Validate against voice samples
+
+Quality Assurance:
+├── Compare generated voice to samples
+├── Verify speech patterns are followed
+├── Check vocabulary consistency
+├── Test different dialogue contexts
+└── Refine voice profile as needed
+```
+
+### Voice Data Structure
+```
+Character Voice Fields:
+├── dialogueVoice (group)
+│   ├── voiceDescription (rich text)
+│   ├── style (text)
+│   ├── patterns (array of speech patterns)
+│   └── vocabulary (textarea)
+├── voiceModels (array)
+│   ├── modelName (ElevenLabs, OpenAI TTS, etc.)
+│   ├── voiceId (model-specific identifier)
+│   └── voiceSample (media relationship)
+└── voiceDescription (legacy field)
+
+Media Collection Support:
+├── Audio file upload capability
+├── Voice sample storage
+├── DINOv3 processing skipped for audio
+├── Direct URL access for playback
+└── Relationship linking to characters
+```
+
+### Voice Workflow Use Cases
+```
+Character Development:
+├── Create consistent character voice
+├── Define speech patterns and style
+├── Document vocabulary preferences
+└── Establish voice evolution arc
+
+Production Workflow:
+├── Generate dialogue audio
+├── Maintain voice consistency
+├── Apply character-specific patterns
+└── Quality check against samples
+
+Voice Model Management:
+├── Test multiple TTS services
+├── Compare voice quality
+├── Switch between voice models
+└── Maintain backup voice options
+
+Audio Asset Management:
+├── Store reference voice samples
+├── Organize by character and model
+├── Version control voice changes
+└── Archive unused voice assets
 ```
