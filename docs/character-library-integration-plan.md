@@ -1,3 +1,176 @@
+# Character Library Integration Plan — Overhauled (September 2025)
+
+## Why this overhaul
+The Character Library app and API have been significantly updated. This plan aligns Novel Movie with the new API surface, ID conventions, data model, and workflows. It replaces or supersedes older sections in this file (kept below as legacy for reference).
+
+## What changed (breaking/critical)
+- API base paths now use /api/v1/characters; replace any older /api/characters usages
+- ID rules are strict:
+  - Use MongoDB ObjectId (24-hex) for all endpoints with {id} in path
+  - Use business characterId for PathRAG, search, and display
+  - Store both fields locally: libraryDbId (ObjectId) and libraryCharacterId (business)
+- Image workflows:
+  - generate-initial-image must use exact user prompt (no modifications); style 'none' is automatic for initial images
+  - generate-360-set replaces generate-core-set
+  - Deleting the master reference via DELETE /reference-image resets ALL derived content (core set, gallery, metrics)
+- DINOv3 integration is automatic; prefer dinoMediaUrl over PayloadCMS media URLs
+
+## Endpoints to use
+- Health: GET /api/health
+- Characters (CRUD):
+  - GET /api/v1/characters
+  - POST /api/v1/characters
+  - GET /api/v1/characters/{id}
+  - PATCH /api/v1/characters/{id}
+  - DELETE /api/v1/characters/{id}
+- Novel Movie integration:
+  - POST /api/v1/characters/novel-movie (create + integrate)
+  - PUT /api/v1/characters/{id}/novel-movie-sync (bidirectional sync)
+  - GET /api/v1/characters/by-project/{projectId}
+- Search & knowledge:
+  - POST /api/v1/characters/search
+  - POST /api/v1/characters/query (PathRAG), GET /api/v1/characters/query (stats)
+- Image generation:
+  - POST /api/v1/characters/{id}/generate-initial-image (exact prompt)
+  - PUT  /api/v1/characters/{id}/reference-image (set master)
+  - GET  /api/v1/characters/{id}/reference-image (get master)
+  - DELETE /api/v1/characters/{id}/reference-image (full reset)
+  - POST /api/v1/characters/{id}/generate-360-set
+  - POST /api/v1/characters/{id}/generate-scene-image
+  - POST /api/v1/characters/{id}/generate-smart-image (smart prompting with reference selection)
+- Relationships:
+  - GET/POST /api/v1/characters/{id}/relationships
+  - GET     /api/v1/characters/relationships/graph
+- Quality & validation:
+  - GET  /api/v1/characters/{id}/quality-metrics
+  - POST /api/v1/characters/{id}/validate-consistency
+  - POST /api/v1/characters/validate-project-consistency
+  - POST /api/v1/characters/batch-validate
+- Project management:
+  - GET    /api/v1/characters/projects/{projectId} (dry-run delete summary)
+  - DELETE /api/v1/characters/projects/{projectId}
+
+## Required local storage (per character)
+- characterLibrary: {
+  - dbId: string  // MongoDB ObjectId returned as id
+  - characterId: string // business CharacterID
+  - lastSyncAt: Date
+  - syncStatus: 'synced' | 'pending' | 'conflict' | 'error'
+}
+
+
+## Authoring-first workflow (local → sync)
+- Complete the full character profile locally in Payload (Characters collection).
+- When ready, trigger sync to Character Library (create if missing, otherwise update).
+- Keep dual IDs locally: `libraryIntegration.libraryDbId` (ObjectId) and `libraryIntegration.libraryCharacterId` (business ID). Maintain legacy `characterLibraryId` for backward compatibility.
+- Separation of concerns:
+  - Local (Novel Movie): authoring, validation, and UI. No external side-effects while editing.
+  - Character Library: single source for distribution-quality character data, image generation, knowledge/PathRAG.
+- Visual asset generation (initial image, 360° set) occurs after a character is created in the library; store verification flags/URLs locally.
+
+
+### Sync strategy: delete and recreate
+- When syncing an already-linked character, we delete the existing Character Library record and create a fresh one from the current local profile.
+- Rationale: ensures the Library is a faithful mirror of the local authoring state and avoids partial/legacy fields lingering.
+- Implementation notes:
+  - Prefer deleting by MongoDB ObjectId stored at `libraryIntegration.libraryDbId`.
+  - If deletion fails, we proceed to create anyway and then update local IDs with the new values.
+  - After (re)create, we persist both IDs locally and mark sync status as `synced`.
+
+### Voice fields (deferred)
+- Voice and dialogue voice fields are not sent to Character Library at this stage.
+- Local fields may exist but will remain empty until the dedicated voice step; the sync payload intentionally omits them for now.
+
+## Complete data population (map ALL Novel Movie character details)
+When creating or syncing a character, always populate all available fields from Novel Movie to Character Library. Use POST /api/v1/characters/novel-movie (create) and PUT /api/v1/characters/{id}/novel-movie-sync (sync).
+
+Minimum request shape (abbreviated) — expand all fields when present:
+
+```ts
+// POST /api/v1/characters/novel-movie
+{
+  novelMovieProjectId: string,
+  projectName: string,
+  characterData: {
+    // Core identity
+    name: string,
+    characterId?: string, // if omitted, service will generate
+    status?: 'draft'|'in_development'|'ready'|'in_production'|'archived',
+
+    // Persona & development
+    biography?: string,
+    personality?: string,
+    motivations?: string,
+    backstory?: string,
+    skills?: Array<{ skill: string; level?: 'beginner'|'intermediate'|'advanced'|'expert'|'master'; description?: string }>,
+    role?: 'protagonist'|'antagonist'|'supporting'|'minor',
+    archetype?: string,
+    psychology?: { motivation?: string; fears?: string; desires?: string; flaws?: string },
+    characterArc?: { startState?: string; transformation?: string; endState?: string },
+
+    // Physical & wardrobe
+    age?: number,
+    height?: string,
+    weight?: string,
+    eyeColor?: string,
+    hairColor?: string,
+    physicalDescription?: string,
+    clothing?: string,
+
+    // Voice & dialogue
+    dialogueVoice?: {
+      voiceDescription?: string,
+      style?: string,
+      patterns?: Array<{ pattern: string }>,
+      vocabulary?: string,
+    },
+    voiceModels?: Array<{ modelName: string; voiceId?: string; voiceSample?: string /* media id */ }>,
+
+    // Relationships (enhanced)
+    enhancedRelationships?: Array<{
+      characterId: string,
+      characterName?: string,
+      relationshipType: string,
+      relationshipDynamic?: string,
+      storyContext?: string,
+      visualCues?: Array<{ cue: string }>,
+      strength?: number,
+      conflictLevel?: number,
+    }>,
+
+    // Scene contexts (optional tracking)
+    sceneContexts?: Array<{
+      sceneId: string,
+      sceneType?: 'dialogue'|'action'|'emotional'|'establishing',
+    }>,
+  },
+  syncSettings?: { autoSync?: boolean; conflictResolution?: 'novel-movie-wins'|'character-library-wins'|'manual'|'merge' }
+}
+```
+
+Notes
+- Prefer sending all present fields on first create; subsequent syncs may be partial but should include changed fields
+- For media/audio references use the media relationship IDs where applicable; image upload/processing is handled by the library (and DINOv3)
+- Keep Novel Movie as the source of truth for persona/voice/relationships; use library for media, validation, and cross-project discovery
+
+## Image generation guidance (must-follow)
+- For initial reference, send the exact user prompt; do not enhance or modify it
+- After initial reference is set, use generate-360-set for the core turnaround set
+- Do not call DELETE /reference-image unless you intentionally want to reset everything
+- Expect DINOv3 processing to run automatically; in responses, prefer dinoMediaUrl/publicUrl when present
+
+## Migration checklist (apply to code and routes referenced in this doc)
+- Replace /api/characters → /api/v1/characters
+- Replace generate-core-set → generate-360-set
+- Ensure all {id} path parameters use MongoDB ObjectId (store the returned id)
+- Store and display both ID types in UI: DB ID (ObjectId) and CharacterID (business)
+- Update client/service methods to include novel-movie and novel-movie-sync endpoints
+- Update any prompt-building for initial image generation to skip enhancements
+
+---
+
+The sections below are legacy (pre-Sep 2025). Follow the updated guidance above when discrepancies exist.
+
 # Character Library Integration Plan
 
 ## 🎯 **Overview**
@@ -85,15 +258,15 @@ export const CHARACTER_LIBRARY_CONFIG = {
   baseUrl: process.env.CHARACTER_LIBRARY_API_URL || 'https://character.ft.tc',
   timeout: parseInt(process.env.CHARACTER_LIBRARY_TIMEOUT || '60000'),
   retryAttempts: parseInt(process.env.CHARACTER_LIBRARY_RETRY_ATTEMPTS || '3'),
-  
+
   // Quality thresholds
   qualityThreshold: 70,
   consistencyThreshold: 85,
-  
+
   // Generation settings
   defaultStyle: 'character_production',
   maxRetries: 5,
-  
+
   // Endpoints
   endpoints: {
     characters: '/api/characters',
@@ -170,7 +343,7 @@ export class CharacterLibraryClient {
   }
 
   async generateSmartImage(
-    characterId: string, 
+    characterId: string,
     request: SmartImageGenerationRequest
   ): Promise<SmartImageGenerationResponse> {
     const endpoint = `/api/characters/${characterId}/generate-smart-image`
@@ -193,7 +366,7 @@ export class CharacterLibraryClient {
 
   private async makeRequest(method: string, endpoint: string, data?: any): Promise<any> {
     const url = `${this.baseUrl}${endpoint}`
-    
+
     for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
       try {
         const response = await fetch(url, {
@@ -212,11 +385,11 @@ export class CharacterLibraryClient {
         return await response.json()
       } catch (error) {
         console.error(`Character Library API attempt ${attempt} failed:`, error)
-        
+
         if (attempt === this.retryAttempts) {
           throw new Error(`Character Library API failed after ${this.retryAttempts} attempts: ${error}`)
         }
-        
+
         // Exponential backoff
         await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000))
       }
@@ -242,11 +415,11 @@ export interface HealthCheckResult {
 
 export async function checkCharacterLibraryHealth(): Promise<HealthCheckResult> {
   const startTime = Date.now()
-  
+
   try {
     // Simple health check - query for any characters
     await characterLibraryClient.queryCharacters('test health check')
-    
+
     return {
       isHealthy: true,
       responseTime: Date.now() - startTime,

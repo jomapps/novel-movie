@@ -76,6 +76,7 @@ export interface Config {
     stories: Story;
     'story-structures': StoryStructure;
     'character-references': CharacterReference;
+    characters: Character;
     'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
@@ -98,6 +99,7 @@ export interface Config {
     stories: StoriesSelect<false> | StoriesSelect<true>;
     'story-structures': StoryStructuresSelect<false> | StoryStructuresSelect<true>;
     'character-references': CharacterReferencesSelect<false> | CharacterReferencesSelect<true>;
+    characters: CharactersSelect<false> | CharactersSelect<true>;
     'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
@@ -1376,6 +1378,10 @@ export interface CharacterReference {
    */
   libraryCharacterId: string;
   /**
+   * MongoDB ObjectId used in Character Library API paths (24 hex chars)
+   */
+  libraryDbId?: string | null;
+  /**
    * Character role in this project
    */
   characterRole?: ('protagonist' | 'antagonist' | 'supporting' | 'minor') | null;
@@ -1383,6 +1389,47 @@ export interface CharacterReference {
    * Character generation and setup status
    */
   generationStatus?: ('pending' | 'generated' | 'images_created' | 'complete' | 'failed') | null;
+  /**
+   * Dialogue voice profile (plain text; synced to Character Library)
+   */
+  dialogueVoice?: {
+    /**
+     * Voice characteristics, accent, speech style
+     */
+    voiceDescription?: string | null;
+    style?: string | null;
+    patterns?:
+      | {
+          pattern: string;
+          id?: string | null;
+        }[]
+      | null;
+    vocabulary?: string | null;
+  };
+  /**
+   * Voice generation models; include optional sample audio from Media
+   */
+  voiceModels?:
+    | {
+        provider?: ('elevenlabs' | 'openai' | 'azure' | 'other') | null;
+        voiceId?: string | null;
+        voiceName?: string | null;
+        /**
+         * Optional sample audio from our Media collection
+         */
+        voiceSample?: (string | null) | Media;
+        isDefault?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Quick verification fields for Character Library assets
+   */
+  libraryAssets?: {
+    masterReferencePublicUrl?: string | null;
+    coreSetGenerated?: boolean | null;
+    coreSetCount?: number | null;
+  };
   /**
    * Character generation tracking information
    */
@@ -1418,6 +1465,122 @@ export interface CharacterReference {
     /**
      * Full BAML response data for character generation
      */
+    bamlData?:
+      | {
+          [k: string]: unknown;
+        }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Local character profiles (authoring-first), then sync to Character Library
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters".
+ */
+export interface Character {
+  id: string;
+  /**
+   * Owning project
+   */
+  project: string | Project;
+  name: string;
+  role?: ('protagonist' | 'antagonist' | 'supporting' | 'minor') | null;
+  archetype?: string | null;
+  characterDevelopment?: {
+    biography?: string | null;
+    personality?: string | null;
+    motivations?: string | null;
+    backstory?: string | null;
+    psychology?: {
+      motivation?: string | null;
+      fears?: string | null;
+      desires?: string | null;
+      flaws?: string | null;
+    };
+  };
+  characterArc?: {
+    startState?: string | null;
+    transformation?: string | null;
+    endState?: string | null;
+  };
+  physicalDescription?: {
+    description?: string | null;
+    age?: number | null;
+    height?: string | null;
+    weight?: string | null;
+    eyeColor?: string | null;
+    hairColor?: string | null;
+    clothing?: string | null;
+  };
+  dialogueVoice?: {
+    voiceDescription?: string | null;
+    style?: string | null;
+    patterns?:
+      | {
+          pattern: string;
+          id?: string | null;
+        }[]
+      | null;
+    vocabulary?: string | null;
+  };
+  /**
+   * Voice generation models; include optional sample audio from Media
+   */
+  voiceModels?:
+    | {
+        provider?: ('elevenlabs' | 'openai' | 'azure' | 'other') | null;
+        voiceId?: string | null;
+        voiceName?: string | null;
+        voiceSample?: (string | null) | Media;
+        isDefault?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  relationships?:
+    | {
+        /**
+         * Other character name or ID
+         */
+        character?: string | null;
+        relationship?: string | null;
+        dynamic?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  libraryIntegration?: {
+    /**
+     * MongoDB ObjectId used in Character Library API paths (24 hex chars)
+     */
+    libraryDbId?: string | null;
+    /**
+     * Business CharacterID in Character Library
+     */
+    libraryCharacterId?: string | null;
+    /**
+     * Legacy single ID (kept for backwards compatibility)
+     */
+    characterLibraryId?: string | null;
+    syncStatus?: ('pending' | 'created' | 'synced' | 'conflict' | 'error') | null;
+    lastSyncAt?: string | null;
+  };
+  libraryAssets?: {
+    masterReferencePublicUrl?: string | null;
+    coreSetGenerated?: boolean | null;
+    coreSetCount?: number | null;
+    lastImageUpdate?: string | null;
+  };
+  generationMetadata?: {
+    generatedAt?: string | null;
+    generationMethod?: string | null;
+    qualityScore?: number | null;
+    completeness?: number | null;
     bamlData?:
       | {
           [k: string]: unknown;
@@ -1830,6 +1993,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'character-references';
         value: string | CharacterReference;
+      } | null)
+    | ({
+        relationTo: 'characters';
+        value: string | Character;
       } | null)
     | ({
         relationTo: 'fundamental-data';
@@ -2298,8 +2465,39 @@ export interface CharacterReferencesSelect<T extends boolean = true> {
   project?: T;
   projectCharacterName?: T;
   libraryCharacterId?: T;
+  libraryDbId?: T;
   characterRole?: T;
   generationStatus?: T;
+  dialogueVoice?:
+    | T
+    | {
+        voiceDescription?: T;
+        style?: T;
+        patterns?:
+          | T
+          | {
+              pattern?: T;
+              id?: T;
+            };
+        vocabulary?: T;
+      };
+  voiceModels?:
+    | T
+    | {
+        provider?: T;
+        voiceId?: T;
+        voiceName?: T;
+        voiceSample?: T;
+        isDefault?: T;
+        id?: T;
+      };
+  libraryAssets?:
+    | T
+    | {
+        masterReferencePublicUrl?: T;
+        coreSetGenerated?: T;
+        coreSetCount?: T;
+      };
   generationMetadata?:
     | T
     | {
@@ -2310,6 +2508,109 @@ export interface CharacterReferencesSelect<T extends boolean = true> {
         qualityScore?: T;
         completeness?: T;
         characterLibraryStatus?: T;
+        bamlData?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters_select".
+ */
+export interface CharactersSelect<T extends boolean = true> {
+  project?: T;
+  name?: T;
+  role?: T;
+  archetype?: T;
+  characterDevelopment?:
+    | T
+    | {
+        biography?: T;
+        personality?: T;
+        motivations?: T;
+        backstory?: T;
+        psychology?:
+          | T
+          | {
+              motivation?: T;
+              fears?: T;
+              desires?: T;
+              flaws?: T;
+            };
+      };
+  characterArc?:
+    | T
+    | {
+        startState?: T;
+        transformation?: T;
+        endState?: T;
+      };
+  physicalDescription?:
+    | T
+    | {
+        description?: T;
+        age?: T;
+        height?: T;
+        weight?: T;
+        eyeColor?: T;
+        hairColor?: T;
+        clothing?: T;
+      };
+  dialogueVoice?:
+    | T
+    | {
+        voiceDescription?: T;
+        style?: T;
+        patterns?:
+          | T
+          | {
+              pattern?: T;
+              id?: T;
+            };
+        vocabulary?: T;
+      };
+  voiceModels?:
+    | T
+    | {
+        provider?: T;
+        voiceId?: T;
+        voiceName?: T;
+        voiceSample?: T;
+        isDefault?: T;
+        id?: T;
+      };
+  relationships?:
+    | T
+    | {
+        character?: T;
+        relationship?: T;
+        dynamic?: T;
+        id?: T;
+      };
+  libraryIntegration?:
+    | T
+    | {
+        libraryDbId?: T;
+        libraryCharacterId?: T;
+        characterLibraryId?: T;
+        syncStatus?: T;
+        lastSyncAt?: T;
+      };
+  libraryAssets?:
+    | T
+    | {
+        masterReferencePublicUrl?: T;
+        coreSetGenerated?: T;
+        coreSetCount?: T;
+        lastImageUpdate?: T;
+      };
+  generationMetadata?:
+    | T
+    | {
+        generatedAt?: T;
+        generationMethod?: T;
+        qualityScore?: T;
+        completeness?: T;
         bamlData?: T;
       };
   updatedAt?: T;

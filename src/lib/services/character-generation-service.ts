@@ -1,9 +1,6 @@
-import { CharacterLibraryClient } from './character-library-client'
 import { getBamlClient } from '@/lib/ai/baml-client'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-
-const characterLibraryClient = new CharacterLibraryClient()
 
 export interface CharacterGenerationResult {
   success: boolean
@@ -31,40 +28,105 @@ export class CharacterGenerationService {
       const characterData = await this.generateCharacterWithBAML(projectData, characterName)
       console.log(`✅ Character data generated for: ${characterName}`)
 
-      // 2. Create character in Character Library
-
-      const libraryResponse = await characterLibraryClient.createNovelMovieCharacter(
-        characterData,
-        projectData,
-      )
-      console.log(`✅ Character created in Character Library: ${libraryResponse.characterId}`)
-
-      // 3. Store character reference in Novel Movie database
+      // 2. Create character LOCALLY (authoring-first). Do NOT touch voice yet.
       const payload = await this.getPayloadInstance()
-      const character = await payload.create({
-        collection: 'character-references',
+      const createdLocal = await payload.create({
+        collection: 'characters',
         data: {
           project: projectId,
-          projectCharacterName: characterName,
-          libraryCharacterId: libraryResponse.characterId,
-          characterRole,
-          generationStatus: 'complete',
+          name: characterName,
+          role: characterRole,
+          archetype: characterData.archetype,
+          characterDevelopment: {
+            biography: characterData.characterDevelopment?.biography,
+            personality: characterData.characterDevelopment?.personality,
+            motivations: characterData.characterDevelopment?.motivations,
+            backstory: characterData.characterDevelopment?.backstory,
+            psychology: characterData.characterDevelopment?.psychology,
+          },
+          characterArc: characterData.characterArc,
+          physicalDescription: characterData.physicalDescription,
+          relationships: characterData.relationships || [],
           generationMetadata: {
             generatedAt: new Date(),
             generationMethod: 'BAML DevelopCharacters',
             qualityScore: characterData.generationMetadata?.qualityScore || 85,
             completeness: characterData.generationMetadata?.completeness || 90,
-            bamlData: characterData, // Store full BAML response for reference
-            characterLibraryStatus: 'created', // Character successfully created in library
+            bamlData: characterData,
           },
         },
       })
-      console.log(`✅ Character reference stored: ${character.id}`)
+      console.log(`✅ Local character stored: ${createdLocal.id}`)
+
+      // 3. Sync to Character Library using delete-and-recreate semantics (service handles it)
+      const syncResult = await (
+        await import('./character-sync-service')
+      ).characterSyncService.syncCharacterToLibrary(createdLocal.id)
+      if (syncResult.success === false) {
+        console.warn('Character Library sync failed:', syncResult.errors?.join('; '))
+      } else {
+        console.log('✅ Character synced to Character Library')
+      }
+
+      // 4. Upsert Character Reference with BAML data so the UI can display full details
+      try {
+        const updatedLocal = await payload.findByID({
+          collection: 'characters',
+          id: createdLocal.id,
+          depth: 0,
+        })
+        const libraryCharacterId =
+          updatedLocal.characterLibraryId || updatedLocal.libraryIntegration?.libraryCharacterId
+        const libraryDbId = updatedLocal.libraryIntegration?.libraryDbId
+
+        if (libraryCharacterId) {
+          // Check if a reference exists for this library character id
+          const existing = await payload.find({
+            collection: 'character-references',
+            where: { libraryCharacterId: { equals: libraryCharacterId } },
+            limit: 1,
+          })
+
+          const refData: any = {
+            project: projectId,
+            projectCharacterName: characterName,
+            libraryCharacterId,
+            libraryDbId,
+            characterRole: characterRole,
+            generationStatus: 'generated',
+            generationMetadata: {
+              generatedAt: new Date(),
+              generationMethod: 'BAML DevelopCharacters',
+              qualityScore: characterData.generationMetadata?.qualityScore || 85,
+              completeness: characterData.generationMetadata?.completeness || 90,
+              characterLibraryStatus: updatedLocal.characterLibraryStatus || 'created',
+              bamlData: characterData,
+            },
+          }
+
+          if (existing.docs.length > 0) {
+            await payload.update({
+              collection: 'character-references',
+              id: existing.docs[0].id,
+              data: refData,
+            })
+          } else {
+            await payload.create({
+              collection: 'character-references',
+              data: refData,
+            })
+          }
+        } else {
+          console.warn('No libraryCharacterId found; skipping character-reference upsert')
+        }
+      } catch (e) {
+        console.warn('Failed to upsert character-reference record:', e)
+      }
 
       return {
         success: true,
-        libraryCharacterId: libraryResponse.characterId,
-        characterReferenceId: character.id,
+        libraryCharacterId: undefined,
+        characterReferenceId: createdLocal.id, // returns local character id for now
         status: 'complete',
       }
     } catch (error) {
@@ -224,7 +286,8 @@ export class CharacterGenerationService {
           referenceId: ref.id,
           projectName: ref.projectCharacterName,
           libraryId: ref.libraryCharacterId,
-          characterLibraryId: ref.libraryCharacterId, // For component compatibility
+          characterLibraryId: ref.libraryCharacterId, // For component compatibility (business ID)
+          libraryDbId: ref.libraryDbId, // MongoDB ObjectId for dashboard/API links
           status: ref.generationStatus || 'offline',
           characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
           generatedAt: ref.generationMetadata?.generatedAt,
@@ -240,7 +303,8 @@ export class CharacterGenerationService {
         referenceId: ref.id,
         projectName: ref.projectCharacterName,
         libraryId: ref.libraryCharacterId,
-        characterLibraryId: ref.libraryCharacterId, // For component compatibility
+        characterLibraryId: ref.libraryCharacterId, // For component compatibility (business ID)
+        libraryDbId: ref.libraryDbId, // MongoDB ObjectId for dashboard/API links
         status: ref.generationStatus || 'offline',
         characterLibraryStatus: ref.generationMetadata?.characterLibraryStatus || 'offline',
         generatedAt: ref.generationMetadata?.generatedAt,

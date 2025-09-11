@@ -154,6 +154,8 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
   const [activeStep, setActiveStep] = useState<string | null>(null)
   const [storyStructure, setStoryStructure] = useState<any>(null)
   const [characters, setCharacters] = useState<any>(null)
+  const [regeneratingId, setRegeneratingId] = useState<string | null>(null)
+
   const [stepStatuses, setStepStatuses] = useState<Record<string, string>>({
     'story-foundation': 'completed',
   })
@@ -255,6 +257,34 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error occurred'}`)
     } finally {
       setActiveStep(null)
+    }
+  }
+
+  const handleRegenerateCharacter = async (referenceId: string) => {
+    try {
+      setRegeneratingId(referenceId)
+      const resp = await fetch(`/v1/characters/${referenceId}/regenerate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!resp.ok) {
+        let msg = 'Failed to regenerate character'
+        try {
+          const err = await resp.json()
+          msg = err.error || msg
+        } catch {}
+        throw new Error(msg)
+      }
+      const refresh = await fetch(`/v1/projects/${project.id}/character-development`)
+      if (refresh.ok) {
+        const data = await refresh.json()
+        setCharacters(data)
+      }
+    } catch (error) {
+      console.error('Regenerate character error:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setRegeneratingId(null)
     }
   }
 
@@ -593,11 +623,33 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                             </div>
                           </div>
                         </div>
-                        <div className="text-right">
-                          <div className="text-sm text-gray-500">Quality Score</div>
-                          <div className="text-lg font-semibold text-gray-900">
-                            {char.generationMetadata?.qualityScore || 'N/A'}/100
+                        <div className="flex items-center space-x-3">
+                          <div className="text-right">
+                            <div className="text-sm text-gray-500">Quality Score</div>
+                            <div className="text-lg font-semibold text-gray-900">
+                              {char.generationMetadata?.qualityScore || 'N/A'}/100
+                            </div>
                           </div>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault()
+                              const refId = char.referenceId || char.characterReferenceId
+                              if (refId) handleRegenerateCharacter(refId)
+                            }}
+                            size="sm"
+                            variant="outline"
+                            className="inline-flex items-center"
+                            disabled={(() => {
+                              const refId = char.referenceId || char.characterReferenceId
+                              return !refId || regeneratingId === refId
+                            })()}
+                          >
+                            <RotateCcw className="w-4 h-4 mr-1" />
+                            {(() => {
+                              const refId = char.referenceId || char.characterReferenceId
+                              return regeneratingId === refId ? 'Regenerating…' : 'Regenerate'
+                            })()}
+                          </Button>
                         </div>
                       </div>
 
@@ -802,7 +854,7 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                                     <div>
                                       <span className="text-gray-600">Library ID:</span>
                                       <a
-                                        href={`https://character.ft.tc/dashboard/character-profile/${char.characterLibraryId}`}
+                                        href={`https://character.ft.tc/dashboard/character-profile/${char.libraryDbId || char.characterLibraryId}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="ml-1 text-blue-600 hover:text-blue-800 underline font-mono text-xs"
