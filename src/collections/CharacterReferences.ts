@@ -48,6 +48,18 @@ export const CharacterReferences: CollectionConfig = {
         description: 'Unique Character Library ID for this character',
       },
     },
+
+    {
+      name: 'libraryDbId',
+      type: 'text',
+      admin: {
+        description: 'MongoDB ObjectId used in Character Library API paths (24 hex chars)',
+      },
+      validate: (val) => {
+        if (!val) return true
+        return /^[a-f0-9]{24}$/.test(val) || 'Must be a 24-character hex ObjectId'
+      },
+    },
     {
       name: 'characterRole',
       type: 'select',
@@ -77,6 +89,66 @@ export const CharacterReferences: CollectionConfig = {
         description: 'Character generation and setup status',
       },
     },
+    {
+      name: 'dialogueVoice',
+      type: 'group',
+      admin: {
+        description: 'Dialogue voice profile (plain text; synced to Character Library)',
+      },
+      fields: [
+        {
+          name: 'voiceDescription',
+          type: 'text',
+          admin: { description: 'Voice characteristics, accent, speech style' },
+        },
+        { name: 'style', type: 'text' },
+        {
+          name: 'patterns',
+          type: 'array',
+          fields: [{ name: 'pattern', type: 'text', required: true }],
+        },
+        { name: 'vocabulary', type: 'textarea' },
+      ],
+    },
+    {
+      name: 'voiceModels',
+      type: 'array',
+      admin: {
+        description: 'Voice generation models; include optional sample audio from Media',
+      },
+      fields: [
+        {
+          name: 'provider',
+          type: 'select',
+          options: [
+            { label: 'ElevenLabs', value: 'elevenlabs' },
+            { label: 'OpenAI', value: 'openai' },
+            { label: 'Azure', value: 'azure' },
+            { label: 'Other', value: 'other' },
+          ],
+        },
+        { name: 'voiceId', type: 'text' },
+        { name: 'voiceName', type: 'text' },
+        {
+          name: 'voiceSample',
+          type: 'relationship',
+          relationTo: 'media',
+          admin: { description: 'Optional sample audio from our Media collection' },
+        },
+        { name: 'isDefault', type: 'checkbox' },
+      ],
+    },
+    {
+      name: 'libraryAssets',
+      type: 'group',
+      admin: { description: 'Quick verification fields for Character Library assets' },
+      fields: [
+        { name: 'masterReferencePublicUrl', type: 'text' },
+        { name: 'coreSetGenerated', type: 'checkbox', defaultValue: false },
+        { name: 'coreSetCount', type: 'number', min: 0 },
+      ],
+    },
+
     {
       name: 'generationMetadata',
       type: 'group',

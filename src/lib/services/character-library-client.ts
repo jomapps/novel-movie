@@ -185,6 +185,12 @@ export class CharacterLibraryClient {
     return this.makeRequest('GET', endpoint)
   }
 
+  // Delete a character by its MongoDB ObjectId in Character Library
+  async deleteCharacter(id: string): Promise<any> {
+    const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.characters + `/${id}`
+    return this.makeRequest('DELETE', endpoint)
+  }
+
   // Update existing Novel Movie character with incremental enhancement
   async updateNovelMovieCharacter(characterId: string, updateData: any): Promise<any> {
     const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.characterSync.replace('{id}', characterId)
@@ -192,90 +198,58 @@ export class CharacterLibraryClient {
   }
 
   private mapToCharacterLibraryFormat(character: any, project?: any): any {
-    // Helper function to convert RichText to Character Library format
-    const convertRichText = (richTextData: any): any => {
-      if (!richTextData)
-        return {
-          root: {
-            children: [
-              {
-                children: [
-                  {
-                    detail: 0,
-                    format: 0,
-                    mode: 'normal',
-                    style: '',
-                    text: '',
-                    type: 'text',
-                    version: 1,
-                  },
-                ],
-                direction: 'ltr',
-                format: '',
-                indent: 0,
-                type: 'paragraph',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            type: 'root',
-            version: 1,
-          },
-        }
+    // Library expects plain-text fields and structured objects; map defensively from local or BAML shapes
+    const dev = character.characterDevelopment || {}
+    const phys = character.physicalDescription || {}
+    const arc = character.characterArc || {}
+    const psych = dev.psychology || character.psychology || {}
 
-      // If it's already a RichText object, return as-is
-      if (richTextData.root) return richTextData
+    const relationships = (character.relationships || []).map((r: any) => ({
+      character: r.character || r.name || '',
+      relationship: r.relationship || r.type || '',
+      dynamic: r.dynamic || r.description || '',
+    }))
 
-      // If it's a string, convert to RichText format
-      if (typeof richTextData === 'string') {
-        return {
-          root: {
-            children: [
-              {
-                children: [
-                  {
-                    detail: 0,
-                    format: 0,
-                    mode: 'normal',
-                    style: '',
-                    text: richTextData,
-                    type: 'text',
-                    version: 1,
-                  },
-                ],
-                direction: 'ltr',
-                format: '',
-                indent: 0,
-                type: 'paragraph',
-                version: 1,
-              },
-            ],
-            direction: 'ltr',
-            format: '',
-            indent: 0,
-            type: 'root',
-            version: 1,
-          },
-        }
-      }
+    // Voice is intentionally omitted for now per user instruction.
 
-      return richTextData
-    }
-
-    // Map to Character Library format
     return {
       name: character.name,
-      characterId: character.characterId || this.generateUniqueCharacterId(character.name, project),
+      characterId:
+        character.characterId ||
+        character.libraryIntegration?.libraryCharacterId ||
+        this.generateUniqueCharacterId(character.name, project),
       status: 'in_development' as const,
-      biography: character.characterDevelopment?.biography || '',
-      personality: character.characterDevelopment?.personality || '',
-      physicalDescription: character.physicalDescription?.description || '',
-      age: character.physicalDescription?.age || null,
-      height: character.physicalDescription?.height || '',
-      eyeColor: character.physicalDescription?.eyeColor || '',
-      hairColor: character.physicalDescription?.hairColor || '',
+      role: character.role || undefined,
+      archetype: character.archetype || undefined,
+
+      // Development
+      biography: dev.biography || '',
+      personality: dev.personality || '',
+      motivations: dev.motivations || '',
+      backstory: dev.backstory || '',
+      psychology: {
+        motivation: psych.motivation || '',
+        fears: psych.fears || '',
+        desires: psych.desires || '',
+        flaws: psych.flaws || '',
+      },
+      characterArc: {
+        startState: arc.startState || '',
+        transformation: arc.transformation || '',
+        endState: arc.endState || '',
+      },
+
+      // Physical
+      physicalDescription: phys.description || '',
+      age: typeof phys.age === 'number' ? phys.age : undefined,
+      height: phys.height || '',
+      weight: phys.weight || '',
+      eyeColor: phys.eyeColor || '',
+      hairColor: phys.hairColor || '',
+      clothing: phys.clothing || '',
+
+      // Relationships
+      enhancedRelationships: relationships,
     }
   }
 
