@@ -48,7 +48,7 @@ export class CharacterGenerationService {
           physicalDescription: characterData.physicalDescription,
           relationships: characterData.relationships || [],
           generationMetadata: {
-            generatedAt: new Date(),
+            generatedAt: new Date().toISOString(),
             generationMethod: 'BAML DevelopCharacters',
             qualityScore: characterData.generationMetadata?.qualityScore || 85,
             completeness: characterData.generationMetadata?.completeness || 90,
@@ -76,8 +76,9 @@ export class CharacterGenerationService {
           depth: 0,
         })
         const libraryCharacterId =
-          updatedLocal.characterLibraryId || updatedLocal.libraryIntegration?.libraryCharacterId
-        const libraryDbId = updatedLocal.libraryIntegration?.libraryDbId
+          (updatedLocal as any).characterLibraryId ||
+          (updatedLocal as any).libraryIntegration?.libraryCharacterId
+        const libraryDbId = (updatedLocal as any).libraryIntegration?.libraryDbId
 
         if (libraryCharacterId) {
           // Check if a reference exists for this library character id
@@ -95,11 +96,11 @@ export class CharacterGenerationService {
             characterRole: characterRole,
             generationStatus: 'generated',
             generationMetadata: {
-              generatedAt: new Date(),
+              generatedAt: new Date().toISOString(),
               generationMethod: 'BAML DevelopCharacters',
               qualityScore: characterData.generationMetadata?.qualityScore || 85,
               completeness: characterData.generationMetadata?.completeness || 90,
-              characterLibraryStatus: updatedLocal.characterLibraryStatus || 'created',
+              characterLibraryStatus: (updatedLocal as any).characterLibraryStatus || 'created',
               bamlData: characterData,
             },
           }
@@ -162,11 +163,11 @@ export class CharacterGenerationService {
         : projectData.movieStyle || 'Cinematic'
 
     const genres = Array.isArray(projectData.initialConcept?.genre)
-      ? projectData.initialConcept.genre.map((g) => (typeof g === 'object' ? g.name : g))
+      ? projectData.initialConcept.genre.map((g: any) => (typeof g === 'object' ? g.name : g))
       : []
 
     const targetAudience = Array.isArray(projectData.initialConcept?.targetAudience)
-      ? projectData.initialConcept.targetAudience.map((ta) =>
+      ? projectData.initialConcept.targetAudience.map((ta: any) =>
           typeof ta === 'object' ? ta.name : ta,
         )
       : []
@@ -186,7 +187,7 @@ export class CharacterGenerationService {
 
     // Extract the specific character from the result
     const targetCharacter = result.characters?.find(
-      (char) => char.name.toLowerCase() === characterName.toLowerCase(),
+      (char: any) => char.name.toLowerCase() === characterName.toLowerCase(),
     )
 
     if (targetCharacter) {
@@ -270,13 +271,13 @@ export class CharacterGenerationService {
     // Return character data in format expected by the screenplay component
     // Filter out incomplete characters and prioritize those with BAML data
     const validCharacters = characterRefs.docs.filter((ref) => {
-      const bamlData = ref.generationMetadata?.bamlData
+      const bamlData: any = (ref as any).generationMetadata?.bamlData
       // Only include characters that have BAML data OR are the only character with that name
       return bamlData && bamlData.name
     })
 
     return validCharacters.map((ref) => {
-      const bamlData = ref.generationMetadata?.bamlData
+      const bamlData: any = (ref as any).generationMetadata?.bamlData
 
       // If we have BAML data, use it directly (it's already in the right format)
       if (bamlData && bamlData.name) {
@@ -345,7 +346,11 @@ export class CharacterGenerationService {
         typeof characterRef.project === 'string' ? characterRef.project : characterRef.project.id,
         characterRef.projectCharacterName,
         project,
-        characterRef.characterRole,
+        (characterRef.characterRole || 'supporting') as
+          | 'protagonist'
+          | 'antagonist'
+          | 'supporting'
+          | 'minor',
       )
     } catch (error) {
       console.error('Character regeneration failed:', error)

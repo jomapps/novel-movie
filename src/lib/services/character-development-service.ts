@@ -67,7 +67,11 @@ export class CharacterDevelopmentService {
     character: Character,
     request: CharacterVisualsRequest,
   ): Promise<CharacterVisualsResponse> {
-    if (!character.characterLibraryId) {
+    const libId =
+      (character as any)?.characterLibraryId ||
+      (character as any)?.libraryIntegration?.characterLibraryId ||
+      (character as any)?.libraryCharacterId
+    if (!libId) {
       return {
         success: false,
         error: 'Character not linked to Character Library',
@@ -81,10 +85,7 @@ export class CharacterDevelopmentService {
         mood: 'neutral',
       }
 
-      const response = await characterLibraryClient.generateSceneSpecificImage(
-        character.characterLibraryId,
-        sceneContext,
-      )
+      const response = await characterLibraryClient.generateSceneSpecificImage(libId, sceneContext)
 
       return {
         success: response.success !== false,
@@ -102,7 +103,11 @@ export class CharacterDevelopmentService {
   }
 
   async generateMasterReference(character: Character): Promise<CharacterVisualsResponse> {
-    if (!character.characterLibraryId) {
+    const libId =
+      (character as any)?.characterLibraryId ||
+      (character as any)?.libraryIntegration?.characterLibraryId ||
+      (character as any)?.libraryCharacterId
+    if (!libId) {
       return {
         success: false,
         error: 'Character not linked to Character Library',
@@ -115,10 +120,7 @@ export class CharacterDevelopmentService {
 
       const masterPrompt = `Professional character reference image: ${physicalDesc}. ${personality}. High quality, clear lighting, neutral background, full body view.`
 
-      const response = await characterLibraryClient.generateInitialImage(
-        character.characterLibraryId,
-        masterPrompt,
-      )
+      const response = await characterLibraryClient.generateInitialImage(libId, masterPrompt)
 
       return {
         success: response.success !== false,
@@ -136,7 +138,11 @@ export class CharacterDevelopmentService {
   }
 
   async generateCoreReferenceSet(character: Character): Promise<CharacterVisualsResponse> {
-    if (!character.characterLibraryId) {
+    const libId =
+      (character as any)?.characterLibraryId ||
+      (character as any)?.libraryIntegration?.characterLibraryId ||
+      (character as any)?.libraryCharacterId
+    if (!libId) {
       return {
         success: false,
         error: 'Character not linked to Character Library',
@@ -144,7 +150,7 @@ export class CharacterDevelopmentService {
     }
 
     try {
-      const response = await characterLibraryClient.generateCoreSet(character.characterLibraryId)
+      const response = await characterLibraryClient.generateCoreSet(libId)
 
       return {
         success: response.success !== false,

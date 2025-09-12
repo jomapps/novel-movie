@@ -4,10 +4,7 @@ import config from '@payload-config'
 import { characterSyncService } from '@/lib/services/character-sync-service'
 import { createCORSPreflightResponse, withCORS } from '@/lib/cors'
 
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     if (!id) {
@@ -32,7 +29,7 @@ export async function POST(
             name: character.name,
             project: character.project,
             libraryIntegration: character.libraryIntegration || null,
-            legacyCharacterLibraryId: character.characterLibraryId || null,
+            legacyCharacterLibraryId: (character as any).characterLibraryId || null,
           }
         : null,
     }
@@ -47,4 +44,3 @@ export async function POST(
 export async function OPTIONS(request: NextRequest) {
   return createCORSPreflightResponse(request)
 }
-

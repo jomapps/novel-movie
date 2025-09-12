@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { Project, Story } from '@/payload-types'
 import Button from '@/components/ui/Button'
+import ConfirmDialog from '@/components/ui/ConfirmDialog'
+
 import {
   BookOpen,
   Target,
@@ -18,6 +20,7 @@ import {
   AlertCircle,
   Clock,
   RotateCcw,
+  Image as ImageIcon,
 } from 'lucide-react'
 
 interface ScreenplayContentProps {
@@ -155,6 +158,15 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
   const [storyStructure, setStoryStructure] = useState<any>(null)
   const [characters, setCharacters] = useState<any>(null)
   const [regeneratingId, setRegeneratingId] = useState<string | null>(null)
+  // Prompt dialog state (used for initial image + scene image)
+  const [promptOpen, setPromptOpen] = useState(false)
+  const [promptTitle, setPromptTitle] = useState('')
+  const [promptText, setPromptText] = useState('')
+  const [promptMode, setPromptMode] = useState<'initial' | 'scene'>('initial')
+  const [promptRefId, setPromptRefId] = useState<string | null>(null)
+  const [promptLoading, setPromptLoading] = useState(false)
+
+  const [generatingImageId, setGeneratingImageId] = useState<string | null>(null)
 
   const [stepStatuses, setStepStatuses] = useState<Record<string, string>>({
     'story-foundation': 'completed',
@@ -285,6 +297,170 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setRegeneratingId(null)
+    }
+  }
+  const handleGenerateCharacterImage = async (referenceId: string, defaultPrompt?: string) => {
+    try {
+      // Allow user to edit or accept default prompt
+      const userPrompt =
+        typeof window !== 'undefined'
+          ? window.prompt('Edit initial image prompt (optional):', defaultPrompt || '')
+          : defaultPrompt || ''
+      if (userPrompt === null) return // Cancelled
+
+      setGeneratingImageId(referenceId)
+      const resp = await fetch(`/v1/characters/${referenceId}/generate-initial-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt: userPrompt || defaultPrompt || '' }),
+      })
+      if (!resp.ok) {
+        let msg = 'Failed to generate image'
+        try {
+          const err = await resp.json()
+          msg = err.error || msg
+        } catch {}
+        throw new Error(msg)
+      }
+      // Refresh characters to reflect any metadata changes
+      const refresh = await fetch(`/v1/projects/${project.id}/character-development`)
+      if (refresh.ok) {
+        const data = await refresh.json()
+        setCharacters(data)
+      }
+    } catch (error) {
+      console.error('Generate image error:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setGeneratingImageId(null)
+    }
+  }
+  const handleGenerate360Set = async (referenceId: string) => {
+    try {
+      setGeneratingImageId(referenceId)
+      const resp = await fetch(`/v1/characters/${referenceId}/generate-360-set`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (!resp.ok) {
+        let msg = 'Failed to generate 360° set'
+        try {
+          const err = await resp.json()
+          msg = err.error || msg
+        } catch {}
+        throw new Error(msg)
+      }
+      const refresh = await fetch(`/v1/projects/${project.id}/character-development`)
+      if (refresh.ok) {
+        const data = await refresh.json()
+        setCharacters(data)
+      }
+    } catch (error) {
+      console.error('Generate 360° set error:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setGeneratingImageId(null)
+    }
+  }
+
+  const handleGenerateSceneImage = async (referenceId: string, defaultPrompt?: string) => {
+    try {
+      const userPrompt =
+        typeof window !== 'undefined'
+          ? window.prompt('Describe the scene (prompt):', defaultPrompt || '')
+          : defaultPrompt || ''
+      if (userPrompt === null || userPrompt.trim() === '') return
+
+      setGeneratingImageId(referenceId)
+      const resp = await fetch(`/v1/characters/${referenceId}/generate-scene-image`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sceneContext: userPrompt }),
+      })
+      if (!resp.ok) {
+        let msg = 'Failed to generate scene image'
+        try {
+          const err = await resp.json()
+          msg = err.error || msg
+        } catch {}
+        throw new Error(msg)
+      }
+      const refresh = await fetch(`/v1/projects/${project.id}/character-development`)
+      if (refresh.ok) {
+        const data = await refresh.json()
+        setCharacters(data)
+      }
+    } catch (error) {
+      console.error('Generate scene image error:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setGeneratingImageId(null)
+    }
+  }
+  // Prompt dialog openers + confirm handler (top-level, reusable)
+  const openInitialPrompt = (referenceId: string, defaultPrompt: string) => {
+    setPromptMode('initial')
+    setPromptTitle('Image generation prompt')
+    setPromptText(defaultPrompt || '')
+    setPromptRefId(referenceId)
+    setPromptOpen(true)
+  }
+
+  const openScenePrompt = (referenceId: string, defaultPrompt: string) => {
+    setPromptMode('scene')
+    setPromptTitle('Scene image prompt')
+    setPromptText(defaultPrompt || '')
+    setPromptRefId(referenceId)
+    setPromptOpen(true)
+  }
+
+  const confirmPrompt = async () => {
+    if (!promptRefId) return
+    try {
+      setPromptLoading(true)
+      setGeneratingImageId(promptRefId)
+      if (promptMode === 'initial') {
+        const resp = await fetch(`/v1/characters/${promptRefId}/generate-initial-image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt: promptText }),
+        })
+        if (!resp.ok) {
+          let msg = 'Failed to generate image'
+          try {
+            const err = await resp.json()
+            msg = err.error || msg
+          } catch {}
+          throw new Error(msg)
+        }
+      } else {
+        const resp = await fetch(`/v1/characters/${promptRefId}/generate-scene-image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sceneContext: promptText }),
+        })
+        if (!resp.ok) {
+          let msg = 'Failed to generate scene image'
+          try {
+            const err = await resp.json()
+            msg = err.error || msg
+          } catch {}
+          throw new Error(msg)
+        }
+      }
+      const refresh = await fetch(`/v1/projects/${project.id}/character-development`)
+      if (refresh.ok) {
+        const data = await refresh.json()
+        setCharacters(data)
+      }
+      setPromptOpen(false)
+    } catch (error) {
+      console.error('Prompt confirm error:', error)
+      alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setPromptLoading(false)
+      setGeneratingImageId(null)
+      setPromptRefId(null)
     }
   }
 
@@ -630,6 +806,25 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
                               {char.generationMetadata?.qualityScore || 'N/A'}/100
                             </div>
                           </div>
+
+                          <a
+                            href={(function () {
+                              const refId =
+                                (char as any).referenceId || (char as any).characterReferenceId
+                              return refId ? `/screenplay/characters/${refId}/images` : '#'
+                            })()}
+                            onClick={(e) => {
+                              const refId =
+                                (char as any).referenceId || (char as any).characterReferenceId
+                              if (!refId) {
+                                e.preventDefault()
+                              }
+                            }}
+                            className="inline-flex items-center text-sm px-3 py-2 border rounded hover:bg-gray-50"
+                          >
+                            Images
+                          </a>
+
                           <Button
                             onClick={(e) => {
                               e.preventDefault()
@@ -942,6 +1137,30 @@ export default function ScreenplayContent({ project, story }: ScreenplayContentP
           status={getStepStatus('final-assembly')}
           isAvailable={isStepAvailable('final-assembly')}
           onExecute={() => handleStepExecution('final-assembly')}
+        />
+        <ConfirmDialog
+          isOpen={promptOpen}
+          onClose={() => setPromptOpen(false)}
+          onConfirm={confirmPrompt}
+          title={promptTitle}
+          message={
+            <div className="mt-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Prompt</label>
+              <textarea
+                value={promptText}
+                onChange={(e) => setPromptText(e.target.value)}
+                rows={10}
+                className="w-full border border-gray-300 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder={
+                  promptMode === 'initial'
+                    ? 'Describe the character reference image...'
+                    : 'Describe the scene...'
+                }
+              />
+            </div>
+          }
+          confirmText={promptMode === 'initial' ? 'Generate image' : 'Generate scene image'}
+          loading={promptLoading}
         />
       </div>
     </div>

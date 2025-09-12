@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { CharacterGenerationService } from '@/lib/services/character-generation-service'
 
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
 
@@ -25,7 +22,7 @@ export async function POST(
       )
     }
 
-    return NextResponse.json({ success: true, ...result })
+    return NextResponse.json(result)
   } catch (error) {
     console.error('❌ Character regeneration failed:', error)
     return NextResponse.json(
@@ -37,4 +34,3 @@ export async function POST(
     )
   }
 }
-

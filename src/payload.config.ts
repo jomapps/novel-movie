@@ -25,6 +25,7 @@ import { ToneOptions } from './collections/ToneOptions'
 import { CentralThemes } from './collections/CentralThemes'
 import { MoodDescriptors } from './collections/MoodDescriptors'
 import { CinematographyStyles } from './collections/CinematographyStyles'
+import { CharacterImageMetadata } from './collections/CharacterImageMetadata'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -48,6 +49,7 @@ export default buildConfig({
     StoryStructures,
     CharacterReferences,
     Characters,
+    CharacterImageMetadata,
     FundamentalData,
     Genres,
     AudienceDemographics,

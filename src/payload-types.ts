@@ -77,6 +77,7 @@ export interface Config {
     'story-structures': StoryStructure;
     'character-references': CharacterReference;
     characters: Character;
+    'character-image-metadata': CharacterImageMetadatum;
     'fundamental-data': FundamentalDatum;
     genres: Genre;
     'audience-demographics': AudienceDemographic;
@@ -100,6 +101,7 @@ export interface Config {
     'story-structures': StoryStructuresSelect<false> | StoryStructuresSelect<true>;
     'character-references': CharacterReferencesSelect<false> | CharacterReferencesSelect<true>;
     characters: CharactersSelect<false> | CharactersSelect<true>;
+    'character-image-metadata': CharacterImageMetadataSelect<false> | CharacterImageMetadataSelect<true>;
     'fundamental-data': FundamentalDataSelect<false> | FundamentalDataSelect<true>;
     genres: GenresSelect<false> | GenresSelect<true>;
     'audience-demographics': AudienceDemographicsSelect<false> | AudienceDemographicsSelect<true>;
@@ -1595,6 +1597,36 @@ export interface Character {
   createdAt: string;
 }
 /**
+ * Pure metadata for character images; binary files live in Media
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "character-image-metadata".
+ */
+export interface CharacterImageMetadatum {
+  id: string;
+  characterReference: string | CharacterReference;
+  media: string | Media;
+  kind: 'reference' | 'portfolioItem' | 'scene';
+  provider?: string | null;
+  prompt?: string | null;
+  sourceUrl?: string | null;
+  externalId?: string | null;
+  status?: ('succeeded' | 'failed') | null;
+  error?: string | null;
+  metrics?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  createdBy?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * Extended story development data including themes, characters, settings, and references
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1997,6 +2029,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'characters';
         value: string | Character;
+      } | null)
+    | ({
+        relationTo: 'character-image-metadata';
+        value: string | CharacterImageMetadatum;
       } | null)
     | ({
         relationTo: 'fundamental-data';
@@ -2613,6 +2649,25 @@ export interface CharactersSelect<T extends boolean = true> {
         completeness?: T;
         bamlData?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "character-image-metadata_select".
+ */
+export interface CharacterImageMetadataSelect<T extends boolean = true> {
+  characterReference?: T;
+  media?: T;
+  kind?: T;
+  provider?: T;
+  prompt?: T;
+  sourceUrl?: T;
+  externalId?: T;
+  status?: T;
+  error?: T;
+  metrics?: T;
+  createdBy?: T;
   updatedAt?: T;
   createdAt?: T;
 }

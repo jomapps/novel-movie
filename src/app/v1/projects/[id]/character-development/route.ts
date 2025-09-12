@@ -45,7 +45,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     if (!characters || characters.length === 0) {
       const bamlClient = await getBamlClient()
 
-      const storyContent = project.storyStructure?.content || project.initialConcept?.premise || ''
+      const storyContent =
+        (project as any)?.storyStructure?.content || (project as any)?.initialConcept?.premise || ''
       const movieFormat =
         typeof project.movieFormat === 'object'
           ? project.movieFormat?.name || 'Short Film'
@@ -54,16 +55,18 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         typeof project.movieStyle === 'object'
           ? project.movieStyle?.name || 'Cinematic'
           : project.movieStyle || 'Cinematic'
-      const genres = Array.isArray(project.initialConcept?.genre)
-        ? project.initialConcept.genre.map((g: any) => (typeof g === 'object' ? g.name : g))
+      const genres = Array.isArray((project as any)?.initialConcept?.genre)
+        ? (project as any).initialConcept.genre.map((g: any) =>
+            typeof g === 'object' ? g.name : g,
+          )
         : []
-      const targetAudience = Array.isArray(project.initialConcept?.targetAudience)
-        ? project.initialConcept.targetAudience.map((ta: any) =>
+      const targetAudience = Array.isArray((project as any)?.initialConcept?.targetAudience)
+        ? (project as any).initialConcept.targetAudience.map((ta: any) =>
             typeof ta === 'object' ? ta.name : ta,
           )
         : []
-      const characterArcs = project.storyStructure?.characterArcs || []
-      const storyBeats = project.storyStructure?.storyBeats || []
+      const characterArcs = (project as any)?.storyStructure?.characterArcs || []
+      const storyBeats = (project as any)?.storyStructure?.storyBeats || []
 
       const devResult = await bamlClient.DevelopCharacters(
         storyContent,

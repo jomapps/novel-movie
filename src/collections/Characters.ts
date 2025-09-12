@@ -143,18 +143,36 @@ export const Characters: CollectionConfig = {
         {
           name: 'libraryDbId',
           type: 'text',
-          admin: { description: 'MongoDB ObjectId used in Character Library API paths (24 hex chars)' },
-          validate: (val) => !val || /^[a-f0-9]{24}$/.test(val) || 'Must be a 24-character hex ObjectId',
+          admin: {
+            description: 'MongoDB ObjectId used in Character Library API paths (24 hex chars)',
+          },
+          validate: (val: unknown) => {
+            if (!val) return true
+            const s = String(val)
+            return /^[a-f0-9]{24}$/.test(s) || 'Must be a 24-character hex ObjectId'
+          },
         },
-        { name: 'libraryCharacterId', type: 'text', admin: { description: 'Business CharacterID in Character Library' } },
-        { name: 'characterLibraryId', type: 'text', admin: { description: 'Legacy single ID (kept for backwards compatibility)' } },
-        { name: 'syncStatus', type: 'select', options: [
-          { label: 'Pending', value: 'pending' },
-          { label: 'Created', value: 'created' },
-          { label: 'Synced', value: 'synced' },
-          { label: 'Conflict', value: 'conflict' },
-          { label: 'Error', value: 'error' },
-        ] },
+        {
+          name: 'libraryCharacterId',
+          type: 'text',
+          admin: { description: 'Business CharacterID in Character Library' },
+        },
+        {
+          name: 'characterLibraryId',
+          type: 'text',
+          admin: { description: 'Legacy single ID (kept for backwards compatibility)' },
+        },
+        {
+          name: 'syncStatus',
+          type: 'select',
+          options: [
+            { label: 'Pending', value: 'pending' },
+            { label: 'Created', value: 'created' },
+            { label: 'Synced', value: 'synced' },
+            { label: 'Conflict', value: 'conflict' },
+            { label: 'Error', value: 'error' },
+          ],
+        },
         { name: 'lastSyncAt', type: 'date' },
       ],
     },
@@ -187,4 +205,3 @@ export const Characters: CollectionConfig = {
 }
 
 export default Characters
-

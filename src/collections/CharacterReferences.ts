@@ -55,9 +55,10 @@ export const CharacterReferences: CollectionConfig = {
       admin: {
         description: 'MongoDB ObjectId used in Character Library API paths (24 hex chars)',
       },
-      validate: (val) => {
+      validate: (val: unknown) => {
         if (!val) return true
-        return /^[a-f0-9]{24}$/.test(val) || 'Must be a 24-character hex ObjectId'
+        const s = String(val)
+        return /^[a-f0-9]{24}$/.test(s) || 'Must be a 24-character hex ObjectId'
       },
     },
     {
