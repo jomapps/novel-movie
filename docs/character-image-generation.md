@@ -209,17 +209,19 @@ E2E (manual runbook)
 - Endpoint: GET `/v1/characters/:id/initial-image-prompt`
 - The prompt is solely for the master reference image and includes the required framing details:
   "chest-to-mid-thigh crop, equal headroom, characters pinned to left/right thirds, inter-subject gap ≈ 7% of frame width, matched eye level, 35mm lens."
-- Users can edit before generating and can click "AI Suggest Prompt" to regenerate
+- Users can edit before generating and can click "Reset Prompt" to restore the latest server-suggested template
 
 ## Photorealistic Prompt Template (Default)
-- Emphasize authentic human photography: natural skin texture, subsurface scattering, micro-expressions
-- Camera and lens details: 35mm perspective, f/4 aperture, ISO, shutter speed
-- Composition guidance: chest-to-mid-thigh crop, equal headroom, thirds positioning, matched eye level
-- Cinematic realism language and explicit NOT-phrases (not CGI, not 3D, not illustration)
-- Avoid wrapping the final prompt in quotes
+- Authentic human photography: natural skin texture, subsurface scattering, micro-expressions
+- Camera and lens: 35mm lens, f/4, ISO 200, 1/250s
+- Composition: chest-to-mid-thigh crop, equal headroom, thirds positioning, matched eye level, slightly low angle
+- Background and look: neutral seamless studio background; high dynamic range; crisp focus; accurate skin tones
+- Realism emphasis: authentic skin texture with visible pores and subtle imperfections; realistic eye moisture and reflections; magazine-quality photorealism
+- Explicit NOT-phrases: NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley
+- Constraints: DO NOT wrap in quotes; DO NOT mention any other objects, locations, actions, or props; focus solely on the character; no text or watermarks
 
 Example base template with placeholders:
-<Name>, <age> <ethnicity> <gender>, cinematic hero shot, slightly low angle, 35mm lens, f/4, ISO 200, 1/250s, natural lighting, dramatic shadows, authentic skin texture with visible pores and subtle imperfections, realistic eye moisture and reflections, magazine-quality photorealism. NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley.
+<Name>, <age> <ethnicity> <gender>, cinematic hero shot, slightly low angle, 35mm lens, f/4, ISO 200, 1/250s, natural lighting, dramatic shadows, neutral seamless studio background, high dynamic range, crisp focus, accurate skin tones, authentic skin texture with visible pores and subtle imperfections, realistic eye moisture and reflections, magazine-quality photorealism. NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley. Focus solely on the character; no other objects, locations, actions, or props; no text or watermarks.
 
 ## Route Location
 - Use the SITE_URL environment variable; do not hardcode localhost

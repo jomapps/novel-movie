@@ -24,23 +24,22 @@ export function buildReferenceImagePromptFromRef(characterRef: any): string {
   ])
 
   const personality = baml?.characterDevelopment?.personality || ''
-  const eraOrSetting = safeJoin([
-    baml?.context?.era,
-    baml?.context?.setting,
-    baml?.context?.locale,
-  ])
+  const eraOrSetting = safeJoin([baml?.context?.era, baml?.context?.setting, baml?.context?.locale])
 
   // Cinematography / style hints if present from seeded values
   const cinematography = toName(baml?.production?.cinematographyStyle) || ''
   const colorStyle = baml?.production?.colorPalette || ''
-  const lighting = baml?.production?.lighting || 'soft, even three‑point lighting'
+  const lighting = baml?.production?.lighting || 'natural lighting, dramatic shadows'
 
   const framing =
-    'chest-to-mid-thigh crop, equal headroom, characters pinned to left/right thirds, inter-subject gap ≈ 7% of frame width, matched eye level, 35mm lens.'
+    'chest-to-mid-thigh crop, equal headroom, thirds positioning, matched eye level, slightly low angle'
+
+  const camera = '35mm lens, f/4 aperture, ISO 200, 1/250s'
 
   const core = [
     `Ultra-detailed, photorealistic studio reference of ${name}`,
     physical && `(${physical})`,
+    'cinematic hero shot',
     attire && `wardrobe: ${attire}`,
     personality && `personality cues: ${personality}`,
     eraOrSetting && `context: ${eraOrSetting}`,
@@ -53,13 +52,21 @@ export function buildReferenceImagePromptFromRef(characterRef: any): string {
     colorStyle && `color: ${colorStyle}`,
     lighting && `lighting: ${lighting}`,
     'neutral seamless studio background',
-    'high dynamic range, crisp focus, accurate skin tones, no text or watermarks',
+    'high dynamic range, crisp focus, accurate skin tones',
+    'authentic skin texture with visible pores and subtle imperfections',
+    'realistic eye moisture and reflections',
+    'magazine-quality photorealism',
   ]
     .filter(Boolean)
     .join('; ')
 
-  // Final prompt with strict framing instruction appended
-  const finalPrompt = `${core}. ${look}. Shot details: ${framing}`.trim()
+  const notPhrases = 'NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley'
+  const constraints =
+    'Focus solely on the character; no other objects, locations, actions, or props; no text or watermarks'
+
+  // Final prompt aligned with Photorealistic Prompt Template
+  const finalPrompt =
+    `${core}. ${look}. Camera: ${camera}. Composition: ${framing}. ${notPhrases}. ${constraints}`.trim()
 
   return finalPrompt
 }
@@ -78,4 +85,3 @@ function toName(val: any): string | undefined {
   if (typeof val === 'object') return val.name || val.title || undefined
   return undefined
 }
-

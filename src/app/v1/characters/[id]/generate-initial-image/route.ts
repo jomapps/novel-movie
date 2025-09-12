@@ -3,6 +3,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { characterLibraryClient } from '@/lib/services/character-library-client'
 import { CHARACTER_LIBRARY_CONFIG } from '@/lib/config/character-library'
+import { buildReferenceImagePromptFromRef } from '@/lib/prompts/character-reference-image'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -110,16 +111,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       clientPrompt = body?.prompt
     } catch {}
 
-    // Build a sensible prompt from BAML data when available (fallback)
-    const bamlData: any = (characterRef as any)?.generationMetadata?.bamlData || {}
-    const physical: string = bamlData?.physicalDescription?.description || ''
-    const personality: string = bamlData?.characterDevelopment?.personality || ''
-
-    const promptBase = `Professional character reference image: ${physical}. ${personality}. High quality, clear lighting, neutral background, full body view.`
-    const fallbackPrompt =
-      promptBase.trim().length > 0
-        ? promptBase
-        : `Professional character reference image for ${characterRef.projectCharacterName}. High quality, clear lighting, neutral background, full body view.`
+    // Build prompt using Photorealistic Prompt Template (fallback)
+    const fallbackPrompt = buildReferenceImagePromptFromRef(characterRef as any)
 
     const finalPrompt =
       clientPrompt && clientPrompt.trim().length > 0 ? clientPrompt : fallbackPrompt
