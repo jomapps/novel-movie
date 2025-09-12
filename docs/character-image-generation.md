@@ -46,13 +46,30 @@ We follow the "media for files + metadata for semantics" pattern.
 - createdBy: relationship to users (optional)
 - timestamps: createdAt, updatedAt
 
+## ID Requirements & Preconditions
+- Character Library requires MongoDB ObjectId for all `/api/v1/characters/{id}/*` endpoints
+- We store this ID as `libraryDbId` on Character References
+- Business `libraryCharacterId` is NOT used for path params to Character Library
+- Preconditions for generation: the Character Reference must have a valid 24‑hex `libraryDbId`; if missing, our API returns 400 instructing to link/sync first
+
+## Retry Policy (Generation)
+- Generation endpoints are single‑attempt only; on 5xx we surface the error and do not retry
+- Non‑generation Character Library calls can keep default retry behavior
+
+## Prompt Behavior
+- The exact prompt typed/accepted by the user is forwarded as‑is to Character Library (no modifications)
+- We persist the exact prompt used in `character-image-metadata`
+
 ## API Design (custom APIs must live under /v1)
 All server calls must run on the server (no secrets in client). No webhooks. Portfolio is synchronous.
 
 - POST `/v1/characters/:id/generate-initial-image`
+  - Path `:id` = Character Reference ID (we resolve `libraryDbId` internally for the Character Library call)
   - Body: `{ prompt?: string }`
-  - Calls Character Library to generate a master reference; on success downloads `publicUrl`, uploads to Media, creates `character-image-metadata` with kind=`reference`
-  - On HTTP 500 from Character Library: surface error; do not create records; do not retry
+  - Server resolves `libraryDbId`; if missing/invalid, returns 400 with guidance
+  - Calls Character Library `/api/v1/characters/{libraryDbId}/generate-initial-image` with the exact prompt
+  - On success: download `publicUrl` (fallback: `imageUrl`), upload to Media, create `character-image-metadata` with kind = `reference`
+  - On HTTP 500 from Character Library: surface error; no records created; no retries
 
 - POST `/v1/characters/:id/generate-360-set`
   - Calls Character Library to generate a full 360° set; returns all at once

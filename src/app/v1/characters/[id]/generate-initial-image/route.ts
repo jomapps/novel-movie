@@ -30,9 +30,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       )
     }
 
-    if (!characterRef.libraryCharacterId) {
+    const libraryDbId: string | undefined =
+      (characterRef as any).libraryDbId || (characterRef as any).libraryIntegration?.libraryDbId
+
+    if (!libraryDbId || !/^[a-f0-9]{24}$/.test(libraryDbId)) {
       return NextResponse.json(
-        { success: false, error: 'Character not linked to Character Library' },
+        {
+          success: false,
+          error:
+            'Character Library DB ID is missing or invalid. Link/sync this character so a 24‑char MongoDB ObjectId (libraryDbId) is stored before generating images.',
+        },
         { status: 400 },
       )
     }
@@ -59,10 +66,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       clientPrompt && clientPrompt.trim().length > 0 ? clientPrompt : fallbackPrompt
 
     // Call Character Library to generate initial/master reference image
-    const response = await characterLibraryClient.generateInitialImage(
-      characterRef.libraryCharacterId,
-      finalPrompt,
-    )
+    const response = await characterLibraryClient.generateInitialImage(libraryDbId, finalPrompt)
 
     // Ingest generated image into Media and create metadata record
     try {

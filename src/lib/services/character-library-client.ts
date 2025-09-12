@@ -308,7 +308,11 @@ export class CharacterLibraryClient {
   private async makeRequest(method: string, endpoint: string, data?: any): Promise<any> {
     const url = `${this.baseUrl}${endpoint}`
 
-    for (let attempt = 1; attempt <= this.retryAttempts; attempt++) {
+    const isGenerationEndpoint =
+      /\/generate-(initial-image|scene-image|core-set|360-set|smart-image)/.test(endpoint)
+    const maxAttempts = isGenerationEndpoint ? 1 : this.retryAttempts
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         const response = await fetch(url, {
           method,
@@ -334,10 +338,8 @@ export class CharacterLibraryClient {
       } catch (error) {
         console.error(`Character Library API attempt ${attempt} failed:`, error)
 
-        if (attempt === this.retryAttempts) {
-          throw new Error(
-            `Character Library API failed after ${this.retryAttempts} attempts: ${error}`,
-          )
+        if (attempt === maxAttempts) {
+          throw new Error(`Character Library API failed after ${maxAttempts} attempts: ${error}`)
         }
 
         // Exponential backoff
