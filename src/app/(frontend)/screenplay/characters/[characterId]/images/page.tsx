@@ -25,7 +25,22 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
 
   React.useEffect(() => {
     load()
-  }, [load])
+    // Pre-fill editable prompt from AI using existing character data
+    const fetchPrompt = async () => {
+      try {
+        const res = await fetch(`/v1/characters/${characterRefId}/initial-image-prompt`, {
+          cache: 'no-store',
+        })
+        const data = await res.json()
+        if (data?.success && typeof data.prompt === 'string' && !prompt.trim()) {
+          setPrompt(data.prompt)
+        }
+      } catch (e) {
+        console.warn('Failed to fetch AI prompt', e)
+      }
+    }
+    fetchPrompt()
+  }, [load, characterRefId])
 
   const generateReference = async () => {
     setGenerating('ref')
@@ -92,13 +107,33 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
           />
-          <button
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
-            disabled={generating === 'ref'}
-            onClick={generateReference}
-          >
-            {generating === 'ref' ? 'Generating…' : 'Generate Reference'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+              disabled={generating === 'ref'}
+              onClick={generateReference}
+            >
+              {generating === 'ref' ? 'Generating…' : 'Generate Reference'}
+            </button>
+            <button
+              className="px-3 py-2 border rounded text-sm"
+              disabled={generating === 'ref'}
+              title="Use AI to suggest a high-quality prompt from character data"
+              onClick={async () => {
+                try {
+                  const res = await fetch(`/v1/characters/${characterRefId}/initial-image-prompt`, {
+                    cache: 'no-store',
+                  })
+                  const data = await res.json()
+                  if (data?.success && typeof data.prompt === 'string') setPrompt(data.prompt)
+                } catch (e) {
+                  console.warn('Failed to refresh AI prompt', e)
+                }
+              }}
+            >
+              AI Suggest Prompt
+            </button>
+          </div>
         </div>
 
         <div className="border rounded p-4">

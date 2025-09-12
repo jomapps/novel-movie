@@ -69,11 +69,17 @@ All server calls must run on the server (no secrets in client). No webhooks. Por
   - Deletes local Media and metadata
   - If provider=`character-library` and kind=`reference`, also sends DELETE to Character Library `/api/v1/characters/{libraryDbId}/reference-image` once (no retries)
 
+- GET `/v1/characters/:id/initial-image-prompt`
+  - Returns `{ success: boolean, prompt: string }` built solely from existing character data (no new values)
+  - Used to pre-fill the editable prompt in the Reference panel
+
+
 Security: enforce standard session/auth checks; no special access restriction beyond normal project access.
 
 ## Prompt UX
-- Primary flow: "Generate with BAML" pre-fills an editable prompt; user can tweak before running
-- Alternate flow: "Write your own prompt" from scratch
+- On page load: auto-filled AI prompt assembled from existing character data (no new values), editable
+- Button: "AI Suggest Prompt" regenerates the suggestion; never overwrites while user is typing
+- Also supports fully manual prompts
 - Store the exact prompt used in metadata; avoid quotes in generated content
 
 ## Image Ingestion Flow
@@ -86,8 +92,8 @@ Security: enforce standard session/auth checks; no special access restriction be
 - Page: `app/screenplay/characters/[characterId]/images/page.tsx`
   - Header: Back button, character name/ID
   - Section: Reference Generation Panel
-    - Buttons: Generate with BAML (fills prompt), Manual Prompt
-    - Editor: Textarea for final prompt + Generate
+    - Auto-filled AI Prompt (editable)
+    - Actions: Generate Reference, AI Suggest Prompt (regenerate)
   - Section: Portfolio Generation Panel
     - Select a reference image (radio/card) + Start Portfolio
   - Section: Image Grid
@@ -110,6 +116,8 @@ Frontend
 - [x] 360° set generation button
 - [x] ImageGrid (thumbnails + delete)
 - [x] Character Detail toolbar: remove inline image generation buttons; add "Images" link
+- [x] Auto-fill editable AI prompt via GET /v1/characters/:id/initial-image-prompt; "AI Suggest Prompt" button
+
 
 Docs/Ops/Telemetry
 - [ ] Update docs/externalServices/character-library usage and expectations
@@ -157,5 +165,11 @@ E2E (manual runbook)
 10) Path `/screenplay/characters/[characterId]/images` is accepted
 
 
+## Reference Prompt Requirements (Implemented)
+- The Reference panel now auto-fills a high-quality prompt built from existing character data (BAML-generated fields where available)
+- Endpoint: GET `/v1/characters/:id/initial-image-prompt`
+- The prompt is solely for the master reference image and includes the required framing details:
+  "chest-to-mid-thigh crop, equal headroom, characters pinned to left/right thirds, inter-subject gap ≈ 7% of frame width, matched eye level, 35mm lens."
+- Users can edit before generating and can click "AI Suggest Prompt" to regenerate
 
 
