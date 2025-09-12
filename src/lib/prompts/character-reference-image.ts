@@ -29,7 +29,13 @@ export function buildReferenceImagePromptFromRef(characterRef: any): string {
   // Cinematography / style hints if present from seeded values
   const cinematography = toName(baml?.production?.cinematographyStyle) || ''
   const colorStyle = baml?.production?.colorPalette || ''
-  const lighting = baml?.production?.lighting || 'natural lighting, dramatic shadows'
+  const lighting = baml?.production?.lighting || 'natural lighting'
+  // v1.2: sanitize lighting to avoid unwanted shadow phrasing
+  const sanitizedLighting = (lighting || '')
+    .replace(/\bdramatic shadows\b/gi, '')
+    .replace(/\bdark shadows\b/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
 
   const framing =
     'chest-to-mid-thigh crop, equal headroom, thirds positioning, matched eye level, slightly low angle'
@@ -50,7 +56,7 @@ export function buildReferenceImagePromptFromRef(characterRef: any): string {
   const look = [
     cinematography && `cinematography: ${cinematography}`,
     colorStyle && `color: ${colorStyle}`,
-    lighting && `lighting: ${lighting}`,
+    sanitizedLighting && `lighting: ${sanitizedLighting}`,
     'neutral seamless studio background',
     'high dynamic range, crisp focus, accurate skin tones',
     'authentic skin texture with visible pores and subtle imperfections',

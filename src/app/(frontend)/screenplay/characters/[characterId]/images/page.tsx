@@ -198,7 +198,7 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
               Reset Prompt
             </button>
             <span className="ml-2 inline-flex items-center rounded border px-2 py-0.5 text-xs text-gray-700 bg-gray-50">
-              Template v1.1
+              Template v1.2
             </span>
             <a
               className="text-xs text-blue-600 underline ml-2"

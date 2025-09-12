@@ -237,6 +237,8 @@ Example base template with placeholders:
 - Example: ${SITE_URL}/screenplay/characters/68c3293162d9ca1841358f09/images
 
 ## Prompt Controls Update
+- 2025-09-12: Template v1.2 — removed any "dramatic/dark shadows" phrasing from defaults; sanitized lighting in prompt builder; updated UI chip to v1.2.
+
 - Remove the "AI Suggest Prompt" button
 - Add "Reset Prompt" which restores the prompt to the latest auto-filled server suggestion
 
