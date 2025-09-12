@@ -229,7 +229,7 @@ E2E (manual runbook)
 - Constraints: DO NOT wrap in quotes; DO NOT mention any other objects, locations, actions, or props; focus solely on the character; no text or watermarks
 
 Example base template with placeholders:
-<Name>, <age> <ethnicity> <gender>, cinematic hero shot, slightly low angle, 35mm lens, f/4, ISO 200, 1/250s, natural lighting, dramatic shadows, neutral seamless studio background, high dynamic range, crisp focus, accurate skin tones, authentic skin texture with visible pores and subtle imperfections, realistic eye moisture and reflections, magazine-quality photorealism. NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley. Focus solely on the character; no other objects, locations, actions, or props; no text or watermarks.
+<Name>, <age> <ethnicity> <gender>, cinematic hero shot, slightly low angle, 35mm lens, f/4, ISO 200, 1/250s, natural lighting, neutral seamless studio background, high dynamic range, crisp focus, accurate skin tones, authentic skin texture with visible pores and subtle imperfections, realistic eye moisture and reflections, magazine-quality photorealism. NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley. Focus solely on the character; no other objects, locations, actions, or props; no text or watermarks.
 
 ## Route Location
 - Use the SITE_URL environment variable; do not hardcode localhost
