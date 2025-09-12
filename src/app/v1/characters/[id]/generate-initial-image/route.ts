@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { characterLibraryClient } from '@/lib/services/character-library-client'
+import { CHARACTER_LIBRARY_CONFIG } from '@/lib/config/character-library'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -42,6 +43,64 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         },
         { status: 400 },
       )
+    }
+
+    // Pre-cleanup: auto-delete all existing images for this character
+    try {
+      // 1) Remote delete of master reference if one exists
+      const existingImages = await payload.find({
+        collection: 'character-image-metadata',
+        where: { characterReference: { equals: characterRef.id } },
+        depth: 0,
+        limit: 200,
+      })
+
+      const hasReference = existingImages?.docs?.some((d: any) => d?.kind === 'reference')
+      if (hasReference) {
+        try {
+          const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.referenceImage.replace(
+            '{id}',
+            libraryDbId,
+          )
+          const url = `${CHARACTER_LIBRARY_CONFIG.baseUrl}${endpoint}`
+          const res = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(CHARACTER_LIBRARY_CONFIG.timeout),
+          })
+          if (!res.ok) {
+            const text = await res.text().catch(() => '')
+            console.error(
+              'Character Library reference deletion failed:',
+              res.status,
+              res.statusText,
+              text,
+            )
+          }
+        } catch (err) {
+          console.error('Character Library reference deletion failed (pre-cleanup):', err)
+        }
+      }
+
+      // 2) Local delete of all media + metadata
+      for (const meta of existingImages?.docs || []) {
+        try {
+          const mediaRel = (meta as any).media
+          const mediaId = typeof mediaRel === 'string' ? mediaRel : mediaRel?.id
+          if (mediaId) {
+            try {
+              await payload.delete({ collection: 'media', id: mediaId })
+            } catch (err) {
+              console.error('Failed deleting media record during pre-cleanup:', err)
+            }
+          }
+          await payload.delete({ collection: 'character-image-metadata', id: (meta as any).id })
+        } catch (err) {
+          console.error('Failed deleting image metadata during pre-cleanup:', err)
+        }
+      }
+    } catch (cleanupErr) {
+      console.warn('Pre-cleanup warning: failed to auto-delete previous images:', cleanupErr)
     }
 
     // Optionally accept prompt override from client

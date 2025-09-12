@@ -9,13 +9,27 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
   const [loading, setLoading] = React.useState(false)
   const [prompt, setPrompt] = React.useState('')
   const [generating, setGenerating] = React.useState<'ref' | 'set' | null>(null)
+  const [character, setCharacter] = React.useState<{
+    id?: string
+    name?: string
+    libraryDbId?: string | null
+    libraryCharacterId?: string | null
+    libraryAssets?: {
+      masterReferencePublicUrl?: string | null
+      coreSetGenerated?: boolean
+      coreSetCount?: number
+    }
+  } | null>(null)
 
   const load = React.useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(`/v1/characters/${characterRefId}/images`, { cache: 'no-store' })
       const data = await res.json()
-      if (data?.success) setImages(data.images || [])
+      if (data?.success) {
+        setImages(data.images || [])
+        if (data.character) setCharacter(data.character)
+      }
     } catch (e) {
       console.error('Failed to load images', e)
     } finally {
@@ -93,9 +107,59 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
     }
   }
 
+  const latestReference = React.useMemo(() => {
+    return images.find((img) => img?.kind === 'reference')
+  }, [images])
+
+  const latestReferenceUrl = React.useMemo(() => {
+    if (!latestReference) return undefined
+    const media = latestReference.media
+    return typeof media === 'object' ? media?.url || media?.sizes?.card?.url : undefined
+  }, [latestReference])
+
   return (
     <div className="container mx-auto px-4 py-6">
-      <h1 className="text-2xl font-semibold mb-4">Character Images</h1>
+      <div className="mb-4">
+        <h1 className="text-2xl font-semibold">Character Images</h1>
+        <div className="mt-1 text-sm text-gray-700 flex flex-wrap items-center gap-3">
+          {character?.name ? <span className="font-medium">{character.name}</span> : null}
+          {character?.libraryDbId ? (
+            <a
+              className="text-blue-600 underline"
+              href={`https://character.ft.tc/dashboard/character-profile/${character.libraryDbId}`}
+              target="_blank"
+              rel="noreferrer noopener"
+              title="Open in Character Library dashboard"
+            >
+              libraryDbId: <code>{character.libraryDbId}</code>
+            </a>
+          ) : (
+            <span>
+              libraryDbId: <code>n/a</code>
+            </span>
+          )}
+          <span>
+            libraryCharacterId: <code>{character?.libraryCharacterId || 'n/a'}</code>
+          </span>
+        </div>
+      </div>
+
+      {/* Latest Generated Reference (blank if not yet generated) */}
+      <div className="mb-6">
+        <h2 className="font-medium mb-2">Latest Generated Reference</h2>
+        {latestReferenceUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={latestReferenceUrl}
+            alt="latest reference"
+            className="w-full max-w-md h-auto rounded border"
+          />
+        ) : (
+          <div className="w-full max-w-md h-40 bg-gray-50 border rounded flex items-center justify-center text-sm text-gray-500">
+            Not generated yet
+          </div>
+        )}
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="border rounded p-4">
@@ -118,7 +182,7 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
             <button
               className="px-3 py-2 border rounded text-sm"
               disabled={generating === 'ref'}
-              title="Use AI to suggest a high-quality prompt from character data"
+              title="Reset prompt to the server-suggested value"
               onClick={async () => {
                 try {
                   const res = await fetch(`/v1/characters/${characterRefId}/initial-image-prompt`, {
@@ -127,11 +191,11 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
                   const data = await res.json()
                   if (data?.success && typeof data.prompt === 'string') setPrompt(data.prompt)
                 } catch (e) {
-                  console.warn('Failed to refresh AI prompt', e)
+                  console.warn('Failed to reset prompt', e)
                 }
               }}
             >
-              AI Suggest Prompt
+              Reset Prompt
             </button>
           </div>
         </div>
@@ -159,7 +223,23 @@ function ImagesClient({ characterRefId }: { characterRefId: string }) {
           </button>
         </div>
         {images.length === 0 ? (
-          <div className="text-sm text-gray-600">No images yet.</div>
+          <div>
+            {character?.libraryAssets?.masterReferencePublicUrl ? (
+              <div className="mb-3">
+                <div className="text-sm text-gray-700 mb-1">
+                  External master reference (not yet ingested)
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={character.libraryAssets.masterReferencePublicUrl}
+                  alt="master reference"
+                  className="w-full max-w-md h-auto rounded border"
+                />
+              </div>
+            ) : (
+              <div className="text-sm text-gray-600">No images yet.</div>
+            )}
+          </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {images.map((img) => {

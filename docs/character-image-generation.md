@@ -23,6 +23,7 @@ Rationale: We need a full workspace because we will generate and manage many ima
 - [ ] Grid: thumbnails, prompt, kind (reference/portfolio), createdAt, status, actions
 - [ ] Delete image: removes local record/media and also remote asset (when supported)
 - [ ] Persist the exact prompt used for each image
+- [ ] Auto-delete previous images on new reference generation (local cleanup + remote reference delete)
 
 ## Data Model
 We follow the "media for files + metadata for semantics" pattern.
@@ -67,8 +68,9 @@ All server calls must run on the server (no secrets in client). No webhooks. Por
   - Path `:id` = Character Reference ID (we resolve `libraryDbId` internally for the Character Library call)
   - Body: `{ prompt?: string }`
   - Server resolves `libraryDbId`; if missing/invalid, returns 400 with guidance
+  - Before generating: delete ALL existing images for this character (local metadata + Media) and, if a reference exists, call Character Library `DELETE /api/v1/characters/{libraryDbId}/reference-image` (single attempt, no retries)
   - Calls Character Library `/api/v1/characters/{libraryDbId}/generate-initial-image` with the exact prompt
-  - On success: download `publicUrl` (fallback: `imageUrl`), upload to Media, create `character-image-metadata` with kind = `reference`
+  - On success: download `publicUrl` (preferred; fallback: `imageUrl` if provided), upload to Media, create `character-image-metadata` with kind = `reference`
   - On HTTP 500 from Character Library: surface error; no records created; no retries
 
 - POST `/v1/characters/:id/generate-360-set`
@@ -92,12 +94,21 @@ All server calls must run on the server (no secrets in client). No webhooks. Por
 
 
 Security: enforce standard session/auth checks; no special access restriction beyond normal project access.
+## Automatic Deletion Policy
+- On new reference generation, the system first deletes ALL existing images for the character:
+  - Local: remove character-image-metadata records and associated Media assets
+  - Remote: if provider=character-library and a reference exists, send one DELETE to `/api/v1/characters/{libraryDbId}/reference-image`
+- No retries on remote delete; failures are surfaced but local cleanup continues
+- Portfolio generation does not auto-delete; user selects a reference and system appends portfolio items
+
+
 
 ## Prompt UX
 - On page load: auto-filled AI prompt assembled from existing character data (no new values), editable
-- Button: "AI Suggest Prompt" regenerates the suggestion; never overwrites while user is typing
-- Also supports fully manual prompts
+- Button: "Reset Prompt" restores the auto-filled prompt to the latest server-suggested value; does not overwrite while user is typing
+- Also supports fully manual prompts; user can edit before running generation
 - Store the exact prompt used in metadata; avoid quotes in generated content
+- Photorealistic human emphasis: default prompt template prioritizes authentic skin texture, subsurface scattering, camera/lens settings, and non-CGI language
 
 ## Image Ingestion Flow
 1) Call Character Library (server-side) → receive remote `publicUrl`
@@ -105,12 +116,22 @@ Security: enforce standard session/auth checks; no special access restriction be
 3) Media produces our Cloudflare public URL (as per existing config)
 4) Create characterImageMetadata with links and prompt
 
+## Displaying Images and Troubleshooting
+- After any successful generation, refetch `/v1/characters/:id/images` and update the grid
+- The grid must render using the Media Cloudflare public URL from the ingested Media record (not the remote URL directly)
+- The list API should join Media correctly and sort newest first
+- Common causes of “images not showing”:
+  - Missing ingestion step (download to Media) or not using `publicUrl`
+  - Grid using stale client cache; always re-fetch on success
+  - CORS blocked when attempting to render remote URLs directly; always render via Media URL
+
+
 ## UI Structure (App Router)
 - Page: `app/screenplay/characters/[characterId]/images/page.tsx`
-  - Header: Back button, character name/ID
+  - Header: Back button, character name/ID, Character Library IDs (libraryDbId, libraryCharacterId)
   - Section: Reference Generation Panel
     - Auto-filled AI Prompt (editable)
-    - Actions: Generate Reference, AI Suggest Prompt (regenerate)
+    - Actions: Generate Reference, Reset Prompt
   - Section: Portfolio Generation Panel
     - Select a reference image (radio/card) + Start Portfolio
   - Section: Image Grid
@@ -159,10 +180,11 @@ E2E (manual runbook)
 
 ## Acceptance Criteria
 - New route exists and accessible via "Image Management" button
-- BAML prompt appears and is editable; manual prompt supported
-- Reference and portfolio images ingested to Media (Cloudflare URLs) and tracked via metadata
-- Grid lists images with prompt/kind and supports delete
-- APIs live under /v1; errors from Character Library (500) are surfaced without retries
+- BAML prompt appears and is editable; "Reset Prompt" replaces "AI Suggest Prompt"
+- On new reference generation, previous images are auto-deleted (local + remote reference delete)
+- Reference and portfolio images are ingested to Media (Cloudflare URLs) and tracked via metadata
+- Grid lists images with prompt/kind and shows generated images immediately after success
+- APIs live under /v1; errors from Character Library (500) are surfaced without retries; no retries on remote delete
 
 ## Notes and Constraints
 - No webhooks; portfolio returns all at once (no polling/queue)
@@ -189,4 +211,26 @@ E2E (manual runbook)
   "chest-to-mid-thigh crop, equal headroom, characters pinned to left/right thirds, inter-subject gap ≈ 7% of frame width, matched eye level, 35mm lens."
 - Users can edit before generating and can click "AI Suggest Prompt" to regenerate
 
+## Photorealistic Prompt Template (Default)
+- Emphasize authentic human photography: natural skin texture, subsurface scattering, micro-expressions
+- Camera and lens details: 35mm perspective, f/4 aperture, ISO, shutter speed
+- Composition guidance: chest-to-mid-thigh crop, equal headroom, thirds positioning, matched eye level
+- Cinematic realism language and explicit NOT-phrases (not CGI, not 3D, not illustration)
+- Avoid wrapping the final prompt in quotes
 
+Example base template with placeholders:
+<Name>, <age> <ethnicity> <gender>, cinematic hero shot, slightly low angle, 35mm lens, f/4, ISO 200, 1/250s, natural lighting, dramatic shadows, authentic skin texture with visible pores and subtle imperfections, realistic eye moisture and reflections, magazine-quality photorealism. NOT CGI, NOT 3D, NOT illustration, NOT cartoon, no uncanny valley.
+
+## Route Location
+- Use the SITE_URL environment variable; do not hardcode localhost
+- Route: /screenplay/characters/[characterId]/images
+- Example: ${SITE_URL}/screenplay/characters/68c3293162d9ca1841358f09/images
+
+## Prompt Controls Update
+- Remove the "AI Suggest Prompt" button
+- Add "Reset Prompt" which restores the prompt to the latest auto-filled server suggestion
+
+
+
+## Changelog
+- 2025-09-12: Implemented pre-generation auto-delete (local media+metadata and remote reference delete) and replaced "AI Suggest Prompt" with "Reset Prompt" in the Images page. Grid already re-fetches after generation and renders via Media public URLs.
