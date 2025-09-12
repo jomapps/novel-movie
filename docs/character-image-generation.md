@@ -101,6 +101,14 @@ Security: enforce standard session/auth checks; no special access restriction be
 - No retries on remote delete; failures are surfaced but local cleanup continues
 - Portfolio generation does not auto-delete; user selects a reference and system appends portfolio items
 
+### Special 400 Handling (Already Has Master Reference)
+- If Character Library returns HTTP 400 with error: "Character already has a master reference image..."
+  1) The system will call DELETE `/api/v1/characters/{libraryDbId}/reference-image`
+  2) Then it will retry the initial image generation exactly once
+- This handling is only for this specific 400; 5xx errors are not retried
+- Logging: this known 400 is logged as info (not error) in the backend to avoid noisy stack traces
+- Structured error: CharacterLibraryError is thrown with code `ALREADY_HAS_REFERENCE` for route-level delete+retry logic
+
 
 
 ## Prompt UX

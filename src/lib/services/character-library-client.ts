@@ -66,6 +66,19 @@ export interface SmartImageGenerationResponse {
   error?: string
 }
 
+export class CharacterLibraryError extends Error {
+  status: number
+  body?: string
+  code?: string
+  constructor(message: string, status: number, body?: string, code?: string) {
+    super(message)
+    this.name = 'CharacterLibraryError'
+    this.status = status
+    this.body = body
+    this.code = code
+  }
+}
+
 export class CharacterLibraryClient {
   private baseUrl: string
   private timeout: number
@@ -330,12 +343,34 @@ export class CharacterLibraryClient {
 
         if (!response.ok) {
           const errorText = await response.text()
+          const isAlreadyHasRef =
+            response.status === 400 &&
+            /Character already has a master reference image/i.test(errorText)
+          const isGenerateInitial =
+            endpoint.includes('/generate-initial-image') || /generate-initial/i.test(endpoint)
+
+          if (isAlreadyHasRef && isGenerateInitial) {
+            // Gracefully signal to caller; avoid noisy error logs
+            console.info('Character Library: master reference exists; caller may delete-and-retry.')
+            throw new CharacterLibraryError(
+              'Character already has a master reference image',
+              response.status,
+              errorText,
+              'ALREADY_HAS_REFERENCE',
+            )
+          }
+
           console.error(`Character Library API error response:`, errorText)
           throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errorText}`)
         }
 
         return await response.json()
       } catch (error) {
+        if ((error as any)?.code === 'ALREADY_HAS_REFERENCE') {
+          // Expected control flow for generate-initial; let caller handle delete+retry without extra noise
+          throw error
+        }
+
         console.error(`Character Library API attempt ${attempt} failed:`, error)
 
         if (attempt === maxAttempts) {

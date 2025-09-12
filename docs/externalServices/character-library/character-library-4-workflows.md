@@ -47,7 +47,7 @@
    ├── Use existing character
    ├── Update with new project association
    └── Skip creation
-   
+
    If no similar characters:
    ├── Proceed with creation
    └── Continue to standard workflow
@@ -80,6 +80,30 @@
    ├── Context-aware generation
    ├── Mood and lighting adaptation
    └── Scene-specific variations
+```
+
+
+### Duplicate Master Reference (HTTP 400) Handling
+```
+Trigger
+- POST /api/v1/characters/{id}/generate-initial-image returns HTTP 400 with error:
+  "Character already has a master reference image. Use the generate-image endpoint for additional images."
+
+Novel Movie App Policy
+1. Treat this as expected control flow for initial-image generation
+2. Client logs an info message (not an error) and throws a structured CharacterLibraryError
+   - code: ALREADY_HAS_REFERENCE
+   - status: 400
+   - body: original error text for debugging
+3. Route behavior (server):
+   - DELETE /api/v1/characters/{id}/reference-image
+   - Retry initial-image generation exactly once
+4. No further retries for this case; other 5xx errors are not retried
+
+Notes
+- Keeps backend logs clean (no noisy stack traces for this known path)
+- Ensures a single master reference image exists at any time
+- 360° set and scene image flows are unaffected
 ```
 
 ### Master Reference Reset Workflow

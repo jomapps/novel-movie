@@ -117,8 +117,46 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const finalPrompt =
       clientPrompt && clientPrompt.trim().length > 0 ? clientPrompt : fallbackPrompt
 
-    // Call Character Library to generate initial/master reference image
-    const response = await characterLibraryClient.generateInitialImage(libraryDbId, finalPrompt)
+    // Call Character Library to generate initial/master reference image with specific 400-recovery
+    let response: any
+    try {
+      response = await characterLibraryClient.generateInitialImage(libraryDbId, finalPrompt)
+    } catch (err: any) {
+      const msg = String(err?.message || err)
+      const alreadyHasRef =
+        (err && (err as any)?.code === 'ALREADY_HAS_REFERENCE') ||
+        (msg.includes('HTTP 400') && msg.includes('Character already has a master reference image'))
+      if (alreadyHasRef) {
+        // Remote delete existing master reference, then retry once
+        try {
+          const endpoint = CHARACTER_LIBRARY_CONFIG.endpoints.referenceImage.replace(
+            '{id}',
+            libraryDbId,
+          )
+          const url = `${CHARACTER_LIBRARY_CONFIG.baseUrl}${endpoint}`
+          const delRes = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            signal: AbortSignal.timeout(CHARACTER_LIBRARY_CONFIG.timeout),
+          })
+          if (!delRes.ok) {
+            const t = await delRes.text().catch(() => '')
+            console.warn(
+              'Character Library delete reference failed before retry:',
+              delRes.status,
+              delRes.statusText,
+              t,
+            )
+          }
+        } catch (delErr) {
+          console.warn('Failed to delete existing master reference before retry:', delErr)
+        }
+        // Retry generation exactly once
+        response = await characterLibraryClient.generateInitialImage(libraryDbId, finalPrompt)
+      } else {
+        throw err
+      }
+    }
 
     // Ingest generated image into Media and create metadata record
     try {
